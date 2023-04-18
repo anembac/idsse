@@ -1,0 +1,8 @@
+---
+Checks: '*,-fuchsia-*,-zircon-*,-objc-*,-llvm-include-order,-google-runtime-references,-misc-non-private-member-variables-in-classes,-modernize-use-trailing-return-type'
+CheckOptions:
+  - key:   hicpp-special-member-functions.AllowSoleDefaultDtor
+    value: '1'
+  - key:   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: '1'
+...
