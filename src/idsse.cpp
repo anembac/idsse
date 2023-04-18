@@ -50,13 +50,13 @@ idsse::getId(){
 
 uint8_t
 idsse::isReporter(std::string id){
-    return id.find("reporter");
+    return (id.find("reporter") != std::string::npos);
 
 }
 
 uint8_t
 idsse::isAttacker(std::string id){
-    return id.find("attacker");
+    return (id.find("attacker") != std::string::npos);
 }
 
 void
