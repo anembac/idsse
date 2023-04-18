@@ -10,3 +10,4 @@ cmake -GNinja -DBUILD_DOC=OFF -DWITH_STATIC_CHECKS=OFF -DCMAKE_INSTALL_PREFIX=~/
 ninja
 ninja install
 ```
+Make sure DCMAKE_INSTALL_PREFIX matches *your* ezCar2X installation path.
