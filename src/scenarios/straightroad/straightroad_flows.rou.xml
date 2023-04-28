@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 04/13/23 13:04:33 by Eclipse SUMO netedit Version 1.8.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\straightroad\scenario-straightroad.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\straightroad\scenario-straightroad.net.xml"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <route-files value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\straightroad\scenario_straightroad_bigtraffic.rou.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="attack_car" maxSpeed="20.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
+    <vType id="normal_car" maxSpeed="20.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
+    <route edges="start mainroad end" color="yellow" id="route_0"/>
+    <flow id="attacker" type="attack_car" begin="0.00" departSpeed="0.00" color="red" from="start" to="end" number="50" probability="0.05"/>
+    <flow id="normal" type="normal_car" begin="0.00" departSpeed="0.00" color="green" from="start" to="end" number="1000" probability="0.95"/>
+    <flow id="reporter" type="normal_car" begin="0.00" departSpeed="0.00" from="start" to="end" number="30" probability="0.03"/>
+</routes>
