@@ -5,13 +5,12 @@ SHORT_ROUTE = 598.34
 LONG_ROUTE = 698.26
 MAX_SPEED = 20
 
-#Might want to remove some of them since cars at the end of each route is not interesting
 edges_short = ["main1"]
 edges_long = ["side1", "side2", "side3"]
 
 #Default route is short route, so this function returns a boolean of whether the car should
 # continue of the route or switch to the side road due to congestion. Latest is a list of all the
-# latest messages, one from each car where the car is the key. 
+# latest messages, one from each car where the car is the key.
 def continue_on_route (latest, short_speed, long_speed):
     """Return boolean if it should continue on the route"""
     for key in latest:
