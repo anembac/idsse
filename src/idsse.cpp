@@ -30,9 +30,7 @@
 namespace ezC2X
 {
 
-idsse::idsse() : state_(State::NotRunning), log_("idsse")
-{
-}
+idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
     triggerEvent_.cancel();
@@ -40,12 +38,12 @@ idsse::~idsse(){
 
 std::string 
 idsse::getId(){
-    if(vehicleId == ""){
+    if(vehicleId_ == ""){
         auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
         log_.debug() << "I am ns-3 vehicle: " << vehicleControl->getId();
-        vehicleId = (vehicleControl->getId());
+        vehicleId_ = (vehicleControl->getId());
     }
-    return vehicleId;
+    return vehicleId_;
 }
 
 uint8_t
@@ -61,17 +59,27 @@ idsse::isAttacker(std::string id){
 
 void
 idsse::triggerEvent(uint32_t remoteID){
-    if(attacker_){
-    attacking_ = true;
-    spoof();
+    if(isAttacker_){ //will non-attacker even reach this?
+        isAttacking_ = true;
+        switch (attackType_){
+            case spoofing:
+                spoof();
+                break;
+        }
     }
-    return;
+    
+}
+
+uint64_t 
+idsse::getCurrentCertificate(){
+    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "CyberSAGEApp");
+    return cm->getCurrentPseudonymId().value();
 }
 
 void
 idsse::attackStart(){
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse");
-    triggerEvent_ = es->schedule([this] () { triggerEvent(0);}, std::chrono::milliseconds(triggerStart_),std::chrono::milliseconds(triggerInterval_));
+    triggerEvent_ = es->schedule([this] () { triggerEvent(0/*TODO: Replace with own id?*/);}, std::chrono::milliseconds(triggerStart_),std::chrono::milliseconds(triggerInterval_));
 
 }
 
@@ -96,11 +104,6 @@ idsse::normalStart(){
     // }
 }
 
-uint64_t 
-idsse::getCurrentCertificate(){
-    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "CyberSAGEApp");
-    return cm->getCurrentPseudonymId().value();
-}
 
 void
 idsse::start(component::Bundle const& framework)
@@ -114,8 +117,8 @@ idsse::start(component::Bundle const& framework)
     try
     {
         log_.info() << "Enabling CAM subscription";
-        cam_ = framework.get<CaBasicService>();
-        camReceptionConnection_ = cam_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
+        caService_ = framework.get<IdsseCaBasicService>();
+        camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
 
     }
     catch (component::NotFoundInBundle const& e)
@@ -127,12 +130,12 @@ idsse::start(component::Bundle const& framework)
     //Vehicle type branching
     std::string id = getId();
     if(isAttacker(id)){
-        attacker_ = true;
+        isAttacker_ = true;
         attackStart();
     }else{
         normalStart();
         if(isReporter(id)){
-            reporter_ = true;
+            isReporter_ = true;
         }
     }
 }
@@ -143,17 +146,34 @@ idsse::handleReceivedCam(Cam const& cam)
     auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
     // log_.info() << "My acceleration is " << vehicleControl->getAcceleration();
     //addNearbyVehicle(static_cast<int>(cam.header().station_id()),0);
-    if(attacking_){return;} //Stop listening to CAMs while actively attacking 
-    if(reporter_){ //Logging
-        
+    if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
+    if(isReporter_){ //Logging
+        log_.debug() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
+
     }
 }
 
 void
 idsse::spoof(){
+    const int targetSpeed = 0.75;
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
     auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
-    return;
+    caService_->setSuppressCAMs(true);
+    // Disable regular cam send outs and create our own generation method with customizable values
+    // TODO: Figure out how to sync them
+    auto posVec = caService_->getPositionVector();
+    auto posData = spoofPosData(posVec);
+}
+
+boost::optional<ezC2X::PositionVector>
+idsse::spoofPosData(boost::optional<ezC2X::PositionVector> pv)
+{
+    auto newSpeed = pv->speed;
+    auto newLongitude = pv->position.getLongitude().value();
+    auto newLatitude = pv->position.getLatitude().value();
+    pv->position = pv->position.wrap(newLatitude,newLongitude);
+
+
 }
 
 void
