@@ -284,19 +284,16 @@ private:
     std::uint64_t triggerStation_ = 0;
     //! attacker id
     std::string attackInfo_ = "";
-    std::map <int,int> attackList_;
+    //std::map <int,int> attackList_;
     std::uint8_t isAttacker_ = false;
     std::uint8_t isAttacking_ = false;
     std::uint8_t isReporter_ = false;
     const int maxAttackStep_ = 1.05;
+    int attackSteps_;
     int attackType_;
-    std::uint8_t stopAttackAfterStep_ = false;
-    std::string strA1_; 
-    std::vector<double> a1IrregularSpeedProfile;
-
+    const int targetSpeedModifier_ = 0.75; // 75% of current speed
 
     std::string vehicleId_ = "";
-    std::uint32_t a2MaxRandomSpeed;
     std::shared_ptr<DenBasicService> denService_;
     std::shared_ptr<IdsseCaBasicService> caService_;
 

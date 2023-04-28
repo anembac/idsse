@@ -63,6 +63,7 @@ idsse::triggerEvent(uint32_t remoteID){
         isAttacking_ = true;
         switch (attackType_){
             case spoofing:
+                //std::abs(targetSpeed_ - caService_->getPositionVector()->speed.value()); // v_delta
                 spoof();
                 break;
         }
@@ -155,7 +156,6 @@ idsse::handleReceivedCam(Cam const& cam)
 
 void
 idsse::spoof(){
-    const int targetSpeed = 0.75;
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
     auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
     caService_->setSuppressCAMs(true);
@@ -167,13 +167,17 @@ idsse::spoof(){
 
 boost::optional<ezC2X::PositionVector>
 idsse::spoofPosData(boost::optional<ezC2X::PositionVector> pv)
-{
-    auto newSpeed = pv->speed;
-    auto newLongitude = pv->position.getLongitude().value();
-    auto newLatitude = pv->position.getLatitude().value();
-    pv->position = pv->position.wrap(newLatitude,newLongitude);
-
-
+{   
+    auto newSpeed = pv->speed.value()*targetSpeedModifier_;
+    //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
+    auto delta_t = caService_->getTimeSinceLastCam().count()/1000; //converted to seconds
+    auto oldLongitude = caService_->getlastPosition()->getLongitude().value();
+    auto oldLatitude = caService_->getlastPosition()->getLatitude().value();
+    auto longitudeDiff = (((newSpeed+caService_->getlastSpeed().value())/2)*delta_t)*std::cos(caService_->getlastHeading().value());
+    auto latitudeDiff = (((newSpeed+caService_->getlastSpeed().value())/2)*delta_t)*std::sin(caService_->getlastHeading().value());
+    auto newLongitude = oldLongitude + longitudeDiff;
+    auto newLatitude = oldLatitude + latitudeDiff;
+    pv->position = pv->position.wrap(newLatitude, newLongitude);
 }
 
 void

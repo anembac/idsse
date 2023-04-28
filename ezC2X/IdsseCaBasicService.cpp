@@ -280,6 +280,7 @@ IdsseCaBasicService::getStationID(){
     return _id;
 }
 
+
 std::chrono::milliseconds
 IdsseCaBasicService::tGenCamDcc() const
 {
@@ -475,6 +476,9 @@ IdsseCaBasicService::send(boost::optional<Cam> cam)
         log_.debug() << "Send Failed: Message to send does not exist!";
         return false;
     }
+
+    //update latestCam once we know that cam isn't empty
+    latestCam_ = cam;
 
     // trace generation event
     onCamGenerated_(*cam);
@@ -1180,6 +1184,35 @@ IdsseCaBasicService::setSuppressCAMs(bool _suppressCAMs){
 bool
 IdsseCaBasicService::isSuppressCAMs(){
     return suppressCAMs;
+}
+
+boost::optional<Cam>
+IdsseCaBasicService::getLatestCam(){
+    return latestCam_;
+}
+
+boost::optional<double>
+IdsseCaBasicService::getlastHeading()
+{
+    return boost::optional<double>();
+}
+
+
+boost::optional<Wgs84Position>
+IdsseCaBasicService::getlastPosition()
+{
+    return boost::optional<Wgs84Position>();
+}
+
+boost::optional<double>
+IdsseCaBasicService::getlastSpeed()
+{
+    return boost::optional<double>();
+}
+
+std::chrono::milliseconds
+IdsseCaBasicService::getTimeSinceLastCam(){
+return checkIntervalsToDuration(checkIntervalsSinceLastCam_);
 }
 
 }  // namespace ezC2X

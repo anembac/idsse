@@ -169,6 +169,24 @@ public:
     boost::optional<ezC2X::PositionVector>
     getPositionVector();
 
+    /*!
+    * @brief Returns the latest sent cam
+    */
+    boost::optional<Cam>
+    getLatestCam();
+
+    //! Last heading value
+    boost::optional<double> getlastHeading();
+
+    //! Last position data
+    boost::optional<Wgs84Position> getlastPosition();
+
+    //! Last speed value
+    boost::optional<double> getlastSpeed();
+
+
+    std::chrono::milliseconds getTimeSinceLastCam();
+
 private:
     /*!
      * @brief Get the current tGenCamDcc value (set by the management entity)
@@ -448,6 +466,8 @@ private:
     int attackStep = 0;
     //! Indicator whether CAM messages are suppressed/not being sent. Needed for Sybil attacks where the "virtual" vehicles are implemented as actual NS-3/SUMO vehicles.
     bool suppressCAMs = false;
+
+    boost::optional<Cam> latestCam_;
 };
 
 }  // namespace ezC2X
