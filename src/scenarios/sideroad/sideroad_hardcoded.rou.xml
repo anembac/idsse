@@ -41,10 +41,10 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <route edges="Entry 2toSEntry Sentryto3 3toSexit SExitto4 Exit" color="yellow" id="route_main"/>
-    <route edges="SEntrytoS1 S1toS2 S2toS3 S3toS4 S4toSExit" color="yellow" id="route_side"/>
     <trip id="attacker" depart="0.00" color="red" from="Entry" to="Exit"/>
     <trip id="reporter" depart="0.10" from="Entry" to="Exit"/>
+    <route edges="main1 main2" color="yellow" id="main_route"/>
+    <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
     <trip id="normal1" depart="0.30" color="green" from="Entry" to="Exit"/>
     <trip id="normal2" depart="0.40" color="green" from="Entry" to="Exit"/>
     <trip id="normal3" depart="0.50" color="green" from="Entry" to="Exit"/>

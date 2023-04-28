@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 04/13/23 14:06:20 by Eclipse SUMO netedit Version 1.8.0
+<!-- generated on 04/28/23 14:24:52 by Eclipse SUMO netedit Version 1.8.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\sideroad\scenario_sideroad.net.xml"/>
+        <sumo-net-file value="C:\Users\Jacob\Documents\Kurser\Thesis\code\idsse\src\scenarios\sideroad\sideroad.net.xml"/>
     </input>
 
     <output>
-        <output-file value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\sideroad\scenario_sideroad.net.xml"/>
+        <output-file value="C:\Users\Jacob\Documents\Kurser\Thesis\code\idsse\src\scenarios\sideroad\sideroad.net.xml"/>
     </output>
 
     <processing>
@@ -30,7 +30,7 @@
     </pedestrian>
 
     <netedit>
-        <route-files value="C:\Users\Jacob\Downloads\sumo-1.8.0\bin\scenarios\sideroad\scenario_sidoroad.rou.xml"/>
+        <route-files value="C:\Users\Jacob\Documents\Kurser\Thesis\code\idsse\src\scenarios\sideroad\sideroad_flows.rou.xml"/>
     </netedit>
 
     <report>
@@ -43,8 +43,8 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <vType id="attack_car" maxSpeed="15.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
     <vType id="normal_car" maxSpeed="20.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
-    <route edges="Entry 2toSEntry Sentryto3 3toSexit SExitto4 Exit" color="yellow" id="route_main"/>
-    <route edges="SEntrytoS1 S1toS2 S2toS3 S3toS4 S4toSExit" color="yellow" id="route_side"/>
+    <route edges="main1 main2" color="yellow" id="main_route"/>
+    <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
     <flow id="attacker" type="attack_car" begin="0.00" departSpeed="0.00" color="red" from="Entry" to="Exit" number="50" probability="0.05"/>
     <flow id="normal" type="normal_car" begin="0.00" departSpeed="0.00" color="green" from="Entry" to="Exit" number="1000" probability="0.95"/>
     <flow id="reporter" type="normal_car" begin="0.00" departSpeed="0.00" from="Entry" to="Exit" number="30" probability="0.03"/>
