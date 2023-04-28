@@ -11,7 +11,6 @@
  */
 #ifndef EZC2X_IDSSE_APPLICATION_HPP
 #define EZC2X_IDSSE_APPLICATION_HPP
-
 #include <cstdint>
 #include <vector>
 #include <boost/circular_buffer.hpp>
@@ -31,7 +30,7 @@
 #include <ezC2X/framework/Application.hpp>
 #include <ezC2X/facility/cam/Cam.pb.h>
 #include <ezC2X/facility/cam/CaBasicService.hpp>
-#include <ezC2X/facility/cam/EtsiCaBasicService.hpp>
+#include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
 
 #include <ezC2X/security/pki/CertificateManager.hpp>
 //#include <ezC2X/security/Certificate/CertificateManager.hpp>
@@ -126,7 +125,7 @@ public:
 
 private:
 
-    /*!
+    /*!attackStep
      * @brief Executes periodically and triggers a pre-configured maneuver.
      * @param remoteID   ID of the remote vehicle for this maneuver
      * @note TriggerStation configuration parameter controls which station triggers the maneuver
@@ -224,11 +223,14 @@ private:
     void
     spoof();
 
-    void 
-    addNearbyVehicle(int _id, int _type);
+    boost::optional<ezC2X::PositionVector>
+    spoofPosData(boost::optional<ezC2X::PositionVector> pv);
 
-    int 
-    numberVehicleWarnings(int _type);
+    // void 
+    // addNearbyVehicle(int _id, int _type);
+
+    // int 
+    // numberVehicleWarnings(int _type);
 
     // False means event with dynamically triggered vehicle control
     // True means static predefined maneuver event, periodically executed
@@ -243,6 +245,7 @@ private:
 
     //! Logger for this component
     Logger log_;
+    std::string camString_;
 
     //! Dependency handle
     Dependencies deps_;
@@ -261,7 +264,10 @@ private:
     //! Connection for receiving DENMs
     boost::signals2::scoped_connection denmReceptionConnection_;
 
-
+    enum attackType: int {
+        spoofing,
+        replay
+    };
 
 
     // std::list<attack> attackList;
@@ -279,23 +285,26 @@ private:
     //! attacker id
     std::string attackInfo_ = "";
     std::map <int,int> attackList_;
-    std::uint8_t attacker_ = false;
-    std::uint8_t attacking_ = false;
-    std::uint8_t reporter_ = false;
+    std::uint8_t isAttacker_ = false;
+    std::uint8_t isAttacking_ = false;
+    std::uint8_t isReporter_ = false;
+    const int maxAttackStep_ = 1.05;
+    int attackType_;
     std::uint8_t stopAttackAfterStep_ = false;
     std::string strA1_; 
     std::vector<double> a1IrregularSpeedProfile;
 
 
-    std::string vehicleId = "";
+    std::string vehicleId_ = "";
     std::uint32_t a2MaxRandomSpeed;
-    std::shared_ptr<DenBasicService> denm_;
-    std::shared_ptr<CaBasicService> cam_;
+    std::shared_ptr<DenBasicService> denService_;
+    std::shared_ptr<IdsseCaBasicService> caService_;
 
     int defaultSpeed = 12;
     int vehicleIdOppositeDir = 1;
 
     std::unordered_map<int,int> nearbyVehicles;
+
 
     
 };
