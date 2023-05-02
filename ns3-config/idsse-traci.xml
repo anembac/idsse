@@ -1,0 +1,102 @@
+<!-- EzC2X stack configuration -->
+<ezC2X>
+  <Framework>
+    <!-- Core components -->
+    <core>
+        <PluginManager>
+        <Plugin>@@EZC2X_ROOT_DIR@@/share/ezC2X/plugins/idssePlugin.so</Plugin>
+        </PluginManager>
+        <EventScheduler Type="ns3" />
+        <EventScheduler Type="threaded" />
+        <TimeProvider Type="ns3" />
+        <RandomBitGenerator Type="ns3" />
+        <DataHub />
+    </core>
+
+    <!-- Access layer -->
+    <access>
+        <ItsG5Access Type="ns3">
+        <DeviceMap>
+            <Mapping Channel="CCH" Index="0" />
+        </DeviceMap>
+        <MaxRxProcessingDelay>5ms</MaxRxProcessingDelay>
+        </ItsG5Access>
+    </access>
+
+    <!-- Network Layer -->
+    <network>
+        <GeoNetworking>
+        <ProtocolParameters>
+            <itsGnLocalAddrConfMethod>Anonymous</itsGnLocalAddrConfMethod>
+            <itsGnAreaForwardingAlgorithm>Cbf</itsGnAreaForwardingAlgorithm>
+            <itsGnNonAreaForwardingAlgorithm>Cbf</itsGnNonAreaForwardingAlgorithm>
+        </ProtocolParameters>
+        </GeoNetworking>
+        <Btp />
+    </network>
+
+    <!-- Facility Layer -->
+    <facility>
+        <!-- Create default CAM facility -->
+        <CaBasicService>
+        <StationType>PASSENGER_CAR</StationType>
+        <ProtocolParameters>
+            <SendingEnabled>true</SendingEnabled>
+            <ManualCamGenerationInterval>100ms</ManualCamGenerationInterval>
+        </ProtocolParameters>
+        </CaBasicService>
+        <DenBasicService>
+        <StationType>SPECIAL_VEHICLES</StationType>
+        <!-- <StationType>SPECIAL_VEHICLES</StationType> -->
+        <ProtocolParameters>
+            <GnSecurityProfile>false</GnSecurityProfile>
+        </ProtocolParameters>
+        </DenBasicService>
+        <!--
+        Create a data presentation facility required to encode and decode common
+        messages like CAM and DENM. The component created here will use the
+        Google protobuf specification for serialization and deserialization.
+        -->
+        <DataPresentation />
+
+        <VehicleControlInterface Type="ns3" />
+    </facility>
+
+    <security>
+        <PseudonymManager Type="list">
+        <Pseudonyms>
+            <Id>@@NS3_NODE_ID@@</Id>
+        </Pseudonyms>
+        </PseudonymManager>
+    </security>
+
+    <ns3>
+        <PositionSource>
+            <UpdateInterval>50ms</UpdateInterval>
+            <UpdateJitter>false</UpdateJitter>
+        </PositionSource>
+        <VehicleDataSource>
+            <UpdateInterval>50ms</UpdateInterval>
+        </VehicleDataSource>
+    </ns3>
+
+
+  </Framework>
+  <idsse>
+    <idsse>
+      <TriggerStation>0</TriggerStation>
+      <TriggerStart>@@TRIGGER_START@@</TriggerStart>
+      <TriggerInterval>10000</TriggerInterval>
+      <PeriodicBasedTrigger>true</PeriodicBasedTrigger>
+      <Attacks>0:1</Attacks>
+      <Reporter>2</Reporter>
+      <!-- <A1IrregularSpeed>-5,-8,-10,-8,0,-10</A1IrregularSpeed>  -->
+      <A1IrregularSpeed>@@A1IrregularSpeed@@</A1IrregularSpeed>
+      <Platooning>true</Platooning>
+      <PlatoonHead>99</PlatoonHead>
+      <PlatoonPath>@@PLATOON_PATH@@</PlatoonPath>
+      <A2MaxRandomSpeed>1000</A2MaxRandomSpeed>
+      <AttackSteps>2</AttackSteps>
+    </idsse>
+  </idsse>
+</ezC2X>

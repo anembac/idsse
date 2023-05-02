@@ -747,7 +747,6 @@ IdsseCaBasicService::cam()
     //seems like we don't have acceleration info
     //<< cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency().longitudinal_acceleration().value().value() << ";" 
 
-
     return cam;
 }
 
@@ -1138,17 +1137,6 @@ void IdsseCaBasicService::setAttackType(int _attackType){
     attackType = _attackType;
 }
 
-void
-IdsseCaBasicService::setAttack1(std::vector<double> _profile){
-    log_.info() << "Updating A1 irregular attack profile with size " << _profile.size();
-    a1IrregularSpeedProfile = _profile;
-}
-
-void 
-IdsseCaBasicService::setAttack2(std::uint32_t _a2MaxRandomSpeed){
-    log_.info() << "Updating A2 random speed attack with maximum value " << _a2MaxRandomSpeed;
-    a2MaxRandomSpeed = _a2MaxRandomSpeed;
-}
 
 void 
 IdsseCaBasicService::triggerAttack(){
@@ -1224,7 +1212,6 @@ void
 IdsseCaBasicService::spoof(){
     //auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
     auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
-    //caService_->setSuppressCAMs(true);
     // Disable regular cam send outs and create our own generation method with customizable values
     // TODO: Figure out how to sync them
     setAttackActive(true);

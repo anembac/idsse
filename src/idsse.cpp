@@ -10,12 +10,13 @@
 #include <boost/tokenizer.hpp>
 #include <boost/cast.hpp>
 #include <boost/range/algorithm/count.hpp>
+//#include <boost/python.hpp>
 
 #include <ezC2X/core/component/Aggregatable.hpp>
 #include <ezC2X/core/component/Bundle.hpp>
 #include <ezC2X/core/component/RunUtil.hpp>
 #include <ezC2X/core/property/Mapper.hpp>
-#include "ezC2X/security/attacker/AttackTypes.hpp"
+//#include "ezC2X/security/attacker/AttackTypes.hpp"
 
 
 #include <ezC2X/facility/cam/CaBasicService.hpp>
@@ -26,6 +27,7 @@
 #include <ezC2X/core/time/ItsClock.hpp>
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
 #include "ezC2X/core/time/ItsClock.hpp"
+
 
 namespace ezC2X
 {
@@ -65,6 +67,8 @@ idsse::triggerEvent(uint32_t remoteID){
             case spoofing:
                 //std::abs(targetSpeed_ - caService_->getPositionVector()->speed.value()); // v_delta
                 caService_->spoof();
+                break;
+            default:
                 break;
         }
     }
@@ -148,7 +152,7 @@ idsse::handleReceivedCam(Cam const& cam)
     //addNearbyVehicle(static_cast<int>(cam.header().station_id()),0);
     if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
     if(isReporter_){ //Logging
-        log_.debug() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
+        log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
 
     }
 }
