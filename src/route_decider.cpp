@@ -19,6 +19,7 @@ vector<string> edges_short = {"main1"};
 vector<string> edges_long = {"side1", "side2", "side3"};
 
 bool continue_on_route(vector<LatestMessage> latest, double short_speed, double long_speed)
+//Add an if-check for whether they are before at the start so they actually can decide the route
 {
     for (auto message : latest)
     {

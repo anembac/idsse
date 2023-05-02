@@ -4,7 +4,7 @@ import math
 PLAUSABILITY_RANGE = 500
 MAX_SPEED = 30
 MAX_ACC = 5  #Maximum Acceleration
-MAX_DEC = -5 #Maximum Deacceleration
+MAX_DEC = -15 #Maximum Deacceleration
 
 #A stack containing all messages related to a car
 #Will this look like this, might just be multiple functions that are getters for sensor values
@@ -59,29 +59,27 @@ def speed_plausability(msg):
 # deacceleration.
 def position_consistency(old, new, time, max_acc, max_dec):
     """Returns a bool whether a car's position is consistant with it's speed"""
-    v_diff = new.speed - old.speed
+    v_diff = new.get("speed") - old.get("speed")
 
     if v_diff < 0:
         max_dec , max_acc = max_acc, max_dec
 
-    t_acc = v_diff / max_acc
-    t_remaining = time - t_acc
+    t_acc = ((-max_dec) * time + v_diff) / (-(max_dec) + max_acc)
+    t_dec = time - t_acc
 
-    dist = old.speed * t_acc + max_acc * t_acc * t_acc
+    v_tmp_acc = old.get("speed") + max_acc * t_acc
+    v_tmp_dec = old.get("speed") + max_dec * t_dec
 
-    t_acc = -(max_dec) * t_remaining /(-(max_dec) + max_acc)
-    t_dec = t_remaining - t_acc
-
-    v_tmp = old.speed + max_dec * t_dec
-
-    bound_upper =  dist + new.speed * t_remaining
-    bound_lower = (dist + (old.speed * t_dec + max_dec * t_dec * t_dec) +
-                   (v_tmp * t_acc + max_acc * t_acc * t_acc))
+    bound_upper = ((old.get("speed") * t_acc + max_acc * pow(t_acc, 2)) +
+                    (v_tmp_acc * t_dec + max_dec * pow(t_dec, 2)))
+    bound_lower = ((old.get("speed") * t_dec + max_dec * pow(t_dec,2)) +
+                    (v_tmp_dec * t_acc + max_acc * pow(t_acc, 2)))
 
     if v_diff < 0:
         bound_lower, bound_upper = bound_upper, bound_lower
 
-    return bound_lower < distance(old.pos, new.pos) < bound_upper
+    print(f"Lower: {bound_lower}, Upper: {bound_upper}")
+    return True #bound_lower < distance(old.pos, new.pos) < bound_upper
 
 #Speed diff is what you get when putting (old.speed - new.speed), this should be kept under
 # the MAX_ACCELERATION and over the MAX_DEACCELERATION.
@@ -101,6 +99,18 @@ def distance (pos1, pos2):
     """Returns the distance between two posistion"""
     return math.sqrt(pow((pos2.x - pos1.x),2) + pow((pos2.y-pos1.y),2))
 
-
 #Add a main method, it should be running and taking messages and each message should be compared in
 # the car_ids method
+
+def main():
+    """A main method where currently testing resides"""
+    old = {"speed":15}
+    new = {"speed":20}
+
+    #Test 1
+    position_consistency(old, new, 2, MAX_ACC, MAX_DEC) #15 -> 20
+    #Test2
+    position_consistency(new, old, 3, MAX_ACC, MAX_DEC) #20 -> 15
+
+if __name__ == '__main__':
+    main()
