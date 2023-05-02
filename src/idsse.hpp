@@ -217,14 +217,6 @@ private:
     uint8_t
     isAttacker(std::string id);
 
-    /*!
-    * @brief Launches sensor-value spoofing
-    */
-    void
-    spoof();
-
-    boost::optional<ezC2X::PositionVector>
-    spoofPosData(boost::optional<ezC2X::PositionVector> pv);
 
     // void 
     // addNearbyVehicle(int _id, int _type);
@@ -291,7 +283,6 @@ private:
     const int maxAttackStep_ = 1.05;
     int attackSteps_;
     int attackType_;
-    const int targetSpeedModifier_ = 0.75; // 75% of current speed
 
     std::string vehicleId_ = "";
     std::shared_ptr<DenBasicService> denService_;

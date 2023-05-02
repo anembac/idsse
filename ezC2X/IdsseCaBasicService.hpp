@@ -187,6 +187,12 @@ public:
 
     std::chrono::milliseconds getTimeSinceLastCam();
 
+    /*!
+    * @brief Launches sensor-value spoofing
+    */
+    void
+    spoof();
+
 private:
     /*!
      * @brief Get the current tGenCamDcc value (set by the management entity)
@@ -388,6 +394,9 @@ private:
     void
     reportCamGenerationTime(TimePoint start, TimePoint end);
 
+    boost::optional<ezC2X::PositionVector>
+    spoofPosData();
+
     //! Handle to the dependencies of this component
     Dependencies deps_;
 
@@ -461,11 +470,13 @@ private:
     //! maximum speed difference when randomly spoofing the attacker's speed
     std::uint32_t a2MaxRandomSpeed = 0;
     //! indicate whether the attack is currently executed
-    bool attackActive = false;
+    bool attackActive_ = false;
     //! Attack progress, e.g., when used for speed spoofing, a different speed is spoofed at each step
     int attackStep = 0;
     //! Indicator whether CAM messages are suppressed/not being sent. Needed for Sybil attacks where the "virtual" vehicles are implemented as actual NS-3/SUMO vehicles.
     bool suppressCAMs = false;
+
+    const int targetSpeedModifier_ = 0.75; // 75% of current speed
 
     boost::optional<Cam> latestCam_;
 };

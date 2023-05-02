@@ -159,7 +159,7 @@ IdsseCaBasicService::configure(boost::property_tree::ptree const& properties)
 
     // reference nGenCam value might have changed so set the starting nGenCam_ value accordingly
     nGenCam_ = params_.nGenCam.value();
-    attackActive = false;
+    //attackActive_ = false;
 }
 
 
@@ -391,7 +391,6 @@ IdsseCaBasicService::generateStandardMode()
 {
     // increment the counters for CAM generation bookkeeping
     incrementCheckIntervals();
-
     // current position is accessible through the position provider
     auto posData = positionProvider_.position();
     if (!posData)
@@ -601,7 +600,13 @@ IdsseCaBasicService::cam()
     // check the dependencies necessary to populate the required fields of a CAM message
 
     // current position is accessible through the position provider
-    auto posData = positionProvider_.position();
+    boost::optional<ezC2X::PositionVector> posData;
+    if(!attackActive_){
+        auto posData = positionProvider_.position();
+    }
+    else{
+        auto posData = spoofPosData();
+    }
     if (!posData)
     {
         // WARN is preferred here since having no valid position information is not a setup error
@@ -1148,18 +1153,18 @@ IdsseCaBasicService::setAttack2(std::uint32_t _a2MaxRandomSpeed){
 void 
 IdsseCaBasicService::triggerAttack(){
     if(!isAttackActive())
-        attackActive = true;
+        attackActive_ = true;
     attackStep++;
 }
 
 bool
 IdsseCaBasicService::isAttackActive(){
-    return attackActive;
+    return attackActive_;
 }
 
 void 
 IdsseCaBasicService::setAttackActive(bool active){
-    attackActive = active;
+    attackActive_ = active;
 }
 
 int
@@ -1194,25 +1199,55 @@ IdsseCaBasicService::getLatestCam(){
 boost::optional<double>
 IdsseCaBasicService::getlastHeading()
 {
-    return boost::optional<double>();
+    return lastHeading_;
 }
 
 
 boost::optional<Wgs84Position>
 IdsseCaBasicService::getlastPosition()
 {
-    return boost::optional<Wgs84Position>();
+    return lastPosition_;
 }
 
 boost::optional<double>
 IdsseCaBasicService::getlastSpeed()
 {
-    return boost::optional<double>();
+    return lastSpeed_;
 }
 
 std::chrono::milliseconds
 IdsseCaBasicService::getTimeSinceLastCam(){
 return checkIntervalsToDuration(checkIntervalsSinceLastCam_);
+}
+
+void
+IdsseCaBasicService::spoof(){
+    //auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
+    //caService_->setSuppressCAMs(true);
+    // Disable regular cam send outs and create our own generation method with customizable values
+    // TODO: Figure out how to sync them
+    setAttackActive(true);
+
+}
+
+boost::optional<ezC2X::PositionVector>
+IdsseCaBasicService::spoofPosData()
+{   
+    auto pv = positionProvider_.position();
+    auto newSpeed = pv->speed.value()*targetSpeedModifier_;
+    //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
+    auto delta_t = getTimeSinceLastCam().count()/1000; //converted to seconds
+    auto oldLongitude = lastPosition_->getLongitude().value();
+    auto oldLatitude = lastPosition_->getLatitude().value();
+    auto lastHeading = lastHeading_.value();
+    auto lastSpeed = lastSpeed_.value();
+    auto longitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
+    auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
+    auto newLongitude = oldLongitude + longitudeDiff;
+    auto newLatitude = oldLatitude + latitudeDiff;
+    pv->position = pv->position.wrap(newLatitude, newLongitude);
+    return pv;
 }
 
 }  // namespace ezC2X

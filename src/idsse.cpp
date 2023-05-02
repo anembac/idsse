@@ -64,11 +64,10 @@ idsse::triggerEvent(uint32_t remoteID){
         switch (attackType_){
             case spoofing:
                 //std::abs(targetSpeed_ - caService_->getPositionVector()->speed.value()); // v_delta
-                spoof();
+                caService_->spoof();
                 break;
         }
     }
-    
 }
 
 uint64_t 
@@ -154,31 +153,6 @@ idsse::handleReceivedCam(Cam const& cam)
     }
 }
 
-void
-idsse::spoof(){
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
-    caService_->setSuppressCAMs(true);
-    // Disable regular cam send outs and create our own generation method with customizable values
-    // TODO: Figure out how to sync them
-    auto posVec = caService_->getPositionVector();
-    auto posData = spoofPosData(posVec);
-}
-
-boost::optional<ezC2X::PositionVector>
-idsse::spoofPosData(boost::optional<ezC2X::PositionVector> pv)
-{   
-    auto newSpeed = pv->speed.value()*targetSpeedModifier_;
-    //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
-    auto delta_t = caService_->getTimeSinceLastCam().count()/1000; //converted to seconds
-    auto oldLongitude = caService_->getlastPosition()->getLongitude().value();
-    auto oldLatitude = caService_->getlastPosition()->getLatitude().value();
-    auto longitudeDiff = (((newSpeed+caService_->getlastSpeed().value())/2)*delta_t)*std::cos(caService_->getlastHeading().value());
-    auto latitudeDiff = (((newSpeed+caService_->getlastSpeed().value())/2)*delta_t)*std::sin(caService_->getlastHeading().value());
-    auto newLongitude = oldLongitude + longitudeDiff;
-    auto newLatitude = oldLatitude + latitudeDiff;
-    pv->position = pv->position.wrap(newLatitude, newLongitude);
-}
 
 void
 idsse::stop() noexcept
