@@ -606,6 +606,7 @@ IdsseCaBasicService::cam()
     }
     else{
         auto posData = spoofPosData();
+        
     }
     if (!posData)
     {
@@ -736,6 +737,7 @@ IdsseCaBasicService::cam()
         return boost::none;
     }
 
+
     // update the cam generation counter
     checkIntervalsSinceLastCam_ = 0;
 
@@ -747,6 +749,17 @@ IdsseCaBasicService::cam()
     //seems like we don't have acceleration info
     //<< cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency().longitudinal_acceleration().value().value() << ";" 
 
+    /*
+    Add a flag indicating that the message sent is part of an attack.
+    This solution is a bit ugly but we will hijack the dangerousgoods DE 
+    as it isn't relevant to our implementation.
+    */
+    cam.mutable_payload()
+        ->mutable_containers()
+        ->mutable_special_vehicle_container()
+        ->mutable_safety_car_container()
+        ->mutable_light_bar_siren_in_use()
+        ->set_light_bar_activated(true);
     return cam;
 }
 

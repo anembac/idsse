@@ -26,6 +26,7 @@ struct ReadableCam
     int steeringWheelAngle;
     int lateralAcceleration;
     int verticalAcceleration;
+    bool attacking;
     size_t fingerprint;
 };
 

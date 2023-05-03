@@ -23,6 +23,12 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     if(hfb.has_lateral_acceleration()){cam_.lanePosition = hfb.lateral_acceleration().value().value();}
     if(hfb.has_vertical_acceleration()){cam_.lanePosition = hfb.vertical_acceleration().value().value();}
 
+    //todo: not sure if this object always exists, so need to check
+    if(cam.payload().containers().special_vehicle_container().safety_car_container().has_light_bar_siren_in_use()){
+        cam_.attacking = true;
+    }else{
+        cam_.attacking = false;
+    }
     fingerprint(cam_);
     //Save metadata
     metaData_ = meta;

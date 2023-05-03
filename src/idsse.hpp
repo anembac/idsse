@@ -52,6 +52,8 @@
 
 // #include <templates>
 
+#include <Report.hpp>
+
 namespace ezC2X
 {
 /*!

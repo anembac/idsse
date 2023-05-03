@@ -154,8 +154,8 @@ idsse::handleReceivedCam(Cam const& cam)
     if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
     if(isReporter_){ //Logging
         log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
-
     }
+    
 }
 
 
