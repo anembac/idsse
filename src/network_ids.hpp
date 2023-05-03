@@ -20,4 +20,4 @@ void collect_messages(std::vector<Report> reports);
 
 void collect_single_msg(Report report);
 
-int main();
+void dump_file ();
