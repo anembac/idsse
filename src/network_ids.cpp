@@ -17,7 +17,6 @@ bool detect_misbehavior(std::vector<Report> reports) {
     return false;
 }
 
-
 //Needs updating to accomadate for reports...
 void misbehaving_msgs() {
     /*Function responsible for going through all messages and adding misbehaving ones to a list*/

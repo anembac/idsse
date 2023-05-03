@@ -49,6 +49,8 @@ public:
 
     void fingerprint(ReadableCam rc);
 
+    std::string concatenateValues();
+
 private:
     ReadableCam cam_;
     MetaData metaData_;

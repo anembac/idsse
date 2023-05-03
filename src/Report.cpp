@@ -1,4 +1,5 @@
 #include <Report.hpp>
+#include <sstream>
 
 Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
@@ -57,6 +58,31 @@ void Report::fingerprint (ReadableCam rc){
     hash_val += std::to_string(rc.generationDeltaTime) + ";";
     rc.fingerprint = std::hash<std::string>()(hash_val);
 }
+
+std::string concatenateValues() {
+    std::stringstream ss;
+
+    ss << cam_.id << ",";
+    ss << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
+    ss << cam_.speed << ",";
+    ss << cam_.heading << ",";
+    ss << static_cast<int>(cam_.driveDirection) << ",";
+    ss << cam_.generationDeltaTime << ",";
+    ss << cam_.longitudinalAcceleration << ",";
+    ss << cam_.curvature << ",";
+    ss << cam_.curvatureCalculationMode << ",";
+    ss << cam_.yawRate << ",";
+    ss << static_cast<int>(cam_.accelerationControl) << ",";
+    ss << cam_.lanePosition << ",";
+    ss << cam_.steeringWheelAngle << ",";
+    ss << cam_.lateralAcceleration << ",";
+    ss << cam_.verticalAcceleration << ",";
+    ss << metaData_.timeOnReceive << ",";
+    ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
+    ss << metaData_.id;
+    return ss.str();
+}
+
 
 Report::~Report(){};
 
