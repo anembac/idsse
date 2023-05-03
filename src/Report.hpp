@@ -11,6 +11,7 @@ struct ReadableCam
     std::tuple<double,double> pos;
     double speed;
     double heading;
+    uint8_t driveDirection;
     uint16_t generationDeltaTime;   //generationDeltaTime = TimestampIts mod 65 536. 
                                     //TimestampIts represents an integer value in milliseconds since
                                     // 2004-01-01T00:00:00:000Z as defined in ETSI TS 102 894-2.
@@ -21,9 +22,9 @@ struct ReadableCam
     //The following parameters are optional in CA messages
     uint8_t accelerationControl;
     int lanePosition;
-    double steeringWheelAngle;
-    double lateralAcceleration;
-    double verticalAcceleration;
+    int steeringWheelAngle;
+    int lateralAcceleration;
+    int verticalAcceleration;
 };
 
 struct MetaData
@@ -36,6 +37,8 @@ struct MetaData
 
 class Report{
 public:
+    Report();
+
     ~Report();
 
     Report(ezC2X::Cam cam, MetaData meta);
@@ -44,12 +47,7 @@ public:
 
     MetaData getMetaData();
 
-    /*!
-    * @brief Converts ezC2X cam class to ReadableCam struct
-    */
-    static ReadableCam convertCam(ezC2X::Cam cam);
-
 private:
-    ReadableCam cam;
-    MetaData metaData;
+    ReadableCam cam_;
+    MetaData metaData_;
 };
