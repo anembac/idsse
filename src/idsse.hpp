@@ -280,7 +280,7 @@ private:
     std::uint8_t isAttacker_ = false;
     std::uint8_t isAttacking_ = false;
     std::uint8_t isReporter_ = false;
-    const int maxAttackStep_ = 1.05;
+    //const double maxAttackStep_ = 1.05;
     int attackSteps_;
     int attackType_;
 

@@ -476,7 +476,7 @@ private:
     //! Indicator whether CAM messages are suppressed/not being sent. Needed for Sybil attacks where the "virtual" vehicles are implemented as actual NS-3/SUMO vehicles.
     bool suppressCAMs = false;
 
-    const int targetSpeedModifier_ = 0.75; // 75% of current speed
+    const double targetSpeedModifier_ = 0.75; // 75% of current speed
 
     boost::optional<Cam> latestCam_;
 };

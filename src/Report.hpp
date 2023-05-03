@@ -7,7 +7,8 @@ struct ReadableCam
     Many of these values are stored as a value/confidence pair in the actual CAM.
     In order to simplify things we only use values, not the confidence.
     */
-    std::string id;
+
+    uint32_t id;
     std::tuple<double,double> pos;
     double speed;
     double heading;
@@ -48,7 +49,7 @@ public:
 
     MetaData getMetaData();
 
-    void fingerprint(const ReadableCam& rc);
+    void fingerprint(ReadableCam rc);
 
 private:
     ReadableCam cam_;
