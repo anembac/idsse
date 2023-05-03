@@ -39,8 +39,6 @@ struct MetaData
 
 class Report{
 public:
-    Report();
-
     ~Report();
 
     Report(ezC2X::Cam cam, MetaData meta);

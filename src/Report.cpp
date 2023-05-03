@@ -1,9 +1,7 @@
 #include <Report.hpp>
 
-Report::Report(){};
-
 Report::Report(ezC2X::Cam cam, MetaData meta){
-    //Move relevant info from cam to readablecam
+    //Moves relevant info from cam to readablecam
     cam_.id = cam.header().station_id(); //TODO fix id
     auto refPos = cam.payload().containers().basic_container().reference_position();
     cam_.pos = std::tuple<double,double>(refPos.longitude().value(), refPos.latitude().value());
