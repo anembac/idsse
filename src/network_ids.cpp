@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <Report.hpp>
 
 const int LOWER_BOUND = 0;
 const int UPPER_BOUND = 100;
@@ -19,20 +20,21 @@ std::map<std::string, std::vector<Message>> messages;
 std::vector<std::string> misbehaving;
 
 double
-distance(std::vector<int> pos1, std::vector<int> pos2)
+distance(std::tuple<int> pos1, std::tuple<int> pos2)
 {
     /*Returns the distance between two positions*/
-    return sqrt(pow((pos2[0] - pos1[0]), 2) + pow((pos2[1] - pos1[1]), 2));
+    return sqrt(pow((std::get<0>(pos2) - std::get<0>(pos1)), 2) + 
+                pow((std::get<1>(pos2) - std::get<1>(pos1)), 2));
 }
 
 bool
-detect_misbehavior(std::vector<Message> msg_set)
+detect_misbehavior(std::vector<Report> reports)
 {
     /*Function for determining if a message is suspicious*/
-    for (auto msg : msg_set)
+    for (auto report : reports)
     {
-        double dist = distance(msg.receiver_position, msg.sender_position);
-        double transfer_time = msg.msg_arrival_time - msg.timestamp;
+        double dist = distance(msg.getMetaData().positionOnReceieve, msg.getCam().pos);
+        double transfer_time = msg.getMetaData().timeOnReceive - msg.getCam().generationDeltaTime;
         if (LOWER_BOUND <= dist / transfer_time && dist / transfer_time <= UPPER_BOUND)
         {
             continue;
@@ -42,6 +44,8 @@ detect_misbehavior(std::vector<Message> msg_set)
     return false;
 }
 
+
+//Needs updating to accomadate for reports...
 void
 misbehaving_msgs()
 {

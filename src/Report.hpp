@@ -25,6 +25,7 @@ struct ReadableCam
     int steeringWheelAngle;
     int lateralAcceleration;
     int verticalAcceleration;
+    size_t fingerprint;
 };
 
 struct MetaData
@@ -46,6 +47,8 @@ public:
     ReadableCam getCam();
 
     MetaData getMetaData();
+
+    void fingerprint(const ReadableCam& rc);
 
 private:
     ReadableCam cam_;
