@@ -28,6 +28,7 @@
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
 #include "ezC2X/core/time/ItsClock.hpp"
 
+#include <Report.hpp>
 
 namespace ezC2X
 {
