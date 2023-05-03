@@ -3,8 +3,8 @@ import math
 
 PLAUSABILITY_RANGE = 500
 MAX_SPEED = 30
-MAX_ACC = 5  #Maximum Acceleration
-MAX_DEC = -15 #Maximum Deacceleration
+MAX_ACC = 2.6   #Maximum Acceleration
+MAX_DEC = -4.5  #Maximum Deacceleration
 
 #A stack containing all messages related to a car
 #Will this look like this, might just be multiple functions that are getters for sensor values
