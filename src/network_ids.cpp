@@ -1,17 +1,4 @@
-#include <cmath>
-#include <iostream>
-#include <map>
-#include <vector>
-#include <Report.hpp>
-
-
-//This should be updated when the testing determines reasonable bounds
-const int LOWER_BOUND = 0;
-const int UPPER_BOUND = 100;
-
-
-std::vector<Report> misbehaving;
-hash_map<size_t, std::vector<Report>> messages;
+#include <network_ids.hpp>
 
 double distance(std::tuple<int> pos1, std::tuple<int> pos2) {
     return sqrt(pow((std::get<0>(pos2) - std::get<0>(pos1)), 2) + 
@@ -49,9 +36,4 @@ void collect_messages(std::vector<Report> reports) {
 
 void collect_single_msg(Report report) {
     messages[report.getCam().fingerprint].push_back(report);
-}
-
-int main() {
-    /*A main method responsible for handling Intrusion Detection on network level*/
-    return 0;
 }
