@@ -286,7 +286,7 @@ private:
     int vehicleIdOppositeDir = 1;
 
     std::unordered_map<int,int> nearbyVehicles;
-
+    std::vector<Report> reporter_collection;
 
     
 };

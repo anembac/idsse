@@ -18,6 +18,8 @@
 #include <ezC2X/core/property/Mapper.hpp>
 //#include "ezC2X/security/attacker/AttackTypes.hpp"
 
+#include <iostream>
+#include <fstream>
 
 #include <ezC2X/facility/cam/CaBasicService.hpp>
 #include <ezC2X/facility/denm/DenBasicService.hpp>
@@ -154,6 +156,8 @@ idsse::handleReceivedCam(Cam const& cam)
     auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
     if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
     if(isReporter_){ //Logging
+        //Create Report...
+        //reporter_collection.push_back(report)
         log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
     }
     
@@ -177,6 +181,16 @@ idsse::State
 idsse::state() const
 {
     return state_;
+}
+
+void dump_file (){
+    std::ofstream myfile;
+    std::string filename = 'car_dump_' + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+    myfile.open(file_name);
+    for(auto report: reporter_collection) {
+        myfile << (report.concatenateValues() + "\n");
+    }
+    myfile.close();
 }
 
 } // namespace ezC2X
