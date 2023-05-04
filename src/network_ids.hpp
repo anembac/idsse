@@ -10,7 +10,7 @@ std::vector<size_t> misbehaving;
 std::map<size_t, std::vector<Report>> messages;
 
 
-double distance(std::tuple<int> pos1, std::tuple<int> pos2);
+double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2);
 
 bool detect_misbehavior(std::vector<Report> reports);
 

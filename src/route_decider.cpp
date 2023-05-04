@@ -1,47 +1,68 @@
-#include <iostream>
-#include <string>
+#include <route_decider.hpp>
 #include <vector>
-#include <map>
-#include <algorithm>
 
-using namespace std;
-
-const double SHORT_ROUTE = 598.34;
-const double LONG_ROUTE = 698.26;
-const int MAX_SPEED = 20;
-
-struct LatestMessage {
-    string edge;
-    double speed;
-};
-
-vector<string> edges_short = {"main1"};
-vector<string> edges_long = {"side1", "side2", "side3"};
-
-bool continue_on_route(vector<LatestMessage> latest, double short_speed, double long_speed)
-//Add an if-check for whether they are before at the start so they actually can decide the route
-{
-    for (auto message : latest)
-    {
-        if (find(edges_short.begin(), edges_short.end(), message.edge) != edges_short.end() && message.speed < short_speed)
-        {
-            short_speed = message.speed;
+/* Might need extra funcitonality, currently does 
+not handle if cars have speed zero and speeding up to catch up...*/
+double new_speed(double mypos_x, double mypos_y, double speed, uint16_t time){
+    clear_old_reports(time);
+    double x_diff = 100;
+    double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
+    double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
+        if(mypos_y < YPOS_BELOW){
+            //we are driving on sideroad
+            for(auto& msg :latest_msgs){
+                x = std::get<0>(msg.second.getCam().pos);
+                y = std::get<1>(msg.second.getCam().pos);
+                if(y < YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x) {
+                    x_diff = x - mypos_x;
+                    speed = msg.second.getCam().speed;
+                }
+            }
+        } else {
+             //we are driving on mainroad
+             for(auto& msg :latest_msgs){
+                x = std::get<0>(msg.second.getCam().pos);
+                y = std::get<1>(msg.second.getCam().pos);
+                if(y > YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x ) {
+                    x_diff = x - mypos_x;
+                    speed = msg.second.getCam().speed;
+                }
+             }
         }
-        if (find(edges_long.begin(), edges_long.end(), message.edge) != edges_long.end() && message.speed < long_speed)
-        {
-            long_speed = message.speed;
-        }
-    }
-
-    return short_speed * SHORT_ROUTE < long_speed * LONG_ROUTE;
+    return speed;
 }
 
-int main()
-{
-    // Example usage of continue_on_route function
-    vector<LatestMessage> latest_messages = {{"main1", 15}, {"side1", 10}, {"side2", 20}};
-    bool continue_on_short_route = continue_on_route(latest_messages, MAX_SPEED, MAX_SPEED);
-    cout << "Continue on short route? " << (continue_on_short_route ? "Yes" : "No") << endl;
+bool continue_on_main(double side_speed, double main_speed){
+    double x;
+    double y;
+    double car_speed;
+    for (auto& msg : latest_msgs){
+        x = std::get<0>(msg.second.getCam().pos);
+        y = std::get<1>(msg.second.getCam().pos);
+        car_speed = msg.second.getCam().speed;
+        if(XPOS_START < x < XPOS_END) {
+            if(y < YPOS_BELOW && car_speed < side_speed){ 
+                side_speed = car_speed;
+            } else if(car_speed < main_speed){ 
+                main_speed = car_speed;
+            }
+        }
+    }
+    return side_speed * SIDE_ROUTE < main_speed * MAIN_ROUTE;
+}
 
-    return 0;
+void collect_latest(Report report){
+    latest_msgs[report.getCam().id] = report;
+}
+
+void clear_old_reports(uint16_t time){
+    std::vector<uint32_t> ids;
+    for(auto& msg: latest_msgs){
+        if(msg.second.getCam().generationDeltaTime < time - 2000){
+            ids.push_back(msg.first);
+        } 
+    }
+    for(auto id : ids){
+        latest_msgs.erase(id);
+    }
 }

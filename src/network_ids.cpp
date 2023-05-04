@@ -10,6 +10,7 @@ double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) 
 }
 
 bool detect_misbehavior(std::vector<Report> reports) {
+    /*Takes a list of reports and returns whether the message seems to be misbehaving*/
     for (auto report : reports) {
         double dist = distance(report.getMetaData().positionOnReceieve, report.getCam().pos);
         double transfer_time = report.getMetaData().timeOnReceive - report.getCam().generationDeltaTime;
@@ -21,7 +22,6 @@ bool detect_misbehavior(std::vector<Report> reports) {
     return false;
 }
 
-//Needs updating to accomadate for reports...
 void misbehaving_msgs() {
     /*Function responsible for going through all messages and adding misbehaving ones to a list*/
     for (auto& x : messages) {

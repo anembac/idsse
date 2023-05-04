@@ -22,4 +22,4 @@ bool cmp_msg_consistency(Report old_msg, Report new_msg);
 
 bool car_ids(Report msg_latest);
 
-double distance(std::tuple<int> pos1, std::tuple<int> pos2);
+double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2);
