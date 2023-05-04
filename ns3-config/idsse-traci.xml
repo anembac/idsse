@@ -84,19 +84,7 @@
   </Framework>
   <idsse>
     <idsse>
-      <TriggerStation>0</TriggerStation>
       <TriggerStart>@@TRIGGER_START@@</TriggerStart>
-      <TriggerInterval>10000</TriggerInterval>
-      <PeriodicBasedTrigger>true</PeriodicBasedTrigger>
-      <Attacks>0:1</Attacks>
-      <Reporter>2</Reporter>
-      <!-- <A1IrregularSpeed>-5,-8,-10,-8,0,-10</A1IrregularSpeed>  -->
-      <A1IrregularSpeed>@@A1IrregularSpeed@@</A1IrregularSpeed>
-      <Platooning>true</Platooning>
-      <PlatoonHead>99</PlatoonHead>
-      <PlatoonPath>@@PLATOON_PATH@@</PlatoonPath>
-      <A2MaxRandomSpeed>1000</A2MaxRandomSpeed>
-      <AttackSteps>2</AttackSteps>
     </idsse>
-  </idsse>
+  </Applications>
 </ezC2X>

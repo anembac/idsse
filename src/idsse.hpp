@@ -133,7 +133,7 @@ private:
      * @note TriggerStation configuration parameter controls which station triggers the maneuver
      */
     void
-    triggerEvent(std::uint32_t remoteID);
+    triggerEvent();
 
 
     /*!
@@ -165,12 +165,6 @@ private:
     */
     uint64_t 
     getCurrentCertificate();
-
-    /*!
-     * @brief send electric emergency break light (EEBL) signal via DENM and reduce speed
-     */
-    void 
-    sendEmergencyBrake();
 
     /*!
      * @brief compute the bearing or heading of the direct line from position 1 to 2
@@ -229,7 +223,7 @@ private:
     // False means event with dynamically triggered vehicle control
     // True means static predefined maneuver event, periodically executed
     //! Flag for periodic based maneuver trigger
-    bool periodicBasedTrigger_ = true;
+    // bool periodicBasedTrigger_ = true;
     
     //! Seed for generating random number using boost library
     boost::random::mt19937 gen;
@@ -274,8 +268,6 @@ private:
     //! Time period (ms) with which triggering of the maneuver recurs
     //todo can we set to infinite/non-recurring??
     std::uint32_t triggerInterval_ = 5;
-    //! Station id that should trigger the maneuver
-    std::uint64_t triggerStation_ = 0;
     //! attacker id
     std::string attackInfo_ = "";
     //std::map <int,int> attackList_;

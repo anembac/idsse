@@ -51,9 +51,7 @@ struct Configuration
 {
   bool verbose = false; 	// enable/disable logging
   std::string animate = "";	// animate and write to this file
-  std::string ezRootDir = "/home/u92127@sp.se/src"; 	// root directory of the ezCar2X installation
-  std::string A1IrregularSpeed = "-8";
-  std::uint32_t platoonPath = 0;
+  std::string ezRootDir = "/home/anders/kurser/thesis/include"; 	// root directory of the ezCar2X installation
 
   double runtime = 50.0;		// unit seconds [s]
   double activate = 0.0; 		// time for earliest activation of nodes [s]
@@ -65,13 +63,13 @@ struct Configuration
   bool deterministicChannel = 0;               // deterministic channel (enabled deterministic channel means disabled fading)
   double txPower = 23;		// transmission power in dB
 
-  std::string configPath = "contrib/synapse/examples/cam-traci.xml";	// configuration file to load for the nodes
+  std::string configPath = "/home/anders/kurser/thesis/sim/ns-allinone-3.35/ns-3.35/scratch/idsse-traci.xml";	// configuration file to load for the nodes
 
-  std::uint64_t triggerStation = 0; // Station id sending maneuver request
-  std::uint32_t triggerStart = 1000; // Offset time (ms) to trigger maneuver
-  std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
+  //std::uint64_t triggerStation = 0; // Station id sending maneuver request
+  std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
+  //std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
 
-  bool isPeriodic = true;
+  bool isPeriodic = false;
 
   void
   ConfigureCmdLine(CommandLine& cmd)
@@ -89,15 +87,11 @@ struct Configuration
     cmd.AddValue ("txpower", "TX power per packet", txPower);
     cmd.AddValue ("config", "Configuration file for the ezCar2X stack on the nodes", configPath);
 
-    cmd.AddValue ("trigger-station", "Station id sending maneuver request", triggerStation);
-    cmd.AddValue ("trigger-start", "Offset time (ms) to trigger maneuver", triggerStart);
-    cmd.AddValue ("trigger-interval", "Interval time (ms) to repeat maneuver trigger", triggerInterval);
+    // cmd.AddValue ("trigger-station", "Station id sending maneuver request", triggerStation);
+    // cmd.AddValue ("trigger-start", "Offset time (ms) to trigger maneuver", triggerStart);
+    // cmd.AddValue ("trigger-interval", "Interval time (ms) to repeat maneuver trigger", triggerInterval);
 
     cmd.AddValue ("periodic-trigger", "Triggers maneuvers in given intervals", isPeriodic);
-    cmd.AddValue ("A1IrregularSpeed", "Attack1 speed Profile", A1IrregularSpeed);
-    cmd.AddValue ("platoon-path", "Path the platoon should take (0:default, 1, 1)", platoonPath);
-
-
   }
 };
 
@@ -107,15 +101,12 @@ void
 UpdateCommonProperties (boost::property_tree::ptree& properties, Configuration const& config)
 {
   ReplacePropertyValue(properties, "@@EZC2X_ROOT_DIR@@", config.ezRootDir);
-  ReplacePropertyValue(properties, "@@TRIGGER_STATION@@", config.triggerStation);
+  // ReplacePropertyValue(properties, "@@TRIGGER_STATION@@", config.triggerStation);
   ReplacePropertyValue(properties, "@@TRIGGER_START@@", config.triggerStart);
-  ReplacePropertyValue(properties, "@@TRIGGER_INTERVAL@@", config.triggerInterval);
+  // ReplacePropertyValue(properties, "@@TRIGGER_INTERVAL@@", config.triggerInterval);
 
   ReplacePropertyValue(properties, "@@NUMBER_NODES@@", config.numOfNodes);
   ReplacePropertyValue(properties, "@@PERIODIC_BASED_TRIGGER@@", config.isPeriodic);
-  ReplacePropertyValue(properties, "@@A1IrregularSpeed@@", config.A1IrregularSpeed);
-  ReplacePropertyValue(properties, "@@PLATOON_PATH@@", config.platoonPath);
-
 
 }
 
@@ -204,7 +195,6 @@ main (int argc, char *argv[])
 
   // Update properties with configuration options
   UpdateCommonProperties(properties, config);
-  NS_LOG_INFO(config.A1IrregularSpeed);
   // Initialize TraCI helper.
   TraCiHelper traci;
 

@@ -26,9 +26,6 @@
 #include <ezC2X/core/geographic/VehicleCoordinateTransform.hpp>
 #include <ezC2X/core/time/ItsClock.hpp>
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
-#include "ezC2X/core/time/ItsClock.hpp"
-
-#include <Report.hpp>
 
 namespace ezC2X
 {
@@ -49,6 +46,13 @@ idsse::getId(){
     return vehicleId_;
 }
 
+void
+idsse::configure(boost::property_tree::ptree const& properties)
+{
+    property::Mapper pm;
+    pm.addProperty("TriggerStart", &triggerStart_, false);
+}
+
 uint8_t
 idsse::isReporter(std::string id){
     return (id.find("reporter") != std::string::npos);
@@ -61,12 +65,11 @@ idsse::isAttacker(std::string id){
 }
 
 void
-idsse::triggerEvent(uint32_t remoteID){
+idsse::triggerEvent(){
     if(isAttacker_){ //will non-attacker even reach this?
         isAttacking_ = true;
         switch (attackType_){
             case spoofing:
-                //std::abs(targetSpeed_ - caService_->getPositionVector()->speed.value()); // v_delta
                 caService_->spoof();
                 break;
             default:
@@ -77,14 +80,14 @@ idsse::triggerEvent(uint32_t remoteID){
 
 uint64_t 
 idsse::getCurrentCertificate(){
-    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "CyberSAGEApp");
+    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
     return cm->getCurrentPseudonymId().value();
 }
 
 void
 idsse::attackStart(){
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse");
-    triggerEvent_ = es->schedule([this] () { triggerEvent(0/*TODO: Replace with own id?*/);}, std::chrono::milliseconds(triggerStart_),std::chrono::milliseconds(triggerInterval_));
+    triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
 
 }
 
@@ -149,8 +152,6 @@ void
 idsse::handleReceivedCam(Cam const& cam)
 {
     auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
-    // log_.info() << "My acceleration is " << vehicleControl->getAcceleration();
-    //addNearbyVehicle(static_cast<int>(cam.header().station_id()),0);
     if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
     if(isReporter_){ //Logging
         log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
