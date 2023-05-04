@@ -42,12 +42,12 @@ void collect_single_msg(Report report) {
 
 void dump_file () {
     ofstream myfile;
-    std::string file_name = "dump_" + std::to_string(std::chrono::system_clock::now());
+    std::string file_name = "net_dump_" + std::to_string(std::chrono::system_clock::now());
     myfile.open(file_name);
     for(auto& [k, v]: messages) {
         for(auto report: v) {
-            myfile << (report.concatenateValues() + "\n")
+            myfile << (report.concatenateValues() + "\n");
         }
     }
-    myfile.close()
+    myfile.close();
 }

@@ -2,7 +2,7 @@
 #include <car_ids.hpp>
 
 bool range_plausability(Report msg) {
-    double dist = distance(msg.getCam().pos, msg.getMetaData().positionOnReceieve)
+    double dist = distance(msg.getCam().pos, msg.getMetaData().positionOnReceieve);
     return dist < PLAUSABILITY_RANGE;
 }
 
@@ -11,7 +11,7 @@ bool speed_plausability(Report msg) {
 }
 
 bool position_consistency(Report old_msg, Report new_msg, double time, double max_acc, double max_dec) {
-    double old_speed = old_msg.getCam().speed
+    double old_speed = old_msg.getCam().speed;
     double v_diff = new_msg.getCam().speed - old_speed;
 
     if (v_diff < 0) {
@@ -33,7 +33,7 @@ bool position_consistency(Report old_msg, Report new_msg, double time, double ma
         std::swap(bound_lower, bound_upper);
     }
 
-    double dist = distance(distance(old_msg.getCam().pos, new_msg.getCam().pos))
+    double dist = distance(distance(old_msg.getCam().pos, new_msg.getCam().pos));
 
     //Test print to see values for bounds and dist
     //std::cout << "Lower: " << bound_lower << ", Upper: " << bound_upper << ", Dist: " << dist << std::endl;
@@ -56,7 +56,7 @@ bool cmp_msg_consistency(Report old_msg, Report new_msg) {
 }
 
 bool car_ids(Report msg_latest) {
-    uint32_t id = msg_latest.getCam().id
+    uint32_t id = msg_latest.getCam().id;
     if (!msg_stacks[id].empty()) {
         Report msg_prev = msg_stacks[id].back();
         if (!cmp_msg_consistency(msg_prev, msg_latest)) {
