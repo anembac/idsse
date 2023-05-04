@@ -55,7 +55,8 @@ accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
 }
 
 // Define the hash function for the struct
-void Report::fingerprint (ReadableCam rc){
+void
+Report::fingerprint (ReadableCam rc){
     std::string hash_val = "";
     hash_val += std::to_string(std::get<0>(rc.pos)) + ";";
     hash_val += std::to_string(std::get<1>(rc.pos)) + ";";
@@ -65,7 +66,8 @@ void Report::fingerprint (ReadableCam rc){
     rc.fingerprint = std::hash<std::string>()(hash_val);
 }
 
-std::string concatenateValues() {
+std::string
+Report::concatenateValues() {
     std::stringstream ss;
 
     ss << cam_.id << ",";
