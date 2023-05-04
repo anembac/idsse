@@ -1,5 +1,6 @@
 #include <iostream>
 #include <car_ids.hpp>
+#include <cmath>
 
 bool range_plausability(Report msg) {
     double dist = distance(msg.getCam().pos, msg.getMetaData().positionOnReceieve);
@@ -33,7 +34,7 @@ bool position_consistency(Report old_msg, Report new_msg, double time, double ma
         std::swap(bound_lower, bound_upper);
     }
 
-    double dist = distance(distance(old_msg.getCam().pos, new_msg.getCam().pos));
+    double dist = distance(old_msg.getCam().pos, new_msg.getCam().pos);
 
     //Test print to see values for bounds and dist
     //std::cout << "Lower: " << bound_lower << ", Upper: " << bound_upper << ", Dist: " << dist << std::endl;
@@ -60,14 +61,14 @@ bool car_ids(Report msg_latest) {
     if (!msg_stacks[id].empty()) {
         Report msg_prev = msg_stacks[id].back();
         if (!cmp_msg_consistency(msg_prev, msg_latest)) {
-            misbehaved.pushback(msg_latest);
+            misbehaved.push_back(msg_latest);
         }
     }
     msg_stacks[id].push_back(msg_latest);
     return false;
 }
 
-double distance(std::tuple<int> pos1, std::tuple<int> pos2) {
+double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) {
     return sqrt(pow((std::get<0>(pos2) - std::get<0>(pos1)), 2) + 
                 pow((std::get<1>(pos2) - std::get<1>(pos1)), 2));
 }
