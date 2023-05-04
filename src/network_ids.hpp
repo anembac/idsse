@@ -6,7 +6,7 @@
 const int LOWER_BOUND = 0;
 const int UPPER_BOUND = 100;
 
-std::vector<Report> misbehaving;
+std::vector<size_t> misbehaving;
 std::map<size_t, std::vector<Report>> messages;
 
 
