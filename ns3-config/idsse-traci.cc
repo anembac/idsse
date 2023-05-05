@@ -49,7 +49,7 @@ using namespace ns3;
 
 struct Configuration
 {
-  bool verbose = false; 	// enable/disable logging
+  bool verbose = true; 	// enable/disable logging
   std::string animate = "";	// animate and write to this file
   std::string ezRootDir = "/home/anders/kurser/thesis/include"; 	// root directory of the ezCar2X installation
 
@@ -156,7 +156,7 @@ main (int argc, char *argv[])
   if (config.verbose)
     {
       LogComponentEnable ("idsse-traci", LogLevel (LOG_LEVEL_ALL | LOG_PREFIX_FUNC | LOG_PREFIX_TIME));
-
+      
       LogComponentEnable ("EzC2XHelper", LogLevel (LOG_LEVEL_ALL | LOG_PREFIX_FUNC | LOG_PREFIX_TIME));
       LogComponentEnable ("EzC2XApplicationHelper", LogLevel (LOG_LEVEL_ALL | LOG_PREFIX_FUNC | LOG_PREFIX_TIME));
       LogComponentEnable ("EzC2XInstaller", LogLevel (LOG_LEVEL_ALL | LOG_PREFIX_FUNC | LOG_PREFIX_TIME));

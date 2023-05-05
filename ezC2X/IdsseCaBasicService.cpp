@@ -1145,11 +1145,6 @@ IdsseCaBasicService::getPositionVector()
     return positionProvider_.position();
 }
 
-void IdsseCaBasicService::setAttackType(int _attackType){
-    // IdsseCaBasicService::log_.info() << "Changing to attack type to " << _attackType;
-    attackType = _attackType;
-}
-
 
 void 
 IdsseCaBasicService::triggerAttack(){
@@ -1168,20 +1163,10 @@ IdsseCaBasicService::setAttackActive(bool active){
     attackActive_ = active;
 }
 
-int
-IdsseCaBasicService::getAttackStep(){
-    return attackStep;
-}
-double
-IdsseCaBasicService::getAttack1(int _attackStep){
-    // log_.info() << "Profile size: " << a1IrregularSpeedProfile.size() << " current step " << _attackStep;
-    if(static_cast<long unsigned int>(_attackStep) < a1IrregularSpeedProfile.size())
-        return a1IrregularSpeedProfile[_attackStep];    
-    else{
-        setAttackActive(false);
-        return 0.0;
-    }
-}
+// int
+// IdsseCaBasicService::getAttackStep(){
+//     return attackStep;
+// }
 
 void 
 IdsseCaBasicService::setSuppressCAMs(bool _suppressCAMs){

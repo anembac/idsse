@@ -46,9 +46,7 @@
 
 #include <bits/stdc++.h>
 #include <boost/algorithm/string.hpp>
-// #include <cryptopp/eccrypto.h> //Crypto++ library for ECDSA, used to implement cryptobackend
-// #include "ns3/ezc2x-node-accessor.h"
-// #include "ns3/traci-module.h"
+
 
 // #include <templates>
 
