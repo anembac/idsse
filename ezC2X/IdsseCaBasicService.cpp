@@ -540,7 +540,7 @@ IdsseCaBasicService::send(boost::optional<Cam> cam)
     }
 }
 
-std::chrono::milliseconds
+std::chrono::milliseconds//should be uint16_t
 IdsseCaBasicService::checkIntervalsToDuration(CheckIntervalType checkIntervals) const
 {
     if (params_.manualCamGenerationInterval)
