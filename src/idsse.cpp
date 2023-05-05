@@ -29,8 +29,6 @@
 #include <ezC2X/core/time/ItsClock.hpp>
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
 
-#include <route_decider.hpp>
-
 namespace ezC2X
 {
 
@@ -84,7 +82,7 @@ idsse::triggerEvent(){
 
 uint64_t 
 idsse::getCurrentCertificate(){
-    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
     return cm->getCurrentPseudonymId().value();
 }
 
@@ -122,7 +120,7 @@ idsse::start(component::Bundle const& framework)
 {
     log_.info() << "Application started";
     state_ = State::Running;
-    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
 
     //Enable CAM
@@ -135,7 +133,7 @@ idsse::start(component::Bundle const& framework)
     }
     catch (component::NotFoundInBundle const& e)
     {
-        log_.error() << "Couldn't load CertificateManager dependency, therefore, no CAM subscription";
+        log_.error() << "Couldn't load PseudonymManager dependency, therefore, no CAM subscription";
         throw(MissingDependency(e.what()));
     }
 
@@ -156,7 +154,7 @@ idsse::start(component::Bundle const& framework)
 void
 idsse::handleReceivedCam(Cam const& cam)
 {
-    auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
     }else {
@@ -194,8 +192,8 @@ idsse::state() const
 
 void idsse::dump_file (){
     std::ofstream myfile;
-    std::string filename = 'car_dump_' + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
-    myfile.open(file_name);
+    std::string filename = "car_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+    myfile.open(filename);
     for(auto report: reporter_collection) {
         myfile << (report.concatenateValues() + "\n");
     }
@@ -207,14 +205,16 @@ void idsse::speed_adapter(){
     //This event should be scheduled like every second...
     //Variables is just fetching current timestamp, car x pos, and car y pos
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    double pos = vehicleControl->getCenterPosition();
-    uint16_t time = caService_->checkIntervalsToDuration(); //not sure if this works
-    vehicleControl->setSpeed(new_speed(std::get<0>(pos), std::get<1>(pos), MAX_SPEED, time));
+    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
+    auto lon = vehicleControl->getCenterPosition().getLongitude().value();
+    std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
+    uint64_t time = caService_->getLatestCam().value().payload().generation_time();//not sure if this works (potential bug)
+    vehicleControl->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
 }
 
 void idsse::rerouter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    if (!continue_on_main(MAX_SPEED, MAX_SPEED)) {
+    if (!routeDecider.continue_on_main(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
         vehicleControl->setRoute(side_route);//is it really accessing the const
     }
 }

@@ -13,7 +13,7 @@ struct ReadableCam
     double speed;
     double heading;
     uint8_t driveDirection;
-    uint16_t generationDeltaTime;   //generationDeltaTime = TimestampIts mod 65 536. 
+    uint64_t generationDeltaTime;   //generationDeltaTime = TimestampIts mod 65 536. 
                                     //TimestampIts represents an integer value in milliseconds since
                                     // 2004-01-01T00:00:00:000Z as defined in ETSI TS 102 894-2.
     int longitudinalAcceleration;

@@ -212,7 +212,7 @@ IdsseCaBasicService::run(Stage stage)
             {
                 positionProvider_.start();
 
-                if (auto pm = deps_.get<CertificateManager>())
+                if (auto pm = deps_.get<PseudonymManager>())
                 {
 
                 
@@ -236,7 +236,7 @@ IdsseCaBasicService::run(Stage stage)
                 }
                 else
                 {
-                    throw component::MissingDependency("IdsseCaBasicService is missing CertificateManager!");
+                    throw component::MissingDependency("IdsseCaBasicService is missing PseudonymManager!");
                 }
             }
 
@@ -632,10 +632,10 @@ IdsseCaBasicService::cam()
         return boost::none;
     }
 
-    auto cm = deps_.get<CertificateManager>();
+    auto cm = deps_.get<PseudonymManager>();
     if (!cm)
     {
-        log_.error() << "CAM creation failed: No CertificateManager! Cannot set station ID!";
+        log_.error() << "CAM creation failed: No PseudonymManager! Cannot set station ID!";
         return boost::none;
     }
 
@@ -1209,7 +1209,7 @@ return checkIntervalsToDuration(checkIntervalsSinceLastCam_);
 void
 IdsseCaBasicService::spoof(){
     //auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    auto cm = deps_.getOrThrow<CertificateManager,component::MissingDependency>("CertificateManager","idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager,component::MissingDependency>("PseudonymManager","idsse");
     // Disable regular cam send outs and create our own generation method with customizable values
     // TODO: Figure out how to sync them
     setAttackActive(true);

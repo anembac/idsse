@@ -49,7 +49,7 @@
 
 #include "ezC2X/network/btp/Btp.hpp"
 
-#include "ezC2X/security/pki/CertificateManager.hpp"
+#include "ezC2X/security/pseudonym/PseudonymManager.hpp"
 #include "ezC2X/security/attacker/AttackTypes.hpp"
 
 #include <bits/stdc++.h>
@@ -79,7 +79,7 @@ public:
     using Dependencies =
         component::Handle<Btp, ezC2X::component::Optional<DataHub>, DataPresentation,
                           ezC2X::component::Optional<EventScheduler>, ezC2X::component::Optional<TimeProvider>,
-                          ezC2X::component::Optional<CertificateManager>>;
+                          ezC2X::component::Optional<PseudonymManager>>;
 
     //! Create instance with default parameters
     IdsseCaBasicService();

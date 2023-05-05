@@ -32,8 +32,8 @@
 #include <ezC2X/facility/cam/CaBasicService.hpp>
 #include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
 
-#include <ezC2X/security/pki/CertificateManager.hpp>
-//#include <ezC2X/security/Certificate/CertificateManager.hpp>
+#include <ezC2X/security/pseudonym/PseudonymManager.hpp>
+//#include <ezC2X/security/Certificate/PseudonymManager.hpp>
 #include <ezC2X/facility/denm/Denm.pb.h>
 #include "ezC2X/facility/denm/DenEventType.hpp"
 #include <ezC2X/facility/denm/EtsiDenBasicService.hpp>
@@ -50,7 +50,8 @@
 
 // #include <templates>
 
-#include <Report.hpp>
+//#include <Report.hpp>
+#include <route_decider.hpp>
 
 namespace ezC2X
 {
@@ -61,8 +62,8 @@ class idsse : public Application, public component::Configurable
 {
 public:
     //! Dependencies of the application
-    using Dependencies = component::Handle<Btp, EventScheduler, CertificateManager, VehicleControlInterface, TimeProvider, DataPresentation>;
-    // using Dependencies = component::Handle<Btp, EventScheduler, CertificateManager, VehicleControlInterface, TimeProvider, DataPresentation, component::Optional<ns3::EzC2XNodeAccessor>>;
+    using Dependencies = component::Handle<Btp, EventScheduler, PseudonymManager, VehicleControlInterface, TimeProvider, DataPresentation>;
+    // using Dependencies = component::Handle<Btp, EventScheduler, PseudonymManager, VehicleControlInterface, TimeProvider, DataPresentation, component::Optional<ns3::EzC2XNodeAccessor>>;
 
     //! Create default instance
     idsse();
@@ -211,9 +212,11 @@ private:
     uint8_t
     isAttacker(std::string id);
 
-    void idsse::dump_file ();
+    void dump_file ();
 
-    void idsse::speed_adapter();
+    void speed_adapter();
+
+    void rerouter();
 
     // void 
     // addNearbyVehicle(int _id, int _type);
@@ -290,6 +293,7 @@ private:
 
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reporter_collection;
+    RouteDecider routeDecider;
 
     
 };
