@@ -42,14 +42,14 @@
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <trip id="attacker" depart="0.00" color="red" route="main_route"/>
-    <trip id="reporter" depart="0.10" from="Entry" to="Exit"/>
+    <trip id="reporter" depart="0.10" route="main_route"/>
     <route edges="main1 main2" color="yellow" id="main_route"/>
     <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
-    <trip id="normal1" depart="0.30" color="green" from="Entry" to="Exit"/>
-    <trip id="normal2" depart="0.40" color="green" from="Entry" to="Exit"/>
-    <trip id="normal3" depart="0.50" color="green" from="Entry" to="Exit"/>
-    <trip id="normal4" depart="1.00" color="green" from="Entry" to="Exit"/>
-    <trip id="normal5" depart="1.20" color="green" from="Entry" to="Exit"/>
-    <trip id="normal6" depart="1.70" color="green" from="Entry" to="Exit"/>
-    <trip id="normal7" depart="2.60" color="green" from="Entry" to="Exit"/>
+    <trip id="normal1" depart="0.30" color="green" route="main_route"/>
+    <trip id="normal2" depart="0.40" color="green" route="main_route"/>
+    <trip id="normal3" depart="0.50" color="green" route="main_route"/>
+    <trip id="normal4" depart="1.00" color="green" route="main_route"/>
+    <trip id="normal5" depart="1.20" color="green" route="main_route"/>
+    <trip id="normal6" depart="1.70" color="green" route="main_route"/>
+    <trip id="normal7" depart="2.60" color="green" route="main_route"/>
 </routes>

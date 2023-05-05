@@ -46,6 +46,6 @@
     <route edges="main1 main2" color="yellow" id="main_route"/>
     <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
     <flow id="attacker" type="attack_car" begin="0.00" departSpeed="0.00" color="red" route="main_route" number="50" probability="0.05"/>
-    <flow id="normal" type="normal_car" begin="0.00" departSpeed="0.00" color="green" from="Entry" to="Exit" number="1000" probability="0.95"/>
-    <flow id="reporter" type="normal_car" begin="0.00" departSpeed="0.00" from="Entry" to="Exit" number="30" probability="0.03"/>
+    <flow id="normal" type="normal_car" begin="0.00" departSpeed="0.00" color="green" route="main_route" number="1000" probability="0.95"/>
+    <flow id="reporter" type="normal_car" begin="0.00" departSpeed="0.00" route="main_route" number="30" probability="0.03"/>
 </routes>
