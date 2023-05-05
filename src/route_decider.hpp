@@ -12,6 +12,7 @@ const int MAX_SPEED = 20;
 const int XPOS_START = -300; 
 const int XPOS_END = 150;    
 const int YPOS_BELOW = 40; 
+const int MAX_SPEED = 20;
 
 std::map<uint32_t, Report> latest_msgs;
 

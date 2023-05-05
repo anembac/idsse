@@ -29,6 +29,8 @@
 #include <ezC2X/core/time/ItsClock.hpp>
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
 
+#include <route_decider.hpp>
+
 namespace ezC2X
 {
 
@@ -190,7 +192,7 @@ idsse::state() const
     return state_;
 }
 
-void dump_file (){
+void idsse::dump_file (){
     std::ofstream myfile;
     std::string filename = 'car_dump_' + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     myfile.open(file_name);
@@ -198,6 +200,23 @@ void dump_file (){
         myfile << (report.concatenateValues() + "\n");
     }
     myfile.close();
+}
+
+
+void idsse::speed_adapter(){
+    //This event should be scheduled like every second...
+    //Variables is just fetching current timestamp, car x pos, and car y pos
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    double pos = vehicleControl->getCenterPosition();
+    uint16_t time = caService_->checkIntervalsToDuration(); //not sure if this works
+    vehicleControl->setSpeed(new_speed(std::get<0>(pos), std::get<1>(pos), MAX_SPEED, time));
+}
+
+void idsse::rerouter(){
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    if (!continue_on_main(MAX_SPEED, MAX_SPEED)) {
+        vehicleControl->setRoute(side_route);//is it really accessing the const
+    }
 }
 
 } // namespace ezC2X

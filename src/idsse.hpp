@@ -213,6 +213,9 @@ private:
     uint8_t
     isAttacker(std::string id);
 
+    void idsse::dump_file ();
+
+    void idsse::speed_adapter();
 
     // void 
     // addNearbyVehicle(int _id, int _type);
@@ -284,6 +287,8 @@ private:
 
     int defaultSpeed = 12;
     int vehicleIdOppositeDir = 1;
+    std::vector<std::string> side_route = {"side1", "side2", "side3", "side4", "side5", "R5", "R6"};
+    std::vector<std::string> main_route = {"R1", "R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reporter_collection;
