@@ -41,7 +41,7 @@ idsse::~idsse(){
 std::string 
 idsse::getId(){
     if(vehicleId_ == ""){
-        auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+        auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
         log_.debug() << "I am ns-3 vehicle: " << vehicleControl->getId();
         vehicleId_ = (vehicleControl->getId());
     }
@@ -82,7 +82,7 @@ idsse::triggerEvent(){
 
 uint64_t 
 idsse::getCurrentCertificate(){
-    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::getCurrentCertificate");
     return cm->getCurrentPseudonymId().value();
 }
 
@@ -120,9 +120,10 @@ idsse::start(component::Bundle const& framework)
 {
     log_.info() << "Application started";
     state_ = State::Running;
-    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-
+    deps_.setFromAggregationIfNotSet(framework);
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
+    
     //Enable CAM
     try
     {
@@ -154,7 +155,7 @@ idsse::start(component::Bundle const& framework)
 void
 idsse::handleReceivedCam(Cam const& cam)
 {
-    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse");
+    auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
     }else {

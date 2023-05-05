@@ -4,6 +4,9 @@ set(PLUGIN_TARGET idssePlugin)
 add_library(${PLUGIN_TARGET} SHARED
     idssePlugin.cpp
     idsse.cpp
+    RouteDecider.cpp
+    Report.cpp
+
 )
 
 target_include_directories(${PLUGIN_TARGET}

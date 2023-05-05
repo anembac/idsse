@@ -16,16 +16,16 @@ struct ReadableCam
     uint64_t generationDeltaTime;   //generationDeltaTime = TimestampIts mod 65 536. 
                                     //TimestampIts represents an integer value in milliseconds since
                                     // 2004-01-01T00:00:00:000Z as defined in ETSI TS 102 894-2.
-    int longitudinalAcceleration;
-    int curvature;
-    int curvatureCalculationMode;
-    int yawRate;
+    double longitudinalAcceleration;
+    double curvature;
+    double curvatureCalculationMode;
+    double yawRate;
     //The following parameters are optional in CA messages
     uint8_t accelerationControl;
-    int lanePosition;
-    int steeringWheelAngle;
-    int lateralAcceleration;
-    int verticalAcceleration;
+    double lanePosition;
+    double steeringWheelAngle;
+    double lateralAcceleration;
+    double verticalAcceleration;
     bool attacking;
     size_t fingerprint;
 };
@@ -40,6 +40,8 @@ struct MetaData
 
 class Report{
 public:
+    Report();
+
     ~Report();
 
     Report(ezC2X::Cam cam, MetaData meta);
@@ -47,6 +49,8 @@ public:
     ReadableCam getCam();
 
     MetaData getMetaData();
+
+    uint8_t accelerationControlValue(ezC2X::cdd::AccelerationControl ac);
 
     void fingerprint(ReadableCam rc);
 

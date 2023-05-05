@@ -1,6 +1,10 @@
 #include <Report.hpp>
 #include <sstream>
 
+Report::Report() {}
+
+Report::~Report(){};
+
 Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
     cam_.id = cam.header().station_id(); //TODO fix id
@@ -35,23 +39,25 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
 }
 
 uint8_t
-accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
+Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
     uint8_t val = 0;
     if(ac.speed_limiter_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.cruise_control_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.acc_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.collision_warning_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.speed_limiter_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.emergency_brake_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.gas_pedal_engaged()){val++;}
-    val << 1;
+    val = val << 1;
     if(ac.brake_pedal_engaged()){val++;}
+
+    return val;
 }
 
 // Define the hash function for the struct
@@ -91,8 +97,6 @@ Report::concatenateValues() {
     return ss.str();
 }
 
-
-Report::~Report(){};
 
 ReadableCam 
 Report::getCam(){

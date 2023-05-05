@@ -47,11 +47,7 @@
 #include <bits/stdc++.h>
 #include <boost/algorithm/string.hpp>
 
-
-// #include <templates>
-
-//#include <Report.hpp>
-#include <route_decider.hpp>
+#include <RouteDecider.hpp>
 
 namespace ezC2X
 {
@@ -294,7 +290,6 @@ private:
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reporter_collection;
     RouteDecider routeDecider;
-
     
 };
 

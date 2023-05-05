@@ -1,4 +1,4 @@
-#include <route_decider.hpp>
+#include <RouteDecider.hpp>
 #include <vector>
 
 RouteDecider::RouteDecider(){}
@@ -49,7 +49,7 @@ RouteDecider::continue_on_main(double side_speed, double main_speed){
         x = std::get<0>(msg.second.getCam().pos);
         y = std::get<1>(msg.second.getCam().pos);
         car_speed = msg.second.getCam().speed;
-        if(XPOS_START < x < XPOS_END) {
+        if(XPOS_START < x && x < XPOS_END) {
             if(y < YPOS_BELOW && car_speed < side_speed){ 
                 side_speed = car_speed;
             } else if(car_speed < main_speed){ 
