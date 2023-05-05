@@ -2,24 +2,28 @@
 #include <stdint.h>
 #include <Report.hpp>
 
-#include <map>
-#include <stdint.h>
-#include <Report.hpp>
+class RouteDecider
+{
+public:
+    RouteDecider();
 
-const double SIDE_ROUTE = 598.34;
-const double MAIN_ROUTE = 698.26;
-const int MAX_SPEED = 20;
-const int XPOS_START = -300; 
-const int XPOS_END = 150;    
-const int YPOS_BELOW = 40; 
-const int MAX_SPEED = 20;
+    ~RouteDecider();
 
-std::map<uint32_t, Report> latest_msgs;
+    const double SIDE_ROUTE = 598.34;
+    const double MAIN_ROUTE = 698.26;
+    const int MAX_SPEED = 20;
+    const int XPOS_START = -300; 
+    const int XPOS_END = 150;    
+    const int YPOS_BELOW = 40; 
 
-double new_speed(double mypos_x, double mypos_y, double speed, uint16_t time);
+    std::map<uint32_t, Report> latest_msgs;
 
-bool continue_on_main(double side_speed, double main_speed);
+    double new_speed(double mypos_x, double mypos_y, double speed, uint64_t time);
 
-void collect_latest(Report report);
+    bool continue_on_main(double side_speed, double main_speed);
 
-void clear_old_reports(uint16_t time);
+    void collect_latest(Report report);
+
+    void clear_old_reports(uint64_t time);
+
+};

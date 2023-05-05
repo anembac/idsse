@@ -1,9 +1,14 @@
 #include <route_decider.hpp>
 #include <vector>
 
-/* Might need extra funcitonality, currently does 
+RouteDecider::RouteDecider(){}
+
+RouteDecider::~RouteDecider() {}
+
+/* Might need extra funcitonality, currently does
 not handle if cars have speed zero and speeding up to catch up...*/
-double new_speed(double mypos_x, double mypos_y, double speed, uint16_t time){
+double 
+RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
     clear_old_reports(time);
     double x_diff = 100;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
@@ -35,7 +40,8 @@ double new_speed(double mypos_x, double mypos_y, double speed, uint16_t time){
  * then we have a bool which in the class calling this function which keeps track if route has been
  * decided 
  */
-bool continue_on_main(double side_speed, double main_speed){
+bool
+RouteDecider::continue_on_main(double side_speed, double main_speed){
     double x;
     double y;
     double car_speed;
@@ -54,11 +60,13 @@ bool continue_on_main(double side_speed, double main_speed){
     return side_speed * SIDE_ROUTE < main_speed * MAIN_ROUTE;
 }
 
-void collect_latest(Report report){
+void
+RouteDecider::collect_latest(Report report){
     latest_msgs[report.getCam().id] = report;
 }
 
-void clear_old_reports(uint16_t time){
+void
+RouteDecider::clear_old_reports(uint64_t time){
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
         if(msg.second.getCam().generationDeltaTime < time - 2000){
