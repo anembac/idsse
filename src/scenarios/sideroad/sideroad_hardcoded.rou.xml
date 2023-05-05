@@ -41,7 +41,7 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <trip id="attacker" depart="0.00" color="red" from="Entry" to="Exit"/>
+    <trip id="attacker" depart="0.00" color="red" route="main_route"/>
     <trip id="reporter" depart="0.10" from="Entry" to="Exit"/>
     <route edges="main1 main2" color="yellow" id="main_route"/>
     <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
