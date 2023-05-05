@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 05/02/23 10:52:50 by Eclipse SUMO netedit Version 1.8.0
+<!-- generated on 05/05/23 10:56:20 by Eclipse SUMO netedit Version 1.8.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -41,11 +41,10 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <vType id="attack_car" maxSpeed="15.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
     <vType id="normal_car" maxSpeed="20.00" speedFactor="normc(0.90,0.20,0.20,2.00)" vClass="passenger" sigma="0.5"/>
-    <route edges="main1 main2" color="yellow" id="main_route"/>
-    <route edges="side1 side2 side3 side4 side5" color="yellow" id="side_route"/>
-    <flow id="attacker" type="attack_car" begin="0.00" departSpeed="0.00" color="red" route="main_route" number="50" probability="0.05"/>
+    <route edges="R1 R2 R3 R4 R5 R6" color="yellow" id="main_route"/>
+    <route edges="side1 side2 side3 side4 side5 R5 R6" color="yellow" id="side_route"/>
+    <flow id="attacker" type="normal_car" begin="0.00" departSpeed="0.00" color="red" route="main_route" number="50" probability="0.05"/>
     <flow id="normal" type="normal_car" begin="0.00" departSpeed="0.00" color="green" route="main_route" number="1000" probability="0.95"/>
     <flow id="reporter" type="normal_car" begin="0.00" departSpeed="0.00" route="main_route" number="30" probability="0.03"/>
 </routes>

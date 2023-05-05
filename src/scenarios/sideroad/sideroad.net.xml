@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 04/28/23 14:24:37 by Eclipse SUMO netedit Version 1.8.0
+<!-- generated on 05/05/23 10:56:10 by Eclipse SUMO netedit Version 1.8.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -74,23 +74,23 @@
         <lane id=":gneJ8_0_0" index="0" speed="20.00" length="0.10" shape="-430.16,48.40 -430.16,48.40"/>
     </edge>
 
-    <edge id="2toSEntry" from="gneJ8" to="SEntry" priority="-1">
-        <lane id="2toSEntry_0" index="0" speed="20.00" length="127.48" shape="-430.16,48.40 -302.68,48.40"/>
+    <edge id="R1" from="1" to="gneJ8" priority="-1">
+        <lane id="R1_0" index="0" speed="20.00" length="69.84" shape="-500.00,48.40 -430.16,48.40"/>
     </edge>
-    <edge id="Entry" from="1" to="gneJ8" priority="-1">
-        <lane id="Entry_0" index="0" speed="20.00" length="69.84" shape="-500.00,48.40 -430.16,48.40"/>
+    <edge id="R2" from="gneJ8" to="SEntry" priority="-1">
+        <lane id="R2_0" index="0" speed="20.00" length="127.48" shape="-430.16,48.40 -302.68,48.40"/>
     </edge>
-    <edge id="Exit" from="4" to="5" priority="-1">
-        <lane id="Exit_0" index="0" speed="20.00" length="72.47" shape="427.53,48.40 500.00,48.40"/>
+    <edge id="R3" from="SEntry" to="3" priority="-1">
+        <lane id="R3_0" index="0" speed="20.00" length="444.74" shape="-294.74,48.40 150.00,48.40"/>
     </edge>
-    <edge id="SExitto4" from="SExit" to="4" priority="-1">
-        <lane id="SExitto4_0" index="0" speed="20.00" length="123.20" shape="304.33,48.40 427.53,48.40"/>
+    <edge id="R4" from="3" to="SExit" priority="0">
+        <lane id="R4_0" index="0" speed="20.00" length="145.90" shape="150.00,48.40 295.90,48.40"/>
     </edge>
-    <edge id="main1" from="SEntry" to="3" priority="-1">
-        <lane id="main1_0" index="0" speed="20.00" length="444.74" shape="-294.74,48.40 150.00,48.40"/>
+    <edge id="R5" from="SExit" to="4" priority="-1">
+        <lane id="R5_0" index="0" speed="20.00" length="123.20" shape="304.33,48.40 427.53,48.40"/>
     </edge>
-    <edge id="main2" from="3" to="SExit" priority="0">
-        <lane id="main2_0" index="0" speed="20.00" length="145.90" shape="150.00,48.40 295.90,48.40"/>
+    <edge id="R6" from="4" to="5" priority="-1">
+        <lane id="R6_0" index="0" speed="20.00" length="72.47" shape="427.53,48.40 500.00,48.40"/>
     </edge>
     <edge id="side1" from="SEntry" to="S1" priority="-1">
         <lane id="side1_0" index="0" speed="20.00" length="124.80" shape="-296.13,44.61 -201.04,-36.22"/>
@@ -109,13 +109,13 @@
     </edge>
 
     <junction id="1" type="dead_end" x="-500.00" y="50.00" incLanes="" intLanes="" shape="-500.00,50.00 -500.00,46.80"/>
-    <junction id="3" type="priority" x="150.00" y="50.00" incLanes="main1_0" intLanes=":3_0_0" shape="150.00,50.00 150.00,46.80 150.00,50.00">
+    <junction id="3" type="priority" x="150.00" y="50.00" incLanes="R3_0" intLanes=":3_0_0" shape="150.00,50.00 150.00,46.80 150.00,50.00">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
-    <junction id="4" type="priority" x="427.53" y="50.00" incLanes="SExitto4_0" intLanes=":4_0_0" shape="427.53,50.00 427.53,46.80 427.53,50.00">
+    <junction id="4" type="priority" x="427.53" y="50.00" incLanes="R5_0" intLanes=":4_0_0" shape="427.53,50.00 427.53,46.80 427.53,50.00">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
-    <junction id="5" type="dead_end" x="500.00" y="50.00" incLanes="Exit_0" intLanes="" shape="500.00,46.80 500.00,50.00"/>
+    <junction id="5" type="dead_end" x="500.00" y="50.00" incLanes="R6_0" intLanes="" shape="500.00,46.80 500.00,50.00"/>
     <junction id="S1" type="priority" x="-200.00" y="-35.00" incLanes="side1_0" intLanes=":S1_0_0" shape="-200.00,-35.00 -200.92,-38.07 -201.39,-37.91 -201.54,-37.84 -201.69,-37.75 -201.86,-37.62 -202.07,-37.44">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
@@ -128,40 +128,40 @@
     <junction id="S4" type="priority_stop" x="255.00" y="-35.00" incLanes="side4_0" intLanes=":S4_0_0" shape="255.00,-35.00 257.83,-36.50 257.42,-37.20 257.22,-37.42 256.99,-37.59 256.68,-37.75 256.26,-37.94">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
-    <junction id="SEntry" type="priority" x="-300.00" y="50.00" incLanes="2toSEntry_0" intLanes=":SEntry_0_0 :SEntry_1_0" shape="-294.74,50.00 -294.74,46.80 -295.44,46.69 -295.57,46.56 -295.56,46.37 -295.40,46.13 -295.09,45.83 -297.16,43.39 -298.97,45.21 -299.63,45.88 -300.36,46.38 -301.31,46.69 -302.68,46.80 -302.68,50.00">
+    <junction id="SEntry" type="priority" x="-300.00" y="50.00" incLanes="R2_0" intLanes=":SEntry_0_0 :SEntry_1_0" shape="-294.74,50.00 -294.74,46.80 -295.44,46.69 -295.57,46.56 -295.56,46.37 -295.40,46.13 -295.09,45.83 -297.16,43.39 -298.97,45.21 -299.63,45.88 -300.36,46.38 -301.31,46.69 -302.68,46.80 -302.68,50.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="SExit" type="priority" x="300.00" y="50.00" incLanes="side5_0 main2_0" intLanes=":SExit_0_0 :SExit_1_0" shape="304.33,50.00 304.33,46.80 302.78,46.40 302.05,45.89 301.34,45.19 300.66,44.28 300.01,43.17 297.18,44.67 297.54,45.85 297.42,46.27 297.11,46.56 296.60,46.74 295.90,46.80 295.90,50.00">
+    <junction id="SExit" type="priority" x="300.00" y="50.00" incLanes="side5_0 R4_0" intLanes=":SExit_0_0 :SExit_1_0" shape="304.33,50.00 304.33,46.80 302.78,46.40 302.05,45.89 301.34,45.19 300.66,44.28 300.01,43.17 297.18,44.67 297.54,45.85 297.42,46.27 297.11,46.56 296.60,46.74 295.90,46.80 295.90,50.00">
         <request index="0" response="10" foes="10" cont="0"/>
         <request index="1" response="00" foes="01" cont="0"/>
     </junction>
-    <junction id="gneJ8" type="priority" x="-430.16" y="50.00" incLanes="Entry_0" intLanes=":gneJ8_0_0" shape="-430.16,50.00 -430.16,46.80 -430.16,50.00">
+    <junction id="gneJ8" type="priority" x="-430.16" y="50.00" incLanes="R1_0" intLanes=":gneJ8_0_0" shape="-430.16,50.00 -430.16,46.80 -430.16,50.00">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
 
-    <connection from="2toSEntry" to="side1" fromLane="0" toLane="0" via=":SEntry_0_0" dir="R" state="M"/>
-    <connection from="2toSEntry" to="main1" fromLane="0" toLane="0" via=":SEntry_1_0" dir="s" state="M"/>
-    <connection from="Entry" to="2toSEntry" fromLane="0" toLane="0" via=":gneJ8_0_0" dir="s" state="M"/>
-    <connection from="SExitto4" to="Exit" fromLane="0" toLane="0" via=":4_0_0" dir="s" state="M"/>
-    <connection from="main1" to="main2" fromLane="0" toLane="0" via=":3_0_0" dir="s" state="M"/>
-    <connection from="main2" to="SExitto4" fromLane="0" toLane="0" via=":SExit_1_0" dir="s" state="M"/>
+    <connection from="R1" to="R2" fromLane="0" toLane="0" via=":gneJ8_0_0" dir="s" state="M"/>
+    <connection from="R2" to="side1" fromLane="0" toLane="0" via=":SEntry_0_0" dir="R" state="M"/>
+    <connection from="R2" to="R3" fromLane="0" toLane="0" via=":SEntry_1_0" dir="s" state="M"/>
+    <connection from="R3" to="R4" fromLane="0" toLane="0" via=":3_0_0" dir="s" state="M"/>
+    <connection from="R4" to="R5" fromLane="0" toLane="0" via=":SExit_1_0" dir="s" state="M"/>
+    <connection from="R5" to="R6" fromLane="0" toLane="0" via=":4_0_0" dir="s" state="M"/>
     <connection from="side1" to="side2" fromLane="0" toLane="0" via=":S1_0_0" dir="s" state="M"/>
     <connection from="side2" to="side3" fromLane="0" toLane="0" via=":S2_0_0" dir="s" state="M"/>
     <connection from="side3" to="side4" fromLane="0" toLane="0" via=":S3_0_0" dir="s" state="M"/>
     <connection from="side4" to="side5" fromLane="0" toLane="0" via=":S4_0_0" dir="s" state="M"/>
-    <connection from="side5" to="SExitto4" fromLane="0" toLane="0" via=":SExit_0_0" dir="r" state="m"/>
+    <connection from="side5" to="R5" fromLane="0" toLane="0" via=":SExit_0_0" dir="r" state="m"/>
 
-    <connection from=":3_0" to="main2" fromLane="0" toLane="0" dir="s" state="M"/>
-    <connection from=":4_0" to="Exit" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":3_0" to="R4" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":4_0" to="R6" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":S1_0" to="side2" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":S2_0" to="side3" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":S3_0" to="side4" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":S4_0" to="side5" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":SEntry_0" to="side1" fromLane="0" toLane="0" dir="R" state="M"/>
-    <connection from=":SEntry_1" to="main1" fromLane="0" toLane="0" dir="s" state="M"/>
-    <connection from=":SExit_0" to="SExitto4" fromLane="0" toLane="0" dir="r" state="M"/>
-    <connection from=":SExit_1" to="SExitto4" fromLane="0" toLane="0" dir="s" state="M"/>
-    <connection from=":gneJ8_0" to="2toSEntry" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":SEntry_1" to="R3" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":SExit_0" to="R5" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":SExit_1" to="R5" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":gneJ8_0" to="R2" fromLane="0" toLane="0" dir="s" state="M"/>
 
 </net>
