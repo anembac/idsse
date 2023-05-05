@@ -31,7 +31,7 @@ double new_speed(double mypos_x, double mypos_y, double speed, uint16_t time){
         }
     return speed;
 }
-/* This is called once, when our position is between (-400,50) and (-300,50)
+/* This is called once, when our position is between (-430,50) and (-330,50)
  * then we have a bool which in the class calling this function which keeps track if route has been
  * decided 
  */

@@ -96,12 +96,12 @@ idsse::attackStart(){
 void
 idsse::normalStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-
+    //Schedule event for reroute
     /*
         Settings for all normal vehicles
     */
     //vehicleControl->setColor(238,255,230,255);
-    vehicleControl->setSpeed(defaultSpeed); //max speed on the road. 
+    vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
     // if(getId()== vehicleIdOppositeDir){
     //     vehicleControl->setRoute(route_otherway);
     //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -148,16 +148,23 @@ idsse::start(component::Bundle const& framework)
             isReporter_ = true;
         }
     }
+    //Schedule event for speed-adapter
 }
 
 void
 idsse::handleReceivedCam(Cam const& cam)
 {
     auto cm = deps_.getOrThrow<CertificateManager, component::MissingDependency>("CertificateManager", "idsse");
-    if(isAttacking_){return;} //Stop listening to CAMs while actively attacking 
+    if(isAttacking_){ //Stop listening to CAMs while actively attacking 
+        return;
+    }else {
+        //Create Report... send in cam and Meta data...
+        //Send the Report into the car_ids
+        //Send Report to network_ids (ensure this is a central shared network_ids)
+        //Send report to route_decider
+    }
     if(isReporter_){ //Logging
-        //Create Report...
-        //reporter_collection.push_back(report)
+        //reporter_collection.push_back(report) //This is for collecting a msg_dump per reporter car
         log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
     }
     
