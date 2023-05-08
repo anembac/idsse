@@ -1153,6 +1153,23 @@ IdsseCaBasicService::triggerAttack(){
     attackStep++;
 }
 
+void IdsseCaBasicService::setAttackType(int _attackType){
+    // IdsseCaBasicService::log_.info() << "Changing to attack type to " << _attackType;
+    attackType = _attackType;
+}
+
+void
+IdsseCaBasicService::setAttack1(std::vector<double> _profile){
+    log_.info() << "Updating A1 irregular attack profile with size " << _profile.size();
+    a1IrregularSpeedProfile = _profile;
+}
+
+void 
+IdsseCaBasicService::setAttack2(std::uint32_t _a2MaxRandomSpeed){
+    log_.info() << "Updating A2 random speed attack with maximum value " << _a2MaxRandomSpeed;
+    a2MaxRandomSpeed = _a2MaxRandomSpeed;
+}
+
 bool
 IdsseCaBasicService::isAttackActive(){
     return attackActive_;
@@ -1163,10 +1180,20 @@ IdsseCaBasicService::setAttackActive(bool active){
     attackActive_ = active;
 }
 
-// int
-// IdsseCaBasicService::getAttackStep(){
-//     return attackStep;
-// }
+int
+IdsseCaBasicService::getAttackStep(){
+    return attackStep;
+}
+double
+IdsseCaBasicService::getAttack1(int _attackStep){
+    // log_.info() << "Profile size: " << a1IrregularSpeedProfile.size() << " current step " << _attackStep;
+    if(static_cast<long unsigned int>(_attackStep) < a1IrregularSpeedProfile.size())
+        return a1IrregularSpeedProfile[_attackStep];    
+    else{
+        setAttackActive(false);
+        return 0.0;
+    }
+}
 
 void 
 IdsseCaBasicService::setSuppressCAMs(bool _suppressCAMs){

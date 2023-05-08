@@ -148,12 +148,16 @@ public:
     std::uint32_t 
     getStationID();
 
+    void setAttackType(int) override;
     bool isSuppressCAMs() override;
-    // uint8_t getAttackType() override;
+    //uint8_t getAttackType() override;    
+    void setAttack1(std::vector<double> a1IrregularSpeedProfile) override;
+    void setAttack2(std::uint32_t a2PositionOffset) override;
+    double getAttack1(int _attackStep) override;
     void triggerAttack() override;
-    void setAttackActive(bool active);
-    bool isAttackActive();
-    // int getAttackStep() override;
+    void setAttackActive(bool active) override;
+    bool isAttackActive() override;
+    int getAttackStep() override;
     void setSuppressCAMs(bool _suppressCams) override;
 
     // uint8_t getAttackStep() override;
@@ -171,6 +175,8 @@ public:
     boost::optional<Cam>
     getLatestCam();
 
+    void spoof();
+
     //! Last heading value
     boost::optional<double> getlastHeading();
 
@@ -183,11 +189,6 @@ public:
 
     std::chrono::milliseconds getTimeSinceLastCam();
 
-    /*!
-    * @brief Launches sensor-value spoofing
-    */
-    void
-    spoof();
 
 private:
     /*!
@@ -459,8 +460,14 @@ private:
     //! Station ID (derived from the pseudonym ID and gets updated with pseudonym updates)
     std::atomic<std::uint32_t> stationId_;
 
+    //! Type of attack which is executed when triggered
+    int attackType = 0;
+    //! list of the speed profile used in attack 1 when spoofing the speed
+    std::vector<double> a1IrregularSpeedProfile;   
+    //! maximum speed difference when randomly spoofing the attacker's speed
+    std::uint32_t a2MaxRandomSpeed = 0;
     //! indicate whether the attack is currently executed
-    bool attackActive_ = false;
+    bool attackActive_ = 0;
     //! Attack progress, e.g., when used for speed spoofing, a different speed is spoofed at each step
     int attackStep = 0;
     //! Indicator whether CAM messages are suppressed/not being sent. Needed for Sybil attacks where the "virtual" vehicles are implemented as actual NS-3/SUMO vehicles.
@@ -469,6 +476,7 @@ private:
     const double targetSpeedModifier_ = 0.75; // 75% of current speed
 
     boost::optional<Cam> latestCam_;
+
 };
 
 }  // namespace ezC2X
