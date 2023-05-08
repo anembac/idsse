@@ -39,7 +39,6 @@
     <facility>
         <!-- Create default CAM facility -->
         <CaBasicService>
-        <Type>idsseCa</Type>
         <StationType>PASSENGER_CAR</StationType>
         <ProtocolParameters>
             <SendingEnabled>true</SendingEnabled>
