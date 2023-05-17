@@ -152,7 +152,7 @@ public:
     bool isSuppressCAMs() override;
     //uint8_t getAttackType() override;    
     void setAttack1(std::vector<double> a1IrregularSpeedProfile) override;
-    void setAttack2(std::uint32_t a2PositionOffset) override;
+    void setAttack2(std::uint32_t a2MaxRandomSpeed) override;
     double getAttack1(int _attackStep) override;
     void triggerAttack() override;
     void setAttackActive(bool active) override;
