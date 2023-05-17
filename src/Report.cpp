@@ -40,24 +40,24 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
 
 uint8_t
 Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
-    uint8_t val = 0;
+    int val = 0;
     if(ac.speed_limiter_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.cruise_control_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.acc_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.collision_warning_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.speed_limiter_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.emergency_brake_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.gas_pedal_engaged()){val++;}
-    val = val << 1U;
+    val = val << 1;
     if(ac.brake_pedal_engaged()){val++;}
 
-    return val;
+    return (uint8_t)val; //Should always be a positive int
 }
 
 // Define the hash function for the struct
@@ -101,10 +101,10 @@ Report::concatenateValues() {
 ReadableCam 
 Report::getCam(){
     return cam_;
-};
+}
 
 MetaData
 Report::getMetaData(){
     return metaData_;
-};
+}
 
