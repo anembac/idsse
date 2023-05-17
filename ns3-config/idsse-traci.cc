@@ -26,8 +26,8 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/trace-helper.h"
 
-// #include <ezC2X/facility/cam/CaBasicService.hpp>
-// #include <ezC2X/facility/cam/Cam.pb.h>
+#include <ezC2X/facility/cam/CaBasicService.hpp>
+#include <ezC2X/facility/cam/Cam.pb.h>
 // #include <ezC2X/facility/denm/DenBasicService.hpp>
 // #include <ezC2X/facility/denm/Denm.pb.h>
 
@@ -54,9 +54,9 @@ struct Configuration
   std::string ezRootDir = "/home/anders/kurser/thesis/include"; 	// root directory of the ezCar2X installation
 
   double runtime = 50.0;		// unit seconds [s]
-  double activate = 0.0; 		// time for earliest activation of nodes [s]
+  double activate = 10.0; 		// time for earliest activation of nodes [s]
 
-  std::uint32_t numOfNodes = 5; 		// number of nodes
+  std::uint32_t numOfNodes = 9; 		// number of nodes
   std::uint32_t numOfAttackers =1;
   double equipRate = 1.0; 		// fraction of vehicles to equip
 
@@ -393,7 +393,7 @@ main (int argc, char *argv[])
 
   YansWifiPhyHelper wifiphyh = itsg5Helper.GetPhyHelper();
   // Record/log everything on physical layer as PCAP file
-  wifiphyh.EnablePcapAll(std::string("idsse"));
+  //wifiphyh.EnablePcapAll(std::string("idsse"));
 
   NS_LOG_INFO("Simulation started.");
 

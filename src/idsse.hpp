@@ -210,7 +210,7 @@ private:
 
     void dump_file ();
 
-    void speed_adapter();
+    void speedAdapter();
 
     void rerouter();
 
@@ -280,7 +280,7 @@ private:
 
     std::string vehicleId_ = "";
     std::shared_ptr<DenBasicService> denService_;
-    std::shared_ptr<IdsseCaBasicService> caService_;
+    std::shared_ptr<CaBasicService> caService_;
 
     int defaultSpeed = 12;
     int vehicleIdOppositeDir = 1;
@@ -290,6 +290,7 @@ private:
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reporter_collection;
     RouteDecider routeDecider;
+    
     
 };
 

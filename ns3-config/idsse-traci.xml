@@ -82,9 +82,10 @@
 
 
   </Framework>
-  <idsse>
+
+  <Applications>
     <idsse>
       <TriggerStart>@@TRIGGER_START@@</TriggerStart>
     </idsse>
-  </idsse>
+  </Applications>
 </ezC2X>

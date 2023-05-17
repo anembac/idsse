@@ -40,10 +40,11 @@ idsse::~idsse(){
 
 std::string 
 idsse::getId(){
+    log_.info() << "Getting ID";
     if(vehicleId_ == ""){
         auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
-        log_.debug() << "I am ns-3 vehicle: " << vehicleControl->getId();
         vehicleId_ = (vehicleControl->getId());
+        log_.debug() << "I am ns-3 vehicle: " << vehicleId_;        
     }
     return vehicleId_;
 }
@@ -51,8 +52,10 @@ idsse::getId(){
 void
 idsse::configure(boost::property_tree::ptree const& properties)
 {
+    log_.info() << "idsse is configuring";
     property::Mapper pm;
     pm.addProperty("TriggerStart", &triggerStart_, false);
+    log_.info() << "Configuration completed";
 }
 
 uint8_t
@@ -68,6 +71,7 @@ idsse::isAttacker(std::string id){
 
 void
 idsse::triggerEvent(){
+    log_.info() << "Triggering event!";
     if(isAttacker_){ //will non-attacker even reach this?
         isAttacking_ = true;
         switch (attackType_){
@@ -88,14 +92,17 @@ idsse::getCurrentCertificate(){
 
 void
 idsse::attackStart(){
-    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse");
+    log_.info() << "Running attack start";
+    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStar");
     triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
+    log_.info() << "Attack start completed";
 
 }
 
 void
 idsse::normalStart(){
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    log_.info() << "Running normal start";
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     //Schedule event for reroute
     /*
         Settings for all normal vehicles
@@ -112,6 +119,7 @@ idsse::normalStart(){
     //     vehicleControl->setColor(238,255,230,255);
     //     vehicleControl->setSpeed(defaultSpeed); //max speed on the road. 
     // }
+    log_.info() << "Normal start completed";
 }
 
 
@@ -123,38 +131,47 @@ idsse::start(component::Bundle const& framework)
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
-    
     //Enable CAM
     try
     {
+        log_.info() << "Acquiring CaBasicService from framework";
+        caService_ = framework.get<CaBasicService>();
         log_.info() << "Enabling CAM subscription";
-        caService_ = framework.get<IdsseCaBasicService>();
         camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
+
 
     }
     catch (component::NotFoundInBundle const& e)
     {
-        log_.error() << "Couldn't load PseudonymManager dependency, therefore, no CAM subscription";
+        //log_.error() << "Couldn't load PseudonymManager dependency, therefore, no CAM subscription";
         throw(MissingDependency(e.what()));
     }
 
     //Vehicle type branching
+    log_.info() << "Assigning id";
     std::string id = getId();
+    //log_.info() << "Determining if vehicle (" << id << ") is attacker based on ID";
     if(isAttacker(id)){
         isAttacker_ = true;
+        log_.info() << "Vehicle (" << id << ") is attacker, running attackStart()";
         attackStart();
     }else{
+        log_.info() << "Vehicle (" << id << ") is normal, running normalStart()";
         normalStart();
+        //log_.info() << "Determining if vehicle (" << id << ") is reporter based on ID";
         if(isReporter(id)){
+            log_.info() << "Vehicle (" << id << ") is reporter, setting reporter flag to true";
             isReporter_ = true;
         }
     }
     //Schedule event for speed-adapter
+    log_.info() << "Startup completed";
 }
 
 void
 idsse::handleReceivedCam(Cam const& cam)
 {
+    log_.info() << "handleReceivedCam";
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
@@ -202,10 +219,11 @@ void idsse::dump_file (){
 }
 
 
-void idsse::speed_adapter(){
+void idsse::speedAdapter(){
+    log_.info() << "Running speed adapter";
     //This event should be scheduled like every second...
     //Variables is just fetching current timestamp, car x pos, and car y pos
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
     std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
@@ -214,7 +232,8 @@ void idsse::speed_adapter(){
 }
 
 void idsse::rerouter(){
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+    log_.info() << "Running rerouter";
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider.continue_on_main(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
         vehicleControl->setRoute(side_route);//is it really accessing the const
     }
