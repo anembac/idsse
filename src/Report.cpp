@@ -3,7 +3,7 @@
 
 Report::Report() {}
 
-Report::~Report(){};
+Report::~Report(){}
 
 Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
@@ -42,19 +42,19 @@ uint8_t
 Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
     uint8_t val = 0;
     if(ac.speed_limiter_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.cruise_control_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.acc_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.collision_warning_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.speed_limiter_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.emergency_brake_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.gas_pedal_engaged()){val++;}
-    val = val << 1;
+    val = val << 1U;
     if(ac.brake_pedal_engaged()){val++;}
 
     return val;

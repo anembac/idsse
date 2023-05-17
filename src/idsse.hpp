@@ -30,7 +30,7 @@
 #include <ezC2X/framework/Application.hpp>
 #include <ezC2X/facility/cam/Cam.pb.h>
 #include <ezC2X/facility/cam/CaBasicService.hpp>
-#include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
+//#include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
 
 #include <ezC2X/security/pseudonym/PseudonymManager.hpp>
 //#include <ezC2X/security/Certificate/PseudonymManager.hpp>
