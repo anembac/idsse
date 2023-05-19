@@ -116,6 +116,7 @@ idsse::normalStart(){
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
+    vehicleControl->disableAutomaticSafeDriving();
     //Schedule event for reroute
 
     /*ScopedEvent triggerEvent_;

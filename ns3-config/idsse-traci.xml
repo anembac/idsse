@@ -85,8 +85,8 @@
 
   <idsse>
     <idsse>
-      <TriggerStart>2500</TriggerStart>
-      <RerouteDelay>3000</RerouteDelay>
+      <TriggerStart>500</TriggerStart>
+      <RerouteDelay>500</RerouteDelay>
       <SpeedAdapterStart>0</SpeedAdapterStart>
       <SpeedAdapterPeriod>500</SpeedAdapterPeriod>      
     </idsse>
