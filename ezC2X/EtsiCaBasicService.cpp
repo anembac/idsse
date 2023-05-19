@@ -592,7 +592,6 @@ EtsiCaBasicService::checkSpeedDelta(double now, double prev) const
 boost::optional<Cam>
 EtsiCaBasicService::cam()
 {
-    log_.info() << "Running cam()";
 
     if(isSuppressCAMs()){
         log_.debug() << "Supressing CAM messages";
@@ -601,8 +600,14 @@ EtsiCaBasicService::cam()
     // check the dependencies necessary to populate the required fields of a CAM message
 
     // current position is accessible through the position provider
-    log_.info() << "Acquiring position data";
-    auto posData = positionProvider_.position();
+    boost::optional<ezC2X::PositionVector> posData;
+    if(!attackActive_){
+        auto posData = positionProvider_.position();
+    }
+    else{
+        auto posData = spoofPosData();
+        
+    }
     if (!posData)
     {
         // WARN is preferred here since having no valid position information is not a setup error
@@ -611,7 +616,7 @@ EtsiCaBasicService::cam()
         log_.warn() << "CAM creation failed: No position information!";
         return boost::none;
     }
-    log_.info() << "Getting time provider";
+
     auto tp = deps_.get<TimeProvider>();
     if (!tp)
     {
@@ -619,23 +624,22 @@ EtsiCaBasicService::cam()
                         "calculate time required for CAM generation!";
         return boost::none;
     }
-    log_.info() << "Getting datahub";
+
     auto hub = deps_.get<DataHub>();
     if (!hub)
     {
         log_.error() << "CAM creation failed: No DataHub!";
         return boost::none;
     }
-    log_.info() << "getting pseudonym manager";
-    auto pm = deps_.get<PseudonymManager>();
-    if (!pm)
+
+    auto cm = deps_.get<PseudonymManager>();
+    if (!cm)
     {
         log_.error() << "CAM creation failed: No PseudonymManager! Cannot set station ID!";
         return boost::none;
     }
 
     // record the time when CAM generation is triggered
-    log_.info() << "Recording CAM generation time";
     TimePoint start = tp->now();
 
     Cam cam;
@@ -644,7 +648,6 @@ EtsiCaBasicService::cam()
     try
     {
         // Its Pdu header
-        log_.info() << "Getting cam headers";
         cdd::ItsPduHeader* header = cam.mutable_header();
         header->set_protocol_version(2);
         header->set_message_id(cdd::ItsPduHeader_MessageId_CAM);
@@ -683,34 +686,9 @@ EtsiCaBasicService::cam()
         /*
         ATTACKS happen here 
         */
-       log_.info() << "Checking if we should attack..";
-        std::string attackLabel = isAttackActive() ? "A" : "B";
-        if(isAttackActive()){
-            log_.info() << "Attacking!";
-            if(attackType == ATTACK_TYPE_SPEED_OFFSET){
-                // log_.info() << "ATCK1: I fulfill attack step " << attackStep;
-                // log_.info() << "ATCK1: Current/acutal speed: " << posData->speed << " and the attack adds " <<getAttack1(attackStep-1);
-                double a1SpeedDiff = getAttack1(attackStep-1);
-                if(a1SpeedDiff == 0){
-                    attackLabel = "B";
-                }
-                if(posData->speed.get_value_or(0)+a1SpeedDiff <= 0){
-                    posData->speed = 0;
-                }
-                else{
-                    posData->speed=posData->speed.get_value_or(0)+a1SpeedDiff;
-                }
-                log_.info() << "ATCK1: New CAM speed is " << posData->speed;
-            }
-            else if(attackType==2){
-                time_t nTime;
-                srand((unsigned) time(&nTime)); 
-                std::uint32_t spoofedSpeed = rand()%(a2MaxRandomSpeed+2);
-                posData->speed=spoofedSpeed/100.0;
-            }
-        }
+
         //GANlog
-        log_.info() << "/GAN/;" << convertedTs << ";" << attackLabel << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
+        //log_.info() << "/GAN/;" << convertedTs << ";" << attackLabel << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
 
         // Basic container
         addBasicContainer(cam, *posData);
@@ -759,6 +737,7 @@ EtsiCaBasicService::cam()
         return boost::none;
     }
 
+
     // update the cam generation counter
     checkIntervalsSinceLastCam_ = 0;
 
@@ -770,7 +749,17 @@ EtsiCaBasicService::cam()
     //seems like we don't have acceleration info
     //<< cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency().longitudinal_acceleration().value().value() << ";" 
 
-
+    /*
+    Add a flag indicating that the message sent is part of an attack.
+    This solution is a bit ugly but we will hijack the dangerousgoods DE 
+    as it isn't relevant to our implementation.
+    */
+    cam.mutable_payload()
+        ->mutable_containers()
+        ->mutable_special_vehicle_container()
+        ->mutable_safety_car_container()
+        ->mutable_light_bar_siren_in_use()
+        ->set_light_bar_activated(true);
     return cam;
 }
 
