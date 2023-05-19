@@ -66,7 +66,7 @@ struct Configuration
   std::string configPath = "/home/anders/kurser/thesis/sim/ns-allinone-3.35/ns-3.35/scratch/idsse-traci.xml";	// configuration file to load for the nodes
 
   //std::uint64_t triggerStation = 0; // Station id sending maneuver request
-  std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
+  //std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
   //std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
 
   bool isPeriodic = false;
@@ -102,7 +102,7 @@ UpdateCommonProperties (boost::property_tree::ptree& properties, Configuration c
 {
   ReplacePropertyValue(properties, "@@EZC2X_ROOT_DIR@@", config.ezRootDir);
   // ReplacePropertyValue(properties, "@@TRIGGER_STATION@@", config.triggerStation);
-  ReplacePropertyValue(properties, "@@TRIGGER_START@@", config.triggerStart);
+  //ReplacePropertyValue(properties, "@@TRIGGER_START@@", config.triggerStart);
   // ReplacePropertyValue(properties, "@@TRIGGER_INTERVAL@@", config.triggerInterval);
 
   ReplacePropertyValue(properties, "@@NUMBER_NODES@@", config.numOfNodes);
@@ -205,7 +205,7 @@ main (int argc, char *argv[])
       std::cout << "Failed to connect to TraCI server @" << traciHost << ":" << traciPort << std::endl;
       return EXIT_FAILURE;
     }
-
+triggerStart
   // if any run arguments were specified, we assume to run SUMO
   // via the SumoLauncher.py script
   if (sumoConfig.HasRunArguments ())

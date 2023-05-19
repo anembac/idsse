@@ -36,11 +36,13 @@ idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
     triggerEvent_.cancel();
+    rerouteEvent_.cancel();
+    speedAdapterEvent_.cancel();
 }
 
 std::string 
 idsse::getId(){
-    log_.info() << "Getting ID";
+    log_.info() << "Getting ID";3000
     if(vehicleId_ == ""){
         auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
         vehicleId_ = (vehicleControl->getId());
@@ -55,6 +57,9 @@ idsse::configure(boost::property_tree::ptree const& properties)
     log_.info() << "idsse is configuring";
     property::Mapper pm;
     pm.addProperty("TriggerStart", &triggerStart_, false);
+    pm.addProperty("RerouteDelay", &rerouteDelay_, false);
+    pm.addProperty("SpeedAdapterStart", &speedAdapterStart_,false);
+    pm.addProperty("SpeedAdapterPeriod", &speedAdapterPeriod_,false);
     log_.info() << "Configuration completed";
 }
 
@@ -93,7 +98,7 @@ idsse::getCurrentCertificate(){
 void
 idsse::attackStart(){
     log_.info() << "Running attack start";
-    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStar");
+    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
     triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
     log_.info() << "Attack start completed";
 
@@ -103,12 +108,16 @@ void
 idsse::normalStart(){
     log_.info() << "Running normal start";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
+    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
+    rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
+    speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_, speedAdapterPeriod_));
     //Schedule event for reroute
-    /*
+
+    /*ScopedEvent triggerEvent_;
         Settings for all normal vehicles
     */
     //vehicleControl->setColor(238,255,230,255);
-    vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
+    //vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
     // if(getId()== vehicleIdOppositeDir){
     //     vehicleControl->setRoute(route_otherway);
     //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
