@@ -47,8 +47,8 @@ std::string
 idsse::getId(){
     log_.info() << "Getting ID";
     if(vehicleId_ == ""){
-        //auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
-        vehicleId_ = (vehicleControl_->getId());
+        auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
+        vehicleId_ = (vehicleControl->getId());
         log_.debug() << "I am ns-3 vehicle: " << vehicleId_;        
     }
     return vehicleId_;
@@ -110,7 +110,7 @@ idsse::attackStart(){
 void
 idsse::normalStart(){
     log_.info() << "Running normal start";
-    //auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
@@ -119,17 +119,17 @@ idsse::normalStart(){
     /*ScopedEvent triggerEvent_;
         Settings for all normal vehicles
     */
-    //vehicleControl_->setColor(238,255,230,255);
-    //vehicleControl_->setSpeed(defaultSpeed); //max speed on the road. '
+    //vehicleControl->setColor(238,255,230,255);
+    //vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
     // if(getId()== vehicleIdOppositeDir){
-    //     vehicleControl_->setRoute(route_otherway);
+    //     vehicleControl->setRoute(route_otherway);
     //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     //     double oSpeed = std::rand() % defaultSpeed+1;
     //     log_.info() << "Vehicle " << getId() << ": Setting speed to " << oSpeed <<"m/s (randomly decided)";
-    //     vehicleControl_->setSpeed(oSpeed+2);
+    //     vehicleControl->setSpeed(oSpeed+2);
     // }else{
-    //     vehicleControl_->setColor(238,255,230,255);
-    //     vehicleControl_->setSpeed(defaultSpeed); //max speed on the road. 
+    //     vehicleControl->setColor(238,255,230,255);
+    //     vehicleControl->setSpeed(defaultSpeed); //max speed on the road. 
     // }
     log_.info() << "Normal start completed";
 }
@@ -142,8 +142,8 @@ idsse::start(component::Bundle const& framework)
     state_ = State::Running;
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
-    auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
-    auto timeProvider_ = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider", "idsse::start");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
+    //auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider", "idsse::start");
     //Enable CAM
     try
     {
@@ -186,7 +186,7 @@ idsse::handleReceivedCam(Cam const& cam)
 {
     log_.info() << "handleReceivedCam";
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
-    //auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::handleRecievedCam");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::handleRecievedCam");
 
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
@@ -200,12 +200,13 @@ idsse::handleReceivedCam(Cam const& cam)
         //reporter_collection.push_back(report) //This is for collecting a msg_dump per reporter car
         //log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
         MetaData meta;
+        auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
-        auto lat = vehicleControl_->getCenterPosition().getLatitude().value();
-        auto lon = vehicleControl_->getCenterPosition().getLongitude().value();
+        auto lat = vehicleControl->getCenterPosition().getLatitude().value();
+        auto lon = vehicleControl->getCenterPosition().getLongitude().value();
         std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
         meta.positionOnReceieve = pos;
-        meta.timeOnReceive = makeItsTimestamp(timeProvider_->now()); //Divide by 65536 or no?
+        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //Divide by 65536 or no?
         reporter_collection.push_back(Report(cam,meta));
         
     }
@@ -247,9 +248,9 @@ void idsse::speedAdapter(){
     log_.info() << "Running speed adapter";
     //This event should be scheduled like every second...
     //Variables is just fetching current timestamp, car x pos, and car y pos
-    //auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
-    auto lat = vehicleControl_->getCenterPosition().getLatitude().value();
-    auto lon = vehicleControl_->getCenterPosition().getLongitude().value();
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
+    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
+    auto lon = vehicleControl->getCenterPosition().getLongitude().value();
     std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
     uint64_t time;
     if(caService_->getLatestCam().has_value()){
@@ -257,15 +258,15 @@ void idsse::speedAdapter(){
     }else{
         time = 0;
     }
-    vehicleControl_->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
+    vehicleControl->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
     log_.info() << "SA: finished";
 }
 
 void idsse::rerouter(){
     log_.info() << "Running rerouter";
-    //auto vehicleControl_ = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider.continue_on_main(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
-        vehicleControl_->setRoute(side_route);//is it really accessing the const
+        vehicleControl->setRoute(side_route);//is it really accessing the const
     }
 }
 
