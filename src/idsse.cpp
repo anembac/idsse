@@ -232,16 +232,17 @@ void idsse::speedAdapter(){
     log_.info() << "Running speed adapter";
     //This event should be scheduled like every second...
     //Variables is just fetching current timestamp, car x pos, and car y pos
-    log_.info() << "SA: Getting deps";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
-    log_.info() << "SA: getting lat pos";
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
-    log_.info() << "SA: getting long pos";
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-    log_.info() << "SA: storing pos in tuple";
     std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
     log_.info() << "SA: getting cam generation time";
-    uint64_t time = caService_->getLatestCam().value().payload().generation_time();//not sure if this works (potential bug)
+    uint64_t time;
+    if(caService_->getLatestCam().has_value()){
+        time = caService_->getLatestCam().value().payload().generation_time();//not sure if this works (potential bug)
+    }else{
+        time = 0;
+    }
     log_.info() << "SA: setting new speed";
     vehicleControl->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
     log_.info() << "SA: finished";

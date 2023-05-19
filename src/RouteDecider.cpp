@@ -9,7 +9,8 @@ RouteDecider::~RouteDecider() {}
 not handle if cars have speed zero and speeding up to catch up...*/
 double 
 RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
-    clear_old_reports(time);
+    
+    if(time!=0){clear_old_reports(time);}
     double x_diff = 100;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
