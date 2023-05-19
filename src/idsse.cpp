@@ -35,6 +35,7 @@ namespace ezC2X
 idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
+    if(isReporter_){saveReports();}
     triggerEvent_.cancel();
     rerouteEvent_.cancel();
     speedAdapterEvent_.cancel();
@@ -192,7 +193,9 @@ idsse::handleReceivedCam(Cam const& cam)
     }
     if(isReporter_){ //Logging
         //reporter_collection.push_back(report) //This is for collecting a msg_dump per reporter car
-        log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
+        //log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
+        
+        
     }
     
 }
@@ -217,7 +220,7 @@ idsse::state() const
     return state_;
 }
 
-void idsse::dump_file (){
+void idsse::saveReports (){
     std::ofstream myfile;
     std::string filename = "car_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     myfile.open(filename);
@@ -236,14 +239,12 @@ void idsse::speedAdapter(){
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
     std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
-    log_.info() << "SA: getting cam generation time";
     uint64_t time;
     if(caService_->getLatestCam().has_value()){
-        time = caService_->getLatestCam().value().payload().generation_time();//not sure if this works (potential bug)
+        time = caService_->getLatestCam().value().payload().generation_time();
     }else{
         time = 0;
     }
-    log_.info() << "SA: setting new speed";
     vehicleControl->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
     log_.info() << "SA: finished";
 }
