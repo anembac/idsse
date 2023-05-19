@@ -600,13 +600,9 @@ EtsiCaBasicService::cam()
     // check the dependencies necessary to populate the required fields of a CAM message
 
     // current position is accessible through the position provider
-    boost::optional<ezC2X::PositionVector> posData;
-    if(!attackActive_){
-        auto posData = positionProvider_.position();
-    }
-    else{
+    boost::optional<ezC2X::PositionVector> posData = positionProvider_.position();
+    if(attackActive_){
         auto posData = spoofPosData();
-        
     }
     if (!posData)
     {
@@ -1245,6 +1241,7 @@ EtsiCaBasicService::spoof(){
 boost::optional<ezC2X::PositionVector>
 EtsiCaBasicService::spoofPosData()
 {   
+    log_.info() << "Spoofing position data";
     auto pv = positionProvider_.position();
     auto newSpeed = pv->speed.value()*targetSpeedModifier_;
     //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
@@ -1258,6 +1255,7 @@ EtsiCaBasicService::spoofPosData()
     auto newLongitude = oldLongitude + longitudeDiff;
     auto newLatitude = oldLatitude + latitudeDiff;
     pv->position = pv->position.wrap(newLatitude, newLongitude);
+    log_.info() << "Spoofed position data created successfully";
     return pv;
 }
 
