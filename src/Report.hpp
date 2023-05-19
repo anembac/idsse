@@ -32,7 +32,7 @@ struct ReadableCam
 
 struct MetaData
 {
-    uint16_t timeOnReceive;
+    uint64_t timeOnReceive;
     std::tuple<double,double> positionOnReceieve;
     std::string id;
 
