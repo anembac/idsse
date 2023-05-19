@@ -221,7 +221,8 @@ EtsiCaBasicService::run(Stage stage)
                     // get the current station id
                     stationId_ = stationIdFromPseudonym(pm->getCurrentPseudonymId());
 
-                    // subscribe for updates
+                    // subscribe for updates        meta.timeOnReceive = 
+
                     /*
                      * Note: The current implementation ignores the two-phase commit and simply switches
                      *       to the new identifier in the stage commit. To ensure the coordinated change of
