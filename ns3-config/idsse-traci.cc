@@ -205,7 +205,7 @@ main (int argc, char *argv[])
       std::cout << "Failed to connect to TraCI server @" << traciHost << ":" << traciPort << std::endl;
       return EXIT_FAILURE;
     }
-triggerStart
+
   // if any run arguments were specified, we assume to run SUMO
   // via the SumoLauncher.py script
   if (sumoConfig.HasRunArguments ())

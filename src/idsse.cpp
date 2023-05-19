@@ -42,7 +42,7 @@ idsse::~idsse(){
 
 std::string 
 idsse::getId(){
-    log_.info() << "Getting ID";3000
+    log_.info() << "Getting ID";
     if(vehicleId_ == ""){
         auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
         vehicleId_ = (vehicleControl->getId());
@@ -110,7 +110,7 @@ idsse::normalStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
-    speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_, speedAdapterPeriod_));
+    speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
     //Schedule event for reroute
 
     /*ScopedEvent triggerEvent_;
