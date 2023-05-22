@@ -1,7 +1,7 @@
 #include <RouteDecider.hpp>
 #include <vector>
 
-RouteDecider::RouteDecider(){}
+RouteDecider::RouteDecider(): log_("routeDecider"){}
 
 RouteDecider::~RouteDecider() {}
 
@@ -10,7 +10,7 @@ not handle if cars have speed zero and speeding up to catch up...*/
 double 
 RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
     
-    if(time!=0){clear_old_reports(time);}
+    //if(time!=0){clear_old_reports(time);}
     double x_diff = 300;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
@@ -25,7 +25,8 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
                     && msg.second.getCam().speed < speed) 
                 {
                     //x_diff = x - mypos_x;
-                    speed = msg.second.getCam().speed ;
+                    speed = msg.second.getCam().speed;
+                    log_.info() << "sideroad updating speed to " << speed;
                 }
             }
         } else {
@@ -38,6 +39,7 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
                     && x_diff > x - mypos_x 
                     && msg.second.getCam().speed < speed) {
                     //x_diff = x - mypos_x;
+                    log_.info() << "mainroad updating speed to " << speed;
                     speed = msg.second.getCam().speed;
                 }
              }

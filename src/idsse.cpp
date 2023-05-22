@@ -240,6 +240,7 @@ void idsse::saveReports (){
     std::ofstream myfile;
     std::string filename = "car_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     myfile.open(filename);
+    myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
     for(auto report: reporter_collection) {
         myfile << (report.concatenateValues() + "\n");
     }

@@ -1,6 +1,7 @@
 #include <map>
 #include <stdint.h>
 #include <Report.hpp>
+#include <ezC2X/core/logging/Logger.hpp>
 
 class RouteDecider
 {
@@ -26,4 +27,6 @@ public:
 
     void clear_old_reports(uint64_t time);
 
+private:
+    ezC2X::Logger log_;
 };
