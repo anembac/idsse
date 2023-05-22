@@ -65,7 +65,7 @@ struct Configuration
   std::string configPath = "/home/anders/kurser/thesis/sim/ns-allinone-3.35/ns-3.35/scratch/idsse-traci.xml";	// configuration file to load for the nodes
   std::uint32_t rerouteDelay = 10000;
   std::uint32_t speedAdapterStart = 1000;
-  std::uint32_t speedAdapterPeriod = 5000;
+  std::uint32_t speedAdapterPeriod = 3000;
   //std::uint64_t triggerStation = 0; // Station id sending maneuver request
   //std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
   //std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
