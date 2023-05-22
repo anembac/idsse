@@ -266,10 +266,10 @@ private:
 
     // Properties configureable through XML file
     //! Time to wait (ms) before the first triggering of the maneuver
-    std::uint32_t triggerStart_ = 10000;
-    std::uint32_t rerouteDelay_ = 10000;
-    std::uint32_t speedAdapterStart_ = 1000;
-    std::uint32_t speedAdapterPeriod_ = 5000;
+    std::uint32_t triggerStart_ = 2000;
+    std::uint32_t rerouteDelay_ = 3000;
+    std::uint32_t speedAdapterStart_ = 0;
+    std::uint32_t speedAdapterPeriod_ = 100;
     //! Time period (ms) with which triggering of the maneuver recurs
     //todo can we set to infinite/non-recurring??
     std::uint32_t triggerInterval_ = 5;
