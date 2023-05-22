@@ -123,16 +123,16 @@ idsse::normalStart(){
         Settings for all normal vehicles
     */
     //vehicleControl->setColor(238,255,230,255);
-    //vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
+    //vehicleControl->setSpeed(defaultSpeed_); //max speed on the road. '
     // if(getId()== vehicleIdOppositeDir){
     //     vehicleControl->setRoute(route_otherway);
     //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    //     double oSpeed = std::rand() % defaultSpeed+1;
+    //     double oSpeed = std::rand() % defaultSpeed_+1;
     //     log_.info() << "Vehicle " << getId() << ": Setting speed to " << oSpeed <<"m/s (randomly decided)";
     //     vehicleControl->setSpeed(oSpeed+2);
     // }else{
     //     vehicleControl->setColor(238,255,230,255);
-    //     vehicleControl->setSpeed(defaultSpeed); //max speed on the road. 
+    //     vehicleControl->setSpeed(defaultSpeed_); //max speed on the road. 
     // }
     log_.info() << "Normal start completed";
 }
@@ -271,7 +271,8 @@ void idsse::rerouter(){
     log_.info() << "Running rerouter";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider.continueOnMain(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
-        vehicleControl->setRoute(side_route);//is it really accessing the const
+        log_.info() << "Attempting to set new route";
+        vehicleControl->setRoute(sideRoute_);//is it really accessing the const
     }
 }
 
