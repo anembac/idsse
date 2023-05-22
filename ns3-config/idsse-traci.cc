@@ -54,10 +54,9 @@ struct Configuration
   std::string ezRootDir = "/home/anders/kurser/thesis/include"; 	// root directory of the ezCar2X installation
 
   double runtime = 50.0;		// unit seconds [s]
-  double activate = 10.0; 		// time for earliest activation of nodes [s]
+  double activate = 1.0; 		// time for earliest activation of nodes [s]
 
   std::uint32_t numOfNodes = 9; 		// number of nodes
-  std::uint32_t numOfAttackers =1;
   double equipRate = 1.0; 		// fraction of vehicles to equip
 
   bool deterministicChannel = 0;               // deterministic channel (enabled deterministic channel means disabled fading)
@@ -314,7 +313,7 @@ main (int argc, char *argv[])
 		      std::cout << "Failed to install and run application(s) on node " << n->GetId () << ": " << error << std::endl;
 		      exit(EXIT_FAILURE);
 		    });
-  appHelper.Install (vehicleNodes, properties.get_child("ezC2X.idsse"));
+  appHelper.Install (vehicleNodes, properties.get_child("ezC2X.Applications"));
   // create node manager that sets the life cycle accordingly
   Ptr<traci::AcceptPartial> acceptor = Create<traci::AcceptPartial> (config.equipRate);
   stream += acceptor->AssignStreams (stream);
