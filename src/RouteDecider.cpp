@@ -19,9 +19,13 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
             for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                if(y < YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x) {
-                    x_diff = x - mypos_x;
-                    speed = msg.second.getCam().speed;
+                if(y < YPOS_BELOW 
+                    && x > mypos_x 
+                    && x_diff > x - mypos_x 
+                    && msg.second.getCam().speed < speed) 
+                {
+                    //x_diff = x - mypos_x;
+                    speed = msg.second.getCam().speed ;
                 }
             }
         } else {
@@ -29,8 +33,11 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
              for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                if(y > YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x ) {
-                    x_diff = x - mypos_x;
+                if(y > YPOS_BELOW 
+                    && x > mypos_x 
+                    && x_diff > x - mypos_x 
+                    && msg.second.getCam().speed < speed) {
+                    //x_diff = x - mypos_x;
                     speed = msg.second.getCam().speed;
                 }
              }

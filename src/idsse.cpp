@@ -248,7 +248,7 @@ void idsse::saveReports (){
 
 
 void idsse::speedAdapter(){
-    log_.info() << "Running speed adapter";
+    log_.info() << "Running speed adapter (period=" << speedAdapterPeriod_ << ")";
     //This event should be scheduled like every second...
     //Variables is just fetching current timestamp, car x pos, and car y pos
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");

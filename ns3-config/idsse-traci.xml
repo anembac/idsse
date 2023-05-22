@@ -88,7 +88,7 @@
       <TriggerStart>500</TriggerStart>
       <RerouteDelay>500</RerouteDelay>
       <SpeedAdapterStart>0</SpeedAdapterStart>
-      <SpeedAdapterPeriod>500</SpeedAdapterPeriod>      
+      <SpeedAdapterPeriod>50</SpeedAdapterPeriod>      
     </idsse>
   </idsse>
 </ezC2X>
