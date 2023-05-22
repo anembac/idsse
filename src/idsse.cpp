@@ -114,26 +114,10 @@ idsse::normalStart(){
     log_.info() << "Running normal start";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
+    log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
     rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
+    log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
-    //vehicleControl->disableAutomaticSafeDriving();
-    //Schedule event for reroute
-
-    /*ScopedEvent triggerEvent_;
-        Settings for all normal vehicles
-    */
-    //vehicleControl->setColor(238,255,230,255);
-    //vehicleControl->setSpeed(defaultSpeed_); //max speed on the road. '
-    // if(getId()== vehicleIdOppositeDir){
-    //     vehicleControl->setRoute(route_otherway);
-    //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    //     double oSpeed = std::rand() % defaultSpeed_+1;
-    //     log_.info() << "Vehicle " << getId() << ": Setting speed to " << oSpeed <<"m/s (randomly decided)";
-    //     vehicleControl->setSpeed(oSpeed+2);
-    // }else{
-    //     vehicleControl->setColor(238,255,230,255);
-    //     vehicleControl->setSpeed(defaultSpeed_); //max speed on the road. 
-    // }
     log_.info() << "Normal start completed";
 }
 

@@ -291,7 +291,7 @@ private:
 
     int defaultSpeed_ = 12;
     //int vehicleIdOppositeDir = 1;
-    std::vector<std::string> sideRoute_ = {"R2, side1", "side2", "side3", "side4", "side5", "R5", "R6"};
+    std::vector<std::string> sideRoute_ = {"R1", "R2, side1", "side2", "side3", "side4", "side5", "R5", "R6"};
     std::vector<std::string> mainRoute_ = {"R1", "R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
