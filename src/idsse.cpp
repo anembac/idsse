@@ -195,13 +195,6 @@ idsse::handleReceivedCam(Cam const& cam)
         return;
     }else {
         //Create Report... send in cam and Meta data...
-        //Send the Report into the car_ids
-        //Send Report to network_ids (ensure this is a central shared network_ids)
-        //Send report to route_decider
-    }
-    if(isReporter_){ //Logging
-        //reporter_collection.push_back(report) //This is for collecting a msg_dump per reporter car
-        //log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
@@ -210,8 +203,14 @@ idsse::handleReceivedCam(Cam const& cam)
         std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //Divide by 65536 or no?
-        reporter_collection.push_back(Report(cam,meta));
-        
+        //TODO Send the Report into the car_ids
+        //TODO Send Report to network_ids (ensure this is a central shared network_ids)
+        //Send report to routeDecider
+        auto report = Report(cam,meta);
+        routeDecider.collectLatest(report);
+        if(isReporter_){ //Logging
+            reporter_collection.push_back(report);
+        }
     }
     
 }
@@ -262,7 +261,7 @@ void idsse::speedAdapter(){
     }else{
         time = 0;
     }
-    auto newSpeed = routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time);
+    auto newSpeed = routeDecider.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time);
     log_.info() << "SA: Setting new speed to" << newSpeed;
     vehicleControl->setSpeed(newSpeed);
     log_.info() << "SA: finished";
@@ -271,7 +270,7 @@ void idsse::speedAdapter(){
 void idsse::rerouter(){
     log_.info() << "Running rerouter";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
-    if (!routeDecider.continue_on_main(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
+    if (!routeDecider.continueOnMain(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
         vehicleControl->setRoute(side_route);//is it really accessing the const
     }
 }
