@@ -9,7 +9,7 @@ RouteDecider::~RouteDecider() {}
 not handle if cars have speed zero and speeding up to catch up...*/
 double 
 RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
-    
+    log_.info() << "Calculating new speed";
     //if(time!=0){clear_old_reports(time);}
     double x_diff = 300;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
@@ -19,6 +19,9 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
             for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
+                log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
+                log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+
                 if(y < YPOS_BELOW 
                     && x > mypos_x 
                     && x_diff > x - mypos_x 
@@ -34,7 +37,9 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
              for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                if(y > YPOS_BELOW 
+                log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
+                log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+                if(y >= YPOS_BELOW 
                     && x > mypos_x 
                     && x_diff > x - mypos_x 
                     && msg.second.getCam().speed < speed) {
