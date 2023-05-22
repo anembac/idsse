@@ -64,7 +64,9 @@ struct Configuration
   double txPower = 23;		// transmission power in dB
 
   std::string configPath = "/home/anders/kurser/thesis/sim/ns-allinone-3.35/ns-3.35/scratch/idsse-traci.xml";	// configuration file to load for the nodes
-
+  std::uint32_t rerouteDelay = 10000;
+  std::uint32_t speedAdapterStart = 1000;
+  std::uint32_t speedAdapterPeriod = 5000;
   //std::uint64_t triggerStation = 0; // Station id sending maneuver request
   //std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
   //std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
@@ -86,6 +88,10 @@ struct Configuration
     cmd.AddValue ("deterministic-channel", "Deterministic channel with disabled fading", deterministicChannel);
     cmd.AddValue ("txpower", "TX power per packet", txPower);
     cmd.AddValue ("config", "Configuration file for the ezCar2X stack on the nodes", configPath);
+    cmd.AddValue("RerouteDelay", "Time before running rerouting", rerouteDelay);
+    cmd.AddValue("SpeedAdapterStart", "Time before starting speedAdapter", speedAdapterStart);
+    cmd.AddValue("SpeedAdapterPeriod", "Period between running speedAdapter", speedAdapterPeriod);
+    
 
     // cmd.AddValue ("trigger-station", "Station id sending maneuver request", triggerStation);
     // cmd.AddValue ("trigger-start", "Offset time (ms) to trigger maneuver", triggerStart);
@@ -223,12 +229,12 @@ main (int argc, char *argv[])
 
   // Create node container for all other vehicles
   NodeContainer normalNodes;
-  normalNodes.Create (config.numOfNodes-config.numOfAttackers);
+  normalNodes.Create (config.numOfNodes);
 
-  NodeContainer attackNodes;
-  attackNodes.Create (config.numOfAttackers);
+  // NodeContainer attackNodes;
+  // attackNodes.Create (config.numOfAttackers);
 
-  NodeContainer vehicleNodes (normalNodes, attackNodes);
+  NodeContainer vehicleNodes (normalNodes);
   // Install life cycle management on all vehicles
   NodeLifecycleHelper nlcHelper;
   nlcHelper.Install (vehicleNodes);
@@ -334,22 +340,22 @@ main (int argc, char *argv[])
    * equipment rate.
    */
 
-  Ptr<TraCiNodeLifecycleManager> attackNodeManager = Create<TraCiNodeLifecycleManager> (acceptor);
-  attackNodeManager->AddNodes (attackNodes);
-  attackNodeManager->SetRandomActivationDelay (
-      CreateObjectWithAttributes<UniformRandomVariable> (
-	  "Min", DoubleValue (0), "Max", DoubleValue (0.001)));
+  // Ptr<TraCiNodeLifecycleManager> attackNodeManager = Create<TraCiNodeLifecycleManager> (acceptor);
+  // attackNodeManager->AddNodes (attackNodes);
+  // attackNodeManager->SetRandomActivationDelay (
+  //     CreateObjectWithAttributes<UniformRandomVariable> (
+	//   "Min", DoubleValue (0), "Max", DoubleValue (0.001)));
 
   // attackNodeManager->SetEarliestActivationTime (Seconds (config.activate));
-  attackNodeManager->SetEarliestActivationTime (Seconds (5));
+  //attackNodeManager->SetEarliestActivationTime (Seconds (5));
 
   // Add vehicle handler.
-  traci.AddHandler (attackNodeManager, 0);
+  //traci.AddHandler (attackNodeManager, 0);
 
   TraCiGuiHelper guihelperNormal;
-  TraCiGuiHelper guihelperAttack;
+  //TraCiGuiHelper guihelperAttack;
   traci::Color normalColor(0,155,133,255);
-  traci::Color attackColor(255,0,0,255);
+  //traci::Color attackColor(255,0,0,255);
   // guihelperNormal.SetActiveColor(normalColor);
   // guihelperNormal.EnableActiveColor(normalNodes);
   // guihelperAttack.SetActiveColor(attackColor);
