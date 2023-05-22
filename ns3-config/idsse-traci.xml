@@ -84,11 +84,8 @@
   </Framework>
 
   <idsse>
-    <idsse>
       <TriggerStart>500</TriggerStart>
       <RerouteDelay>500</RerouteDelay>
       <SpeedAdapterStart>0</SpeedAdapterStart>
-      <SpeedAdapterPeriod>50</SpeedAdapterPeriod>      
-    </idsse>
   </idsse>
 </ezC2X>
