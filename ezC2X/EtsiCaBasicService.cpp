@@ -751,12 +751,21 @@ EtsiCaBasicService::cam()
     This solution is a bit ugly but we will hijack the dangerousgoods DE 
     as it isn't relevant to our implementation.
     */
-    cam.mutable_payload()
-        ->mutable_containers()
-        ->mutable_special_vehicle_container()
-        ->mutable_safety_car_container()
-        ->mutable_light_bar_siren_in_use()
-        ->set_light_bar_activated(true);
+   if(attackActive_){
+        cam.mutable_payload()
+            ->mutable_containers()
+            ->mutable_special_vehicle_container()
+            ->mutable_safety_car_container()
+            ->mutable_light_bar_siren_in_use()
+            ->set_light_bar_activated(true);
+   }else{
+        cam.mutable_payload()
+            ->mutable_containers()
+            ->mutable_special_vehicle_container()
+            ->mutable_safety_car_container()
+            ->mutable_light_bar_siren_in_use()
+            ->set_light_bar_activated(false); 
+   }
     return cam;
 }
 

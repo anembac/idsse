@@ -178,7 +178,6 @@ idsse::handleReceivedCam(Cam const& cam)
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
     }else {
-        //Create Report... send in cam and Meta data...
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
@@ -192,8 +191,9 @@ idsse::handleReceivedCam(Cam const& cam)
         //Send report to routeDecider
         auto report = Report(cam,meta);
         routeDecider.collectLatest(report);
+
         if(isReporter_){ //Logging
-            reporter_collection.push_back(report);
+            reportCollection.push_back(report);
         }
     }
     
@@ -224,7 +224,7 @@ void idsse::saveReports (){
     std::string filename = "car_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     myfile.open(filename);
     myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
-    for(auto report: reporter_collection) {
+    for(auto report: reportCollection) {
         myfile << (report.concatenateValues() + "\n");
     }
     myfile.close();

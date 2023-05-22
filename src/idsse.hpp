@@ -295,7 +295,7 @@ private:
     std::vector<std::string> mainRoute_ = {"R1", "R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
-    std::vector<Report> reporter_collection;
+    std::vector<Report> reportCollection;
     RouteDecider routeDecider;
 
     
