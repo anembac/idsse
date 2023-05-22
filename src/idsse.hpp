@@ -289,10 +289,10 @@ private:
     // std::shared_ptr<VehicleControlInterface> vehicleControl_;
     // std::shared_ptr<TimeProvider> timeProvider_;
 
-    int defaultSpeed = 12;
-    int vehicleIdOppositeDir = 1;
-    std::vector<std::string> side_route = {"side1", "side2", "side3", "side4", "side5", "R5", "R6"};
-    std::vector<std::string> main_route = {"R1", "R2", "R3", "R4", "R5", "R6"};
+    int defaultSpeed_ = 12;
+    //int vehicleIdOppositeDir = 1;
+    std::vector<std::string> sideRoute_ = {"side1", "side2", "side3", "side4", "side5", "R5", "R6"};
+    std::vector<std::string> mainRoute_ = {"R1", "R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reporter_collection;
