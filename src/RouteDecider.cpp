@@ -8,7 +8,7 @@ RouteDecider::~RouteDecider() {}
 /* Might need extra funcitonality, currently does
 not handle if cars have speed zero and speeding up to catch up...*/
 double 
-RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
+RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
     //if(time!=0){clear_old_reports(time);}
     double x_diff = 300;
@@ -56,7 +56,7 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
  * decided 
  */
 bool
-RouteDecider::continue_on_main(double side_speed, double main_speed){
+RouteDecider::continueOnMain(double side_speed, double main_speed){
     double x;
     double y;
     double car_speed;
@@ -76,12 +76,12 @@ RouteDecider::continue_on_main(double side_speed, double main_speed){
 }
 
 void
-RouteDecider::collect_latest(Report report){
+RouteDecider::collectLatest(Report report){
     latest_msgs[report.getCam().id] = report;
 }
 
 void
-RouteDecider::clear_old_reports(uint64_t time){
+RouteDecider::clearOldReports(uint64_t time){
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
         if(msg.second.getCam().generationDeltaTime < time - 2000){
