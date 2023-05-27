@@ -678,7 +678,7 @@ EtsiCaBasicService::cam()
         Ground Truth Data collection 
         */
         //GANlog
-        log_.info() << "/TRUTH/;" << convertedTs << ";" << "G" << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
+        //log_.info() << "/TRUTH/;" << convertedTs << ";" << "G" << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
    
         /*
         ATTACKS happen here 
@@ -748,8 +748,8 @@ EtsiCaBasicService::cam()
 
     /*
     Add a flag indicating that the message sent is part of an attack.
-    This solution is a bit ugly but we will hijack the dangerousgoods DE 
-    as it isn't relevant to our implementation.
+    This solution is a bit ugly but we will hijack the safety car light bar DE 
+    as it isn't relevant to our implementation. Any unused parameter in the cam would suffice.
     */
     cam.mutable_payload()
         ->mutable_containers()
