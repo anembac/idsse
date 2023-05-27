@@ -221,7 +221,7 @@ idsse::state() const
 
 void idsse::saveReports (){
     std::ofstream myfile;
-    std::string filename = "report" + getId() + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now()))) + ".csv";
+    std::string filename = "report_" + getId() + "_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now()))) + ".csv";
     myfile.open(filename);
     myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
     for(auto report: reportCollection) {
