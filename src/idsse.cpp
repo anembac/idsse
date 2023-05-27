@@ -104,7 +104,7 @@ idsse::attackStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
     triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
-    vehicleControl->setSpeed(5);
+    vehicleControl->setSpeed(5); //TODO: Remove this line
     log_.info() << "Attack start completed";
 
 }
@@ -185,7 +185,7 @@ idsse::handleReceivedCam(Cam const& cam)
         auto lon = vehicleControl->getCenterPosition().getLongitude().value();
         std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
         meta.positionOnReceieve = pos;
-        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //Divide by 65536 or no?
+        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         //TODO Send the Report into the car_ids
         //TODO Send Report to network_ids (ensure this is a central shared network_ids)
         //Send report to routeDecider
@@ -252,7 +252,8 @@ void idsse::speedAdapter(){
 }
 
 void idsse::rerouter(){
-    log_.info() << "Running rerouter";
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
+    log_.info() << "Running rerouter at t:" << makeItsTimestamp(timeProvider->now());
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider.continueOnMain(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";

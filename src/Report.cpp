@@ -29,9 +29,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
 
     //todo: not sure if this object always exists, so need to check
     if(cam.payload().containers().special_vehicle_container().safety_car_container().has_light_bar_siren_in_use()){
-        cam_.attacking = true;
-    }else{
-        cam_.attacking = false;
+        cam_.attacking = cam.payload().containers().special_vehicle_container().safety_car_container().light_bar_siren_in_use().light_bar_activated();
     }
     fingerprint(cam_);
     //Save metadata
