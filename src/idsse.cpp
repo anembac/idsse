@@ -119,6 +119,7 @@ idsse::normalStart(){
     log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
     log_.info() << "Normal start completed";
+    vehicleControl->disableAutomaticSafeDriving();
 }
 
 
@@ -259,7 +260,7 @@ void idsse::rerouter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
-        vehicleControl->setRoute(sideRoute_);//is it really accessing the const
+        vehicleControl->setRoute(sideRoute_);
     }
 }
 
