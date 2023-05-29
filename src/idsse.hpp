@@ -48,6 +48,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <RouteDecider.hpp>
+#include <CarIDS.hpp>
 
 namespace ezC2X
 {
@@ -295,8 +296,9 @@ private:
     std::vector<std::string> mainRoute_ = {"R1", "R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
-    std::vector<Report> reportCollection;
-    RouteDecider routeDecider;
+    std::vector<Report> reportCollection_;
+    RouteDecider routeDecider_;
+    CarIDS cIDS;
 
     
     

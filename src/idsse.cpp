@@ -190,10 +190,10 @@ idsse::handleReceivedCam(Cam const& cam)
         //TODO Send Report to network_ids (ensure this is a central shared network_ids)
         //Send report to routeDecider
         auto report = Report(cam,meta);
-        routeDecider.collectLatest(report);
+        routeDecider_.collectLatest(report);
 
         if(isReporter_){ //Logging
-            reportCollection.push_back(report);
+            reportCollection_.push_back(report);
         }
     }
     
@@ -224,7 +224,7 @@ void idsse::saveReports (){
     std::string filename = "report_" + getId() + "_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now()))) + ".csv";
     myfile.open(filename);
     myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
-    for(auto report: reportCollection) {
+    for(auto report: reportCollection_) {
         myfile << (report.concatenateValues() + "\n");
     }
     myfile.close();
@@ -245,7 +245,7 @@ void idsse::speedAdapter(){
     }else{
         time = 0;
     }
-    auto newSpeed = routeDecider.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time);
+    auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
     log_.info() << "SA: Setting new speed to" << newSpeed;
     vehicleControl->setSpeed(newSpeed);
     log_.info() << "SA: finished";
@@ -255,7 +255,7 @@ void idsse::rerouter(){
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
     log_.info() << "Running rerouter at t:" << makeItsTimestamp(timeProvider->now());
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
-    if (!routeDecider.continueOnMain(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
+    if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
         vehicleControl->setRoute(sideRoute_);//is it really accessing the const
     }
