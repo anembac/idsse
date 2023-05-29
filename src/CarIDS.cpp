@@ -56,7 +56,7 @@ CarIDS::speedConsistency(double speed_diff, double time) {
 
 bool 
 CarIDS::compareMsgConsistency(Report old_msg, Report new_msg) {
-    double t_diff = (new_msg.getCam().generationDeltaTime - old_msg.getCam().generationDeltaTime) / 1000;
+    double t_diff = (double)((new_msg.getCam().generationDeltaTime - old_msg.getCam().generationDeltaTime) / 1000);
 
     return rangePlausability(new_msg) &&
            speedPlausability(new_msg) &&
