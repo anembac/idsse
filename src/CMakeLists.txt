@@ -5,6 +5,7 @@ add_library(${PLUGIN_TARGET} SHARED
     idssePlugin.cpp
     idsse.cpp
     RouteDecider.cpp
+    CarIDS.cpp
     Report.cpp
 
 )
