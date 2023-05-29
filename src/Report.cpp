@@ -9,7 +9,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
     cam_.id = cam.header().station_id(); //TODO fix id
     auto refPos = cam.payload().containers().basic_container().reference_position();
-    cam_.pos = std::tuple<double,double>(refPos.longitude().value(), refPos.latitude().value());
+    cam_.pos = std::tuple<double,double>(refPos.latitude().value(), refPos.longitude().value());
     auto hfb = cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency();
     cam_.speed = hfb.speed().value().value();
     cam_.heading = hfb.heading().value().value();
