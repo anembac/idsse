@@ -68,14 +68,16 @@ CarIDS::compareMsgConsistency(Report old_msg, Report new_msg) {
 bool 
 CarIDS::carIDS(Report msg_latest) {
     uint32_t id = msg_latest.getCam().id;
+    bool detected = false;
     if (!msg_stacks_[id].empty()) {
         Report msg_prev = msg_stacks_[id].back();
         if (!compareMsgConsistency(msg_prev, msg_latest)) {
             misbehaved_.push_back(msg_latest);
+            detected = true;
         }
     }
     msg_stacks_[id].push_back(msg_latest);
-    return false;
+    return detected;
 }
 
 double 
