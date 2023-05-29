@@ -47,6 +47,7 @@
 #include <bits/stdc++.h>
 #include <boost/algorithm/string.hpp>
 
+#include <Report.hpp>
 #include <RouteDecider.hpp>
 #include <CarIDS.hpp>
 
