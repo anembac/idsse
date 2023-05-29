@@ -37,7 +37,13 @@ idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
     log_.info() << "Shutting down " << vehicleId_;
-    if(isReporter_){saveReports();}
+    if(isReporter_){
+        auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+        std::string reporterFile = "report_" + getId() + "_" + timestamp + ".csv";
+        std::string misbehaviorFile = "misbehaving_" + getId() + "_" + timestamp + ".csv";
+        saveReports(reportCollection_, reporterFile);
+        saveReports(cIDS_.getMisbehavedMessages(), misbehaviorFile);
+    }
     triggerEvent_.cancel();
     rerouteEvent_.cancel();
     speedAdapterEvent_.cancel();
@@ -193,7 +199,7 @@ idsse::handleReceivedCam(Cam const& cam)
         routeDecider_.collectLatest(report);
 
         //Send the Report into the carIDs
-        cIDS.carIDS(report);
+        cIDS_.carIDS(report);
 
         if(isReporter_){ //Logging
             reportCollection_.push_back(report);
@@ -222,12 +228,11 @@ idsse::state() const
     return state_;
 }
 
-void idsse::saveReports (){
+void idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
-    std::string filename = "report_" + getId() + "_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now()))) + ".csv";
     myfile.open(filename);
     myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
-    for(auto report: reportCollection_) {
+    for(auto report: reports) {
         myfile << (report.concatenateValues() + "\n");
     }
     myfile.close();

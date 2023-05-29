@@ -210,7 +210,7 @@ private:
     uint8_t
     isAttacker(std::string id);
 
-    void saveReports ();
+    void saveReports (std::vector<Report> reports, std::string filename);
 
     void speedAdapter();
 
@@ -299,7 +299,7 @@ private:
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reportCollection_;
     RouteDecider routeDecider_;
-    CarIDS cIDS;
+    CarIDS cIDS_;
 
     
     
