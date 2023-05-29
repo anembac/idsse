@@ -186,11 +186,13 @@ idsse::handleReceivedCam(Cam const& cam)
         std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
-        //TODO Send the Report into the car_ids
-        //TODO Send Report to network_ids (ensure this is a central shared network_ids)
+        
         //Send report to routeDecider
         auto report = Report(cam,meta);
         routeDecider_.collectLatest(report);
+
+        //Send the Report into the carIDs
+        cIDS.carIDS(report);
 
         if(isReporter_){ //Logging
             reportCollection_.push_back(report);
