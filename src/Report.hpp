@@ -1,3 +1,5 @@
+#ifndef REPORT_HPP
+#define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
 
 
@@ -60,3 +62,4 @@ private:
     ReadableCam cam_;
     MetaData metaData_;
 };
+#endif //REPORT_HPP
