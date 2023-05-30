@@ -605,7 +605,8 @@ EtsiCaBasicService::cam()
 
     //Switch out posdata for our own modified version when spoofing
     if(attackActive_){
-        posData.emplace(spoofPosData());
+        posData = spoofPosData();
+        log_.info() << "posdata.speed 1: " << posData->speed;
     }
 
     if (!posData)
@@ -683,7 +684,7 @@ EtsiCaBasicService::cam()
         if (stationType_ != cdd::StationType_Value_ROAD_SIDE_UNIT)
         {
             // can throw datahub::ObjectInvalid
-            log_.info() << posData->speed.value();
+            log_.info() << "posdata.speed 2: " << posData->speed;
             addHighFrequencyContainer(cam, *posData, *hub);
 
             if (shouldGenerateLowFrequencyContainer(checkIntervalsSinceLastLfContainer_))
@@ -824,11 +825,12 @@ EtsiCaBasicService::addHighFrequencyContainer(Cam& cam, PositionVector const& po
     // speed
     if (posData.speed)
     {
+        log_.info() << "posdata.speed 3: " << *posData.speed;
         hfContainer->mutable_speed()->mutable_value()->set_value(*posData.speed);
 
         // record the speed included in the CAM as it will be used in checking the CAM trigger conditions
         lastSpeed_ = *posData.speed;
-        if(attackActive_){log_.info() << "Speed assignment: " << lastSpeed_;}
+        if(attackActive_){log_.info() << "posdata.speed 4: " << *posData.speed;}
 
         if (posData.speedConfidence)
         {
