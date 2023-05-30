@@ -602,9 +602,12 @@ EtsiCaBasicService::cam()
 
     // current position is accessible through the position provider
     boost::optional<ezC2X::PositionVector> posData = positionProvider_.position();
+
+    //Switch out posdata for our own modified version when spoofing
     if(attackActive_){
         auto posData = spoofPosData();
     }
+
     if (!posData)
     {
         // WARN is preferred here since having no valid position information is not a setup error
@@ -673,19 +676,6 @@ EtsiCaBasicService::cam()
 
         // can throw boost::numeric::bad_numeric_cast
         cam.mutable_payload()->set_generation_time(boost::numeric_cast<std::uint64_t>(convertedTs));
-
-        /* 
-        Ground Truth Data collection 
-        */
-        //GANlog
-        //log_.info() << "/TRUTH/;" << convertedTs << ";" << "G" << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
-   
-        /*
-        ATTACKS happen here 
-        */
-
-        //GANlog
-        //log_.info() << "/GAN/;" << convertedTs << ";" << attackLabel << ";" << stationId_ << ";" << posData->speed.get_value_or(-1) << ";" << posData->heading.get_value_or(-1) << ";" << posData->position.getLatitude().value()<< ";" << posData->position.getLongitude().value();
 
         // Basic container
         addBasicContainer(cam, *posData);
@@ -1255,6 +1245,7 @@ EtsiCaBasicService::spoofPosData()
     auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
     auto newLongitude = oldLongitude + longitudeDiff;
     auto newLatitude = oldLatitude + latitudeDiff;
+    pv->speed = newSpeed;
     pv->position = pv->position.wrap(newLatitude, newLongitude);
     log_.info() << "Spoofed position data created successfully";
     return pv;
