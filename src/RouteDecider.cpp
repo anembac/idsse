@@ -11,7 +11,7 @@ double
 RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
     //if(time!=0){clear_old_reports(time);}
-    double x_diff = 300;
+    double x_diff = 80;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
         if(mypos_y < YPOS_BELOW){

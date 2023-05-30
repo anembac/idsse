@@ -300,9 +300,6 @@ private:
     std::vector<Report> reportCollection_;
     RouteDecider routeDecider_;
     CarIDS cIDS_;
-
-    
-    
 };
 
 }  // namespace ezC2X
