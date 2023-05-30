@@ -246,7 +246,7 @@ void idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-    std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
+    std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
     uint64_t time;
     if(caService_->getLatestCam().has_value()){
         time = caService_->getLatestCam().value().payload().generation_time();
