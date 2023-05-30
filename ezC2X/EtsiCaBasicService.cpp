@@ -1243,9 +1243,10 @@ EtsiCaBasicService::spoofPosData()
     auto lastSpeed = lastSpeed_.value();
     auto longitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
     auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
+    log_.info() << "latiDiff: "<< latitudeDiff << ", longDiff: " << longitudeDiff;
     auto newLongitude = oldLongitude + longitudeDiff;
     auto newLatitude = oldLatitude + latitudeDiff;
-    pv->speed = newSpeed;
+    pv->speed = 5.00; //newSpeed;
     pv->position = pv->position.wrap(newLatitude, newLongitude);
     log_.info() << "Spoofed position data created successfully";
     return pv;
