@@ -19,9 +19,11 @@ RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t ti
             for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                //log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
-                //log_.info() << "my x:" << mypos_x << ", their x: " << x << ", my y: " << mypos_y << ", their y:" << y;
-                //log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+                if(msg.second.getCam().speed < speed){
+                    log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
+                    log_.info() << "my x:" << mypos_x << ", their x: " << x << ", my y: " << mypos_y << ", their y:" << y;
+                    log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+                }
 
                 if(y < YPOS_BELOW 
                     && x > mypos_x 
@@ -38,9 +40,11 @@ RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t ti
              for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                //log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
-                //log_.info() << "my x:" << mypos_x << ", their x: " << x << ", my y: " << mypos_y << ", their y:" << y;
-                //log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+                if(msg.second.getCam().speed < speed){
+                    log_.info() << "my speed: " << speed << ", received speed: " << msg.second.getCam().speed;
+                    log_.info() << "my x:" << mypos_x << ", their x: " << x << ", my y: " << mypos_y << ", their y:" << y;
+                    log_.info() << "Booleans -- x greater than my x:" << (x > mypos_x) << ", within xdiff:" << (x_diff > x - mypos_x) << ", speed slower than mine:" << (msg.second.getCam().speed < speed);
+                }
                 if(y >= YPOS_BELOW 
                     && x > mypos_x 
                     && x_diff > x - mypos_x 
