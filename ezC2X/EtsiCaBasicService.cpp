@@ -606,7 +606,6 @@ EtsiCaBasicService::cam()
     //Switch out posdata for our own modified version when spoofing
     if(attackActive_){
         posData = spoofPosData();
-        log_.info() << "posdata.speed 1: " << posData->speed;
     }
 
     if (!posData)
@@ -684,7 +683,6 @@ EtsiCaBasicService::cam()
         if (stationType_ != cdd::StationType_Value_ROAD_SIDE_UNIT)
         {
             // can throw datahub::ObjectInvalid
-            log_.info() << "posdata.speed 2: " << posData->speed;
             addHighFrequencyContainer(cam, *posData, *hub);
 
             if (shouldGenerateLowFrequencyContainer(checkIntervalsSinceLastLfContainer_))
@@ -750,9 +748,6 @@ EtsiCaBasicService::cam()
         ->mutable_light_bar_siren_in_use()
         ->set_light_bar_activated(attackActive_);
     
-    if(attackActive_){
-        log_.info() << "spoofed speed: " << cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency().speed().value().value();
-    }
     return cam;
 }
 
@@ -825,12 +820,10 @@ EtsiCaBasicService::addHighFrequencyContainer(Cam& cam, PositionVector const& po
     // speed
     if (posData.speed)
     {
-        log_.info() << "posdata.speed 3: " << *posData.speed;
         hfContainer->mutable_speed()->mutable_value()->set_value(*posData.speed);
 
         // record the speed included in the CAM as it will be used in checking the CAM trigger conditions
         lastSpeed_ = *posData.speed;
-        if(attackActive_){log_.info() << "posdata.speed 4: " << *posData.speed;}
 
         if (posData.speedConfidence)
         {
@@ -1229,12 +1222,7 @@ return checkIntervalsToDuration(checkIntervalsSinceLastCam_);
 
 void
 EtsiCaBasicService::spoof(){
-    //auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "Etsi");
-    //auto cm = deps_.getOrThrow<PseudonymManager,component::MissingDependency>("PseudonymManager","EtsiCaBasicService::spoof");
-    // Disable regular cam send outs and create our own generation method with customizable values
-    // TODO: Figure out how to sync them
     setAttackActive(true);
-
 }
 
 boost::optional<ezC2X::PositionVector>
@@ -1243,17 +1231,13 @@ EtsiCaBasicService::spoofPosData()
     log_.info() << "Spoofing position data";
     auto pv = positionProvider_.position();
     auto newSpeed = pv->speed.value()*targetSpeedModifier_;
-    //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
     auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
-    log_.info() << "old speed: " << pv->speed.value() << ", new speed: " << newSpeed;
-    log_.info() << "delta_t: " << delta_t;
     auto oldLongitude = lastPosition_->getLongitude().value();
     auto oldLatitude = lastPosition_->getLatitude().value();
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
     auto longitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
     auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
-    log_.info() << "latiDiff: " << latitudeDiff << ", longDiff: " << longitudeDiff;
     auto newLongitude = oldLongitude + longitudeDiff;
     auto newLatitude = oldLatitude + latitudeDiff;
     pv->speed.emplace(5.00); //newSpeed;
