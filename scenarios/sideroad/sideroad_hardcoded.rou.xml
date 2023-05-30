@@ -43,13 +43,13 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <route edges="R1 R2 R3 R4 R5 R6" color="yellow" id="main_route"/>
     <route edges="side1 side2 side3 side4 side5 R5 R6" color="yellow" id="side_route"/>
-    <trip id="attacker" depart="0.00" color="red" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="reporter" depart="0.10" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal1" depart="0.30" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal2" depart="0.40" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal3" depart="0.50" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal4" depart="1.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal5" depart="1.20" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal6" depart="1.70" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal7" depart="2.60" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="attacker" depart="0.00" departSpeed="20.00" color="red" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="reporter" depart="0.10" departSpeed="20.00" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal1" depart="0.30" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal2" depart="0.40" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal3" depart="0.50" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal4" depart="1.00" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal5" depart="1.20" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal6" depart="1.70" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal7" depart="2.60" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
 </routes>
