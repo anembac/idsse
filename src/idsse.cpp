@@ -155,19 +155,13 @@ idsse::start(component::Bundle const& framework)
     }
 
     //Vehicle type branching
-    log_.info() << "Assigning id";
     std::string id = getId();
-    //log_.info() << "Determining if vehicle (" << id << ") is attacker based on ID";
     if(isAttacker(id)){
         isAttacker_ = true;
-        log_.info() << "Vehicle (" << id << ") is attacker, running attackStart()";
         attackStart();
     }else{
-        log_.info() << "Vehicle (" << id << ") is normal, running normalStart()";
         normalStart();
-        //log_.info() << "Determining if vehicle (" << id << ") is reporter based on ID";
         if(isReporter(id)){
-            log_.info() << "Vehicle (" << id << ") is reporter, setting reporter flag to true";
             isReporter_ = true;
         }
     }
