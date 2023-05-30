@@ -1237,6 +1237,8 @@ EtsiCaBasicService::spoofPosData()
     auto newSpeed = pv->speed.value()*targetSpeedModifier_;
     //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
     auto delta_t = getTimeSinceLastCam().count()/1000; //converted to seconds
+    log_.info() << "old speed: " << pv->speed.value() << ", new speed: " << newSpeed;
+    log_.info() << "delta_t: " << delta_t;
     auto oldLongitude = lastPosition_->getLongitude().value();
     auto oldLatitude = lastPosition_->getLatitude().value();
     auto lastHeading = lastHeading_.value();
