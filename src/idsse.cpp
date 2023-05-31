@@ -184,7 +184,7 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.id = vehicleId_;
         auto lat = vehicleControl->getCenterPosition().getLatitude().value();
         auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-        std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
+        std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         
