@@ -1191,11 +1191,6 @@ EtsiCaBasicService::isSuppressCAMs(){
     return suppressCAMs;
 }
 
-boost::optional<Cam>
-EtsiCaBasicService::getLatestCam(){
-    return latestCam_;
-}
-
 boost::optional<double>
 EtsiCaBasicService::getlastHeading()
 {

@@ -146,7 +146,6 @@ idsse::start(component::Bundle const& framework)
         log_.info() << "Enabling CAM subscription";
         camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
 
-
     }
     catch (component::NotFoundInBundle const& e)
     {
@@ -235,15 +234,11 @@ void idsse::saveReports (std::vector<Report> reports, std::string filename){
 
 void idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
-    uint64_t time;
-    if(caService_->getLatestCam().has_value()){
-        time = caService_->getLatestCam().value().payload().generation_time();
-    }else{
-        time = 0;
-    }
+    uint64_t time = makeItsTimestamp(timeProvider->now());
     auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
     log_.info() << "SA: " << getId() << " setting new speed to " << newSpeed;
     vehicleControl->setSpeed(newSpeed);

@@ -169,12 +169,6 @@ public:
     boost::optional<ezC2X::PositionVector>
     getPositionVector() override;
 
-    /*!
-    * @brief Returns the latest sent cam
-    */
-    boost::optional<Cam>
-    getLatestCam() override;
-
     void spoof() override;
 
     //! Last heading value
@@ -473,8 +467,6 @@ private:
     bool suppressCAMs = false;
 
     const double targetSpeedModifier_ = 0.5; // 75% of current speed
-
-    boost::optional<Cam> latestCam_;
 };
 
 }  // namespace ezC2X

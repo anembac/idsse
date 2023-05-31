@@ -119,12 +119,6 @@ public:
     virtual boost::optional<ezC2X::PositionVector>
     getPositionVector() = 0;
 
-    /*!
-    * @brief Returns the latest sent cam
-    */
-    virtual boost::optional<Cam>
-    getLatestCam() = 0;
-
     virtual void spoof() = 0;
 
     //! Last heading value
