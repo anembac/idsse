@@ -10,7 +10,11 @@ not handle if cars have speed zero and speeding up to catch up...*/
 double 
 RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
-    if(time!=0){clearOldReports(time);}
+    log_.info() << "newSpeed time is " << time;
+    if(time!=0){
+        log_.info() << "Clearing old report";
+        clearOldReports(time);
+        }
     double x_diff = 200;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
@@ -77,7 +81,6 @@ RouteDecider::collectLatest(Report report){
 
 void
 RouteDecider::clearOldReports(uint64_t time){
-    log_.info() << "Clearing old report";
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
         log_.info() << "genDeltaT: " << msg.second.getCam().generationDeltaTime << ", t-500: "<< (time-500);
