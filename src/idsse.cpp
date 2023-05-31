@@ -245,7 +245,7 @@ void idsse::speedAdapter(){
         time = 0;
     }
     auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
-    log_.info() << "SA: Setting new speed to " << newSpeed;
+    log_.info() << "SA: " << getId() << "Setting new speed to " << newSpeed;
     vehicleControl->setSpeed(newSpeed);
     log_.info() << "SA: finished";
 }

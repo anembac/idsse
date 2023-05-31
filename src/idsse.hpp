@@ -271,7 +271,7 @@ private:
     std::uint32_t triggerStart_ = 1000;
     std::uint32_t rerouteDelay_ = 5500;
     std::uint32_t speedAdapterStart_ = 0;
-    std::uint32_t speedAdapterPeriod_ = 100;
+    std::uint32_t speedAdapterPeriod_ = 150;
     //! Time period (ms) with which triggering of the maneuver recurs
     //todo can we set to infinite/non-recurring??
     std::uint32_t triggerInterval_ = 5;
