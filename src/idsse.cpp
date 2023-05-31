@@ -247,10 +247,10 @@ void idsse::speedAdapter(){
 
 void idsse::rerouter(){
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
-    log_.info() << "Running rerouter at t:" << makeItsTimestamp(timeProvider->now());
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
+        log_.info() << "roadID: "<< vehicleControl->getRoadId();
         vehicleControl->setRoute(sideRoute_);
     }
 }
