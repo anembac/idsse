@@ -221,7 +221,8 @@ idsse::state() const
     return state_;
 }
 
-void idsse::saveReports (std::vector<Report> reports, std::string filename){
+void 
+idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
     myfile.open(filename);
     myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
@@ -232,7 +233,8 @@ void idsse::saveReports (std::vector<Report> reports, std::string filename){
 }
 
 
-void idsse::speedAdapter(){
+void 
+idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
@@ -245,14 +247,25 @@ void idsse::speedAdapter(){
     log_.info() << "SA: finished";
 }
 
-void idsse::rerouter(){
+void 
+idsse::rerouter(){
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
-        log_.info() << "roadID: "<< vehicleControl->getRoadId();
-        vehicleControl->setRoute(sideRoute_);
+        vehicleControl->setRoute(trimRoute(sideRoute_, vehicleControl->getRoadId()));
     }
 }
 
+std::vector<std::string>
+idsse::trimRoute(std::vector<std::string> route, std::string roadID){
+    bool trim = true;
+    std::vector<std::string> trimmed;
+    for(auto& road : route){
+        if(road == roadID){trim = false;}
+        if(!trim){trimmed.push_back(road);}
+    }
+    return trimmed;
+
+}
 } // namespace ezC2X
