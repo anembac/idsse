@@ -1,16 +1,17 @@
 #include <RouteDecider.hpp>
 #include <vector>
 
-RouteDecider::RouteDecider(){}
+RouteDecider::RouteDecider(): log_("routeDecider"){}
 
 RouteDecider::~RouteDecider() {}
 
 /* Might need extra funcitonality, currently does
 not handle if cars have speed zero and speeding up to catch up...*/
 double 
-RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t time){
-    clear_old_reports(time);
-    double x_diff = 100;
+RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time){
+    log_.info() << "Calculating new speed";
+    if(time!=0){clearOldReports(time);}
+    double x_diff = 80;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
         if(mypos_y < YPOS_BELOW){
@@ -18,9 +19,14 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
             for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                if(y < YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x) {
-                    x_diff = x - mypos_x;
+                if(y < YPOS_BELOW 
+                    && x > mypos_x 
+                    && x_diff > x - mypos_x 
+                    && msg.second.getCam().speed < speed) 
+                {
+                    //x_diff = x - mypos_x;
                     speed = msg.second.getCam().speed;
+                    log_.info() << "sideroad updating speed to " << speed;
                 }
             }
         } else {
@@ -28,8 +34,12 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
              for(auto& msg :latest_msgs){
                 x = std::get<0>(msg.second.getCam().pos);
                 y = std::get<1>(msg.second.getCam().pos);
-                if(y > YPOS_BELOW && x > mypos_x && x_diff > x - mypos_x ) {
-                    x_diff = x - mypos_x;
+                if(y >= YPOS_BELOW 
+                    && x > mypos_x 
+                    && x_diff > x - mypos_x 
+                    && msg.second.getCam().speed < speed) {
+                    //x_diff = x - mypos_x;
+                    log_.info() << "mainroad updating speed to " << speed;
                     speed = msg.second.getCam().speed;
                 }
              }
@@ -41,7 +51,7 @@ RouteDecider::new_speed(double mypos_x, double mypos_y, double speed, uint64_t t
  * decided 
  */
 bool
-RouteDecider::continue_on_main(double side_speed, double main_speed){
+RouteDecider::continueOnMain(double side_speed, double main_speed){
     double x;
     double y;
     double car_speed;
@@ -61,15 +71,15 @@ RouteDecider::continue_on_main(double side_speed, double main_speed){
 }
 
 void
-RouteDecider::collect_latest(Report report){
+RouteDecider::collectLatest(Report report){
     latest_msgs[report.getCam().id] = report;
 }
 
 void
-RouteDecider::clear_old_reports(uint64_t time){
+RouteDecider::clearOldReports(uint64_t time){
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
-        if(msg.second.getCam().generationDeltaTime < time - 2000){
+        if(msg.second.getCam().generationDeltaTime < time - 300){
             ids.push_back(msg.first);
         } 
     }

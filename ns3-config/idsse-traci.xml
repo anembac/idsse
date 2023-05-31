@@ -82,9 +82,12 @@
 
 
   </Framework>
-  <idsse>
+
+  <Applications>
     <idsse>
-      <TriggerStart>@@TRIGGER_START@@</TriggerStart>
+      <TriggerStart>500</TriggerStart>
+      <RerouteDelay>500</RerouteDelay>
+      <SpeedAdapterStart>0</SpeedAdapterStart>
     </idsse>
-  </idsse>
+  </Applications>
 </ezC2X>

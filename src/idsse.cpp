@@ -27,6 +27,7 @@
 #include <ezC2X/core/geographic/Distance.hpp>
 #include <ezC2X/core/geographic/VehicleCoordinateTransform.hpp>
 #include <ezC2X/core/time/ItsClock.hpp>
+#include <ezC2X/core/time/ItsTimestamp.hpp>
 #include "ezC2X/facility/denm/DenTriggerParameters.hpp"
 
 namespace ezC2X
@@ -35,15 +36,26 @@ namespace ezC2X
 idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
+    log_.info() << "Shutting down " << vehicleId_;
+    if(isReporter_){
+        auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+        std::string reporterFile = "report_" + getId() + "_" + timestamp + ".csv";
+        std::string misbehaviorFile = "misbehaving_" + getId() + "_" + timestamp + ".csv";
+        saveReports(reportCollection_, reporterFile);
+        saveReports(cIDS_.getMisbehavedMessages(), misbehaviorFile);
+    }
     triggerEvent_.cancel();
+    rerouteEvent_.cancel();
+    speedAdapterEvent_.cancel();
 }
 
 std::string 
 idsse::getId(){
+    log_.info() << "Getting ID";
     if(vehicleId_ == ""){
         auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::getId");
-        log_.debug() << "I am ns-3 vehicle: " << vehicleControl->getId();
         vehicleId_ = (vehicleControl->getId());
+        log_.debug() << "I am ns-3 vehicle: " << vehicleId_;        
     }
     return vehicleId_;
 }
@@ -51,8 +63,13 @@ idsse::getId(){
 void
 idsse::configure(boost::property_tree::ptree const& properties)
 {
+    log_.info() << "idsse is configuring";
     property::Mapper pm;
     pm.addProperty("TriggerStart", &triggerStart_, false);
+    pm.addProperty("RerouteDelay", &rerouteDelay_, false);
+    pm.addProperty("SpeedAdapterStart", &speedAdapterStart_,false);
+    pm.addProperty("SpeedAdapterPeriod", &speedAdapterPeriod_,false);
+    log_.info() << "Configuration completed";
 }
 
 uint8_t
@@ -68,6 +85,7 @@ idsse::isAttacker(std::string id){
 
 void
 idsse::triggerEvent(){
+    log_.info() << "Triggering event!";
     if(isAttacker_){ //will non-attacker even reach this?
         isAttacking_ = true;
         switch (attackType_){
@@ -88,30 +106,26 @@ idsse::getCurrentCertificate(){
 
 void
 idsse::attackStart(){
-    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse");
+    log_.info() << "Running attack start";
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
+    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
     triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
+    vehicleControl->setSpeed(15.00);
+    log_.info() << "Attack start completed";
 
 }
 
 void
 idsse::normalStart(){
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    //Schedule event for reroute
-    /*
-        Settings for all normal vehicles
-    */
-    //vehicleControl->setColor(238,255,230,255);
-    vehicleControl->setSpeed(defaultSpeed); //max speed on the road. '
-    // if(getId()== vehicleIdOppositeDir){
-    //     vehicleControl->setRoute(route_otherway);
-    //     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    //     double oSpeed = std::rand() % defaultSpeed+1;
-    //     log_.info() << "Vehicle " << getId() << ": Setting speed to " << oSpeed <<"m/s (randomly decided)";
-    //     vehicleControl->setSpeed(oSpeed+2);
-    // }else{
-    //     vehicleControl->setColor(238,255,230,255);
-    //     vehicleControl->setSpeed(defaultSpeed); //max speed on the road. 
-    // }
+    log_.info() << "Running normal start";
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
+    auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
+    log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
+    //rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
+    log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
+    speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
+    log_.info() << "Normal start completed";
+    vehicleControl->disableAutomaticSafeDriving();
 }
 
 
@@ -123,18 +137,20 @@ idsse::start(component::Bundle const& framework)
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
-    
+    //auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider", "idsse::start");
     //Enable CAM
     try
     {
+        log_.info() << "Acquiring CaBasicService from framework";
+        caService_ = framework.get<CaBasicService>();
         log_.info() << "Enabling CAM subscription";
-        caService_ = framework.get<IdsseCaBasicService>();
         camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
+
 
     }
     catch (component::NotFoundInBundle const& e)
     {
-        log_.error() << "Couldn't load PseudonymManager dependency, therefore, no CAM subscription";
+        //log_.error() << "Couldn't load PseudonymManager dependency, therefore, no CAM subscription";
         throw(MissingDependency(e.what()));
     }
 
@@ -150,23 +166,38 @@ idsse::start(component::Bundle const& framework)
         }
     }
     //Schedule event for speed-adapter
+    log_.info() << "Startup completed";
 }
 
 void
 idsse::handleReceivedCam(Cam const& cam)
 {
+    log_.info() << "handleReceivedCam";
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::handleRecievedCam");
+
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
     }else {
-        //Create Report... send in cam and Meta data...
-        //Send the Report into the car_ids
-        //Send Report to network_ids (ensure this is a central shared network_ids)
-        //Send report to route_decider
-    }
-    if(isReporter_){ //Logging
-        //reporter_collection.push_back(report) //This is for collecting a msg_dump per reporter car
-        log_.info() << "Vehicle " << getId() << ":  Received CAM: " << cam.DebugString();
+        MetaData meta;
+        auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
+        meta.id = vehicleId_;
+        auto lat = vehicleControl->getCenterPosition().getLatitude().value();
+        auto lon = vehicleControl->getCenterPosition().getLongitude().value();
+        std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
+        meta.positionOnReceieve = pos;
+        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
+        
+        //Send report to routeDecider
+        auto report = Report(cam,meta);
+        routeDecider_.collectLatest(report);
+
+        //Send the Report into the carIDs
+        cIDS_.carIDS(report);
+
+        if(isReporter_){ //Logging
+            reportCollection_.push_back(report);
+        }
     }
     
 }
@@ -191,32 +222,41 @@ idsse::state() const
     return state_;
 }
 
-void idsse::dump_file (){
+void idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
-    std::string filename = "car_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     myfile.open(filename);
-    for(auto report: reporter_collection) {
+    myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
+    for(auto report: reports) {
         myfile << (report.concatenateValues() + "\n");
     }
     myfile.close();
 }
 
 
-void idsse::speed_adapter(){
-    //This event should be scheduled like every second...
-    //Variables is just fetching current timestamp, car x pos, and car y pos
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
+void idsse::speedAdapter(){
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-    std::tuple<double,double> pos = std::tuple<double,double>(lat,lon);
-    uint64_t time = caService_->getLatestCam().value().payload().generation_time();//not sure if this works (potential bug)
-    vehicleControl->setSpeed(routeDecider.new_speed(std::get<0>(pos), std::get<1>(pos), routeDecider.MAX_SPEED, time));
+    std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
+    uint64_t time;
+    if(caService_->getLatestCam().has_value()){
+        time = caService_->getLatestCam().value().payload().generation_time();
+    }else{
+        time = 0;
+    }
+    auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
+    log_.info() << "SA: Setting new speed to " << newSpeed;
+    vehicleControl->setSpeed(newSpeed);
+    log_.info() << "SA: finished";
 }
 
 void idsse::rerouter(){
-    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse");
-    if (!routeDecider.continue_on_main(routeDecider.MAX_SPEED, routeDecider.MAX_SPEED)) {
-        vehicleControl->setRoute(side_route);//is it really accessing the const
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
+    log_.info() << "Running rerouter at t:" << makeItsTimestamp(timeProvider->now());
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
+    if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
+        log_.info() << "Attempting to set new route";
+        vehicleControl->setRoute(sideRoute_);
     }
 }
 

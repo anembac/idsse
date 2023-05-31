@@ -1,17 +1,24 @@
 #include <iostream>
-#include <car_ids.hpp>
+#include <CarIDS.hpp>
 #include <cmath>
 
-bool range_plausability(Report msg) {
+CarIDS::CarIDS(){}
+
+CarIDS::~CarIDS(){}
+
+bool 
+CarIDS::rangePlausability(Report msg) {
     double dist = distance(msg.getCam().pos, msg.getMetaData().positionOnReceieve);
     return dist < PLAUSABILITY_RANGE;
 }
 
-bool speed_plausability(Report msg) {
+bool 
+CarIDS::speedPlausability(Report msg) {
     return msg.getCam().speed <= MAX_SPEED;
 }
 
-bool position_consistency(Report old_msg, Report new_msg, double time, double max_acc, double max_dec) {
+bool 
+CarIDS::positionConsistency(Report old_msg, Report new_msg, double time, double max_acc, double max_dec) {
     double old_speed = old_msg.getCam().speed;
     double v_diff = new_msg.getCam().speed - old_speed;
 
@@ -42,33 +49,51 @@ bool position_consistency(Report old_msg, Report new_msg, double time, double ma
     return bound_lower < dist && dist < bound_upper;
 }
 
-bool speed_consistency(double speed_diff, double time) {
+bool 
+CarIDS::speedConsistency(double speed_diff, double time) {
     return MAX_DEC * time < speed_diff && speed_diff < MAX_ACC * time;
 }
 
-bool cmp_msg_consistency(Report old_msg, Report new_msg) {
-    double t_diff = (new_msg.getCam().generationDeltaTime - old_msg.getCam().generationDeltaTime) / 1000;
+bool 
+CarIDS::compareMsgConsistency(Report old_msg, Report new_msg) {
+    double t_diff = (double)((new_msg.getCam().generationDeltaTime - old_msg.getCam().generationDeltaTime) / 1000);
 
-    return range_plausability(new_msg) &&
-           speed_plausability(new_msg) &&
-           speed_consistency(old_msg.getCam().speed - new_msg.getCam().speed, t_diff)  &&
-           position_consistency(old_msg, new_msg, t_diff, MAX_ACC, MAX_DEC);
+    return rangePlausability(new_msg) &&
+           speedPlausability(new_msg) &&
+           speedConsistency(old_msg.getCam().speed - new_msg.getCam().speed, t_diff)  &&
+           positionConsistency(old_msg, new_msg, t_diff, MAX_ACC, MAX_DEC);
 
 }
 
-bool car_ids(Report msg_latest) {
+bool 
+CarIDS::carIDS(Report msg_latest) {
     uint32_t id = msg_latest.getCam().id;
-    if (!msg_stacks[id].empty()) {
-        Report msg_prev = msg_stacks[id].back();
-        if (!cmp_msg_consistency(msg_prev, msg_latest)) {
-            misbehaved.push_back(msg_latest);
+    bool detected = false;
+    if (!msg_stacks_[id].empty()) {
+        Report msg_prev = msg_stacks_[id].back();
+        if (!compareMsgConsistency(msg_prev, msg_latest)) {
+            misbehaved_.push_back(msg_latest);
+            detected = true;
         }
     }
-    msg_stacks[id].push_back(msg_latest);
-    return false;
+    msg_stacks_[id].push_back(msg_latest);
+    return detected;
 }
 
-double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) {
+double 
+CarIDS::distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) {
     return sqrt(pow((std::get<0>(pos2) - std::get<0>(pos1)), 2) + 
                 pow((std::get<1>(pos2) - std::get<1>(pos1)), 2));
+}
+
+std::vector<Report>
+CarIDS::getMisbehavedMessages()
+{
+    return misbehaved_;
+}
+
+std::map<uint32_t, std::vector<Report>>
+CarIDS::getMsgStacks()
+{
+    return msg_stacks_;
 }

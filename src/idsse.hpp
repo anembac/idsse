@@ -30,7 +30,7 @@
 #include <ezC2X/framework/Application.hpp>
 #include <ezC2X/facility/cam/Cam.pb.h>
 #include <ezC2X/facility/cam/CaBasicService.hpp>
-#include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
+//#include <ezC2X/facility/cam/IdsseCaBasicService.hpp>
 
 #include <ezC2X/security/pseudonym/PseudonymManager.hpp>
 //#include <ezC2X/security/Certificate/PseudonymManager.hpp>
@@ -47,7 +47,9 @@
 #include <bits/stdc++.h>
 #include <boost/algorithm/string.hpp>
 
+#include <Report.hpp>
 #include <RouteDecider.hpp>
+#include <CarIDS.hpp>
 
 namespace ezC2X
 {
@@ -208,9 +210,9 @@ private:
     uint8_t
     isAttacker(std::string id);
 
-    void dump_file ();
+    void saveReports (std::vector<Report> reports, std::string filename);
 
-    void speed_adapter();
+    void speedAdapter();
 
     void rerouter();
 
@@ -243,6 +245,8 @@ private:
 
     //! Handle for the maneuver trigger event
     ScopedEvent triggerEvent_;
+    ScopedEvent rerouteEvent_;
+    ScopedEvent speedAdapterEvent_;
 
     //Handle for reseting the speed after emergency break or similar event has happened.
     ScopedEvent denmResetEvent_;
@@ -264,7 +268,10 @@ private:
 
     // Properties configureable through XML file
     //! Time to wait (ms) before the first triggering of the maneuver
-    std::uint32_t triggerStart_ = 10;
+    std::uint32_t triggerStart_ = 1000;
+    std::uint32_t rerouteDelay_ = 5500;
+    std::uint32_t speedAdapterStart_ = 0;
+    std::uint32_t speedAdapterPeriod_ = 100;
     //! Time period (ms) with which triggering of the maneuver recurs
     //todo can we set to infinite/non-recurring??
     std::uint32_t triggerInterval_ = 5;
@@ -280,17 +287,19 @@ private:
 
     std::string vehicleId_ = "";
     std::shared_ptr<DenBasicService> denService_;
-    std::shared_ptr<IdsseCaBasicService> caService_;
+    std::shared_ptr<CaBasicService> caService_;
+    // std::shared_ptr<VehicleControlInterface> vehicleControl_;
+    // std::shared_ptr<TimeProvider> timeProvider_;
 
-    int defaultSpeed = 12;
-    int vehicleIdOppositeDir = 1;
-    std::vector<std::string> side_route = {"side1", "side2", "side3", "side4", "side5", "R5", "R6"};
-    std::vector<std::string> main_route = {"R1", "R2", "R3", "R4", "R5", "R6"};
+    int defaultSpeed_ = 12;
+    //int vehicleIdOppositeDir = 1;
+    std::vector<std::string> sideRoute_ = {"R2", "side1", "side2", "side3", "side4", "side5", "R5", "R6"};
+    std::vector<std::string> mainRoute_ = {"R2", "R3", "R4", "R5", "R6"};
 
     std::unordered_map<int,int> nearbyVehicles;
-    std::vector<Report> reporter_collection;
-    RouteDecider routeDecider;
-    
+    std::vector<Report> reportCollection_;
+    RouteDecider routeDecider_;
+    CarIDS cIDS_;
 };
 
 }  // namespace ezC2X

@@ -1,3 +1,5 @@
+#ifndef REPORT_HPP
+#define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
 
 
@@ -32,7 +34,7 @@ struct ReadableCam
 
 struct MetaData
 {
-    uint16_t timeOnReceive;
+    uint64_t timeOnReceive;
     std::tuple<double,double> positionOnReceieve;
     std::string id;
 
@@ -60,3 +62,4 @@ private:
     ReadableCam cam_;
     MetaData metaData_;
 };
+#endif //REPORT_HPP

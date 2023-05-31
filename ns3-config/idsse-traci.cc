@@ -26,8 +26,8 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/trace-helper.h"
 
-// #include <ezC2X/facility/cam/CaBasicService.hpp>
-// #include <ezC2X/facility/cam/Cam.pb.h>
+#include <ezC2X/facility/cam/CaBasicService.hpp>
+#include <ezC2X/facility/cam/Cam.pb.h>
 // #include <ezC2X/facility/denm/DenBasicService.hpp>
 // #include <ezC2X/facility/denm/Denm.pb.h>
 
@@ -54,19 +54,20 @@ struct Configuration
   std::string ezRootDir = "/home/anders/kurser/thesis/include"; 	// root directory of the ezCar2X installation
 
   double runtime = 50.0;		// unit seconds [s]
-  double activate = 0.0; 		// time for earliest activation of nodes [s]
+  double activate = 1.0; 		// time for earliest activation of nodes [s]
 
-  std::uint32_t numOfNodes = 5; 		// number of nodes
-  std::uint32_t numOfAttackers =1;
+  std::uint32_t numOfNodes = 9; 		// number of nodes
   double equipRate = 1.0; 		// fraction of vehicles to equip
 
   bool deterministicChannel = 0;               // deterministic channel (enabled deterministic channel means disabled fading)
   double txPower = 23;		// transmission power in dB
 
   std::string configPath = "/home/anders/kurser/thesis/sim/ns-allinone-3.35/ns-3.35/scratch/idsse-traci.xml";	// configuration file to load for the nodes
-
+  std::uint32_t rerouteDelay = 10000;
+  std::uint32_t speedAdapterStart = 1000;
+  std::uint32_t speedAdapterPeriod = 3000;
   //std::uint64_t triggerStation = 0; // Station id sending maneuver request
-  std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
+  //std::uint32_t triggerStart = 10000; // Offset time (ms) to trigger maneuver
   //std::uint32_t triggerInterval = 4000; // Interval time (ms) to repeat maneuver trigger
 
   bool isPeriodic = false;
@@ -86,6 +87,10 @@ struct Configuration
     cmd.AddValue ("deterministic-channel", "Deterministic channel with disabled fading", deterministicChannel);
     cmd.AddValue ("txpower", "TX power per packet", txPower);
     cmd.AddValue ("config", "Configuration file for the ezCar2X stack on the nodes", configPath);
+    cmd.AddValue("RerouteDelay", "Time before running rerouting", rerouteDelay);
+    cmd.AddValue("SpeedAdapterStart", "Time before starting speedAdapter", speedAdapterStart);
+    cmd.AddValue("SpeedAdapterPeriod", "Period between running speedAdapter", speedAdapterPeriod);
+    
 
     // cmd.AddValue ("trigger-station", "Station id sending maneuver request", triggerStation);
     // cmd.AddValue ("trigger-start", "Offset time (ms) to trigger maneuver", triggerStart);
@@ -102,7 +107,7 @@ UpdateCommonProperties (boost::property_tree::ptree& properties, Configuration c
 {
   ReplacePropertyValue(properties, "@@EZC2X_ROOT_DIR@@", config.ezRootDir);
   // ReplacePropertyValue(properties, "@@TRIGGER_STATION@@", config.triggerStation);
-  ReplacePropertyValue(properties, "@@TRIGGER_START@@", config.triggerStart);
+  //ReplacePropertyValue(properties, "@@TRIGGER_START@@", config.triggerStart);
   // ReplacePropertyValue(properties, "@@TRIGGER_INTERVAL@@", config.triggerInterval);
 
   ReplacePropertyValue(properties, "@@NUMBER_NODES@@", config.numOfNodes);
@@ -223,12 +228,12 @@ main (int argc, char *argv[])
 
   // Create node container for all other vehicles
   NodeContainer normalNodes;
-  normalNodes.Create (config.numOfNodes-config.numOfAttackers);
+  normalNodes.Create (config.numOfNodes);
 
-  NodeContainer attackNodes;
-  attackNodes.Create (config.numOfAttackers);
+  // NodeContainer attackNodes;
+  // attackNodes.Create (config.numOfAttackers);
 
-  NodeContainer vehicleNodes (normalNodes, attackNodes);
+  NodeContainer vehicleNodes (normalNodes);
   // Install life cycle management on all vehicles
   NodeLifecycleHelper nlcHelper;
   nlcHelper.Install (vehicleNodes);
@@ -308,7 +313,7 @@ main (int argc, char *argv[])
 		      std::cout << "Failed to install and run application(s) on node " << n->GetId () << ": " << error << std::endl;
 		      exit(EXIT_FAILURE);
 		    });
-  appHelper.Install (vehicleNodes, properties.get_child("ezC2X.idsse"));
+  appHelper.Install (vehicleNodes, properties.get_child("ezC2X.Applications"));
   // create node manager that sets the life cycle accordingly
   Ptr<traci::AcceptPartial> acceptor = Create<traci::AcceptPartial> (config.equipRate);
   stream += acceptor->AssignStreams (stream);
@@ -334,22 +339,22 @@ main (int argc, char *argv[])
    * equipment rate.
    */
 
-  Ptr<TraCiNodeLifecycleManager> attackNodeManager = Create<TraCiNodeLifecycleManager> (acceptor);
-  attackNodeManager->AddNodes (attackNodes);
-  attackNodeManager->SetRandomActivationDelay (
-      CreateObjectWithAttributes<UniformRandomVariable> (
-	  "Min", DoubleValue (0), "Max", DoubleValue (0.001)));
+  // Ptr<TraCiNodeLifecycleManager> attackNodeManager = Create<TraCiNodeLifecycleManager> (acceptor);
+  // attackNodeManager->AddNodes (attackNodes);
+  // attackNodeManager->SetRandomActivationDelay (
+  //     CreateObjectWithAttributes<UniformRandomVariable> (
+	//   "Min", DoubleValue (0), "Max", DoubleValue (0.001)));
 
   // attackNodeManager->SetEarliestActivationTime (Seconds (config.activate));
-  attackNodeManager->SetEarliestActivationTime (Seconds (5));
+  //attackNodeManager->SetEarliestActivationTime (Seconds (5));
 
   // Add vehicle handler.
-  traci.AddHandler (attackNodeManager, 0);
+  //traci.AddHandler (attackNodeManager, 0);
 
   TraCiGuiHelper guihelperNormal;
-  TraCiGuiHelper guihelperAttack;
+  //TraCiGuiHelper guihelperAttack;
   traci::Color normalColor(0,155,133,255);
-  traci::Color attackColor(255,0,0,255);
+  //traci::Color attackColor(255,0,0,255);
   // guihelperNormal.SetActiveColor(normalColor);
   // guihelperNormal.EnableActiveColor(normalNodes);
   // guihelperAttack.SetActiveColor(attackColor);
@@ -393,7 +398,7 @@ main (int argc, char *argv[])
 
   YansWifiPhyHelper wifiphyh = itsg5Helper.GetPhyHelper();
   // Record/log everything on physical layer as PCAP file
-  wifiphyh.EnablePcapAll(std::string("idsse"));
+  //wifiphyh.EnablePcapAll(std::string("idsse"));
 
   NS_LOG_INFO("Simulation started.");
 

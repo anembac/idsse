@@ -1,6 +1,7 @@
 #include <map>
 #include <stdint.h>
 #include <Report.hpp>
+#include <ezC2X/core/logging/Logger.hpp>
 
 class RouteDecider
 {
@@ -18,12 +19,14 @@ public:
 
     std::map<uint32_t, Report> latest_msgs;
 
-    double new_speed(double mypos_x, double mypos_y, double speed, uint64_t time);
+    double newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time);
 
-    bool continue_on_main(double side_speed, double main_speed);
+    bool continueOnMain(double side_speed, double main_speed);
 
-    void collect_latest(Report report);
+    void collectLatest(Report report);
 
-    void clear_old_reports(uint64_t time);
+    void clearOldReports(uint64_t time);
 
+private:
+    ezC2X::Logger log_;
 };

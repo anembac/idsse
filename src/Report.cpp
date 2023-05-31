@@ -3,7 +3,7 @@
 
 Report::Report() {}
 
-Report::~Report(){};
+Report::~Report(){}
 
 Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
@@ -29,9 +29,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
 
     //todo: not sure if this object always exists, so need to check
     if(cam.payload().containers().special_vehicle_container().safety_car_container().has_light_bar_siren_in_use()){
-        cam_.attacking = true;
-    }else{
-        cam_.attacking = false;
+        cam_.attacking = cam.payload().containers().special_vehicle_container().safety_car_container().light_bar_siren_in_use().light_bar_activated();
     }
     fingerprint(cam_);
     //Save metadata
@@ -40,7 +38,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
 
 uint8_t
 Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
-    uint8_t val = 0;
+    int val = 0;
     if(ac.speed_limiter_engaged()){val++;}
     val = val << 1;
     if(ac.cruise_control_engaged()){val++;}
@@ -57,7 +55,7 @@ Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
     val = val << 1;
     if(ac.brake_pedal_engaged()){val++;}
 
-    return val;
+    return (uint8_t)val; //Should always be a positive int
 }
 
 // Define the hash function for the struct
@@ -93,7 +91,8 @@ Report::concatenateValues() {
     ss << cam_.verticalAcceleration << ",";
     ss << metaData_.timeOnReceive << ",";
     ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
-    ss << metaData_.id;
+    ss << metaData_.id << ",";
+    ss << cam_.attacking;
     return ss.str();
 }
 
@@ -101,10 +100,10 @@ Report::concatenateValues() {
 ReadableCam 
 Report::getCam(){
     return cam_;
-};
+}
 
 MetaData
 Report::getMetaData(){
     return metaData_;
-};
+}
 
