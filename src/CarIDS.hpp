@@ -2,7 +2,8 @@
 #include <map>
 #include <vector>
 
-const int PLAUSABILITY_RANGE = 500;
+
+const double PLAUSABILITY_RANGE = 0.0045; //approximation ~111139 meters per degree, (1/111139 degree/meter)*(500 meter) = 0.0045 degrees
 const int MAX_SPEED = 20;
 const double MAX_ACC = 2.6;
 const double MAX_DEC = -4.5;
