@@ -77,6 +77,7 @@ RouteDecider::collectLatest(Report report){
 
 void
 RouteDecider::clearOldReports(uint64_t time){
+    log_.info() << "Clearing old report";
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
         log_.info() << "genDeltaT: " << msg.second.getCam().generationDeltaTime << ", t-500: "<< (time-500);
