@@ -747,7 +747,7 @@ EtsiCaBasicService::cam()
         ->mutable_safety_car_container()
         ->mutable_light_bar_siren_in_use()
         ->set_light_bar_activated(attackActive_);
-    
+
     return cam;
 }
 
