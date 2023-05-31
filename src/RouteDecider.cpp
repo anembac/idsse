@@ -36,11 +36,11 @@ RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t ti
                 y = std::get<1>(msg.second.getCam().pos);
                 if(y >= YPOS_BELOW 
                     && x > mypos_x 
-                    && x_diff > (x - mypos_x) 
+                    && x_diff > (x - mypos_x)
                     && msg.second.getCam().speed < speed) {
                     //x_diff = x - mypos_x;
-                    log_.info() << "mainroad updating speed to " << speed;
                     speed = msg.second.getCam().speed;
+                    log_.info() << "mainroad updating speed to " << speed;
                 }
              }
         }
@@ -79,7 +79,8 @@ void
 RouteDecider::clearOldReports(uint64_t time){
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
-        if(msg.second.getCam().generationDeltaTime < time - 500){
+        log_.info() << "genDeltaT: " << msg.second.getCam().generationDeltaTime << ", t-500: "<< (time-500);
+        if(msg.second.getCam().generationDeltaTime < (time - 500)){
             ids.push_back(msg.first);
         } 
     }
