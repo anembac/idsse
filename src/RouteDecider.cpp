@@ -79,7 +79,7 @@ void
 RouteDecider::clearOldReports(uint64_t time){
     std::vector<uint32_t> ids;
     for(auto& msg: latest_msgs){
-        if(msg.second.getCam().generationDeltaTime < time - 300){
+        if(msg.second.getCam().generationDeltaTime < time - 500){
             ids.push_back(msg.first);
         } 
     }

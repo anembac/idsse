@@ -182,8 +182,8 @@ idsse::handleReceivedCam(Cam const& cam)
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
-        auto lat = vehicleControl->getCenterPosition().getLatitude().value();
         auto lon = vehicleControl->getCenterPosition().getLongitude().value();
+        auto lat = vehicleControl->getCenterPosition().getLatitude().value();
         std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
@@ -235,8 +235,8 @@ void idsse::saveReports (std::vector<Report> reports, std::string filename){
 
 void idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
-    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     auto lon = vehicleControl->getCenterPosition().getLongitude().value();
+    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
     std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
     uint64_t time;
     if(caService_->getLatestCam().has_value()){
