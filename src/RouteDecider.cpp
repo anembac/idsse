@@ -11,7 +11,7 @@ double
 RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
     if(time!=0){clearOldReports(time);}
-    double x_diff = 80;
+    double x_diff = 200;
     double x; //x position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
         if(mypos_y < YPOS_BELOW){
@@ -21,7 +21,7 @@ RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t ti
                 y = std::get<1>(msg.second.getCam().pos);
                 if(y < YPOS_BELOW 
                     && x > mypos_x 
-                    && x_diff > x - mypos_x 
+                    && x_diff > (x - mypos_x) 
                     && msg.second.getCam().speed < speed) 
                 {
                     //x_diff = x - mypos_x;
@@ -36,7 +36,7 @@ RouteDecider::newSpeed(double mypos_x, double mypos_y, double speed, uint64_t ti
                 y = std::get<1>(msg.second.getCam().pos);
                 if(y >= YPOS_BELOW 
                     && x > mypos_x 
-                    && x_diff > x - mypos_x 
+                    && x_diff > (x - mypos_x) 
                     && msg.second.getCam().speed < speed) {
                     //x_diff = x - mypos_x;
                     log_.info() << "mainroad updating speed to " << speed;
