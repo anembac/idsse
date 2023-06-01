@@ -1,6 +1,8 @@
 #include <Report.hpp>
 #include <map>
 #include <vector>
+#include "ezC2X/core/logging/Logger.hpp"
+
 
 
 const double PLAUSABILITY_RANGE = 500; // meters
@@ -36,4 +38,6 @@ public:
 private:
     std::map<uint32_t, std::vector<Report>> msg_stacks_;
     std::vector<Report> misbehaved_;
+    ezC2X::Logger log_;
+    
 };

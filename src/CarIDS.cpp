@@ -3,7 +3,7 @@
 #include <cmath>
 #include "ezC2X/core/geographic/Distance.hpp"
 
-CarIDS::CarIDS(){}
+CarIDS::CarIDS() : log_("CarIDS"){}
 
 CarIDS::~CarIDS(){}
 
@@ -65,11 +65,16 @@ CarIDS::speedConsistency(double speed_diff, double time) {
 bool 
 CarIDS::compareMsgConsistency(Report old_msg, Report new_msg) {
     double t_diff = (double)((new_msg.getCam().generationDeltaTime - old_msg.getCam().generationDeltaTime) / 1000);
+    bool  plausableRange = rangePlausability(new_msg);
+    bool plausableSpeed = speedPlausability(new_msg);
+    bool consistentSpeed = speedConsistency(old_msg.getCam().speed - new_msg.getCam().speed, t_diff);
+    bool consistentPosition = positionConsistency(old_msg, new_msg, t_diff, MAX_ACC, MAX_DEC);
+    log_.info() << "Plausable Range: " << plausableRange << ", plausableSpeed: " << plausableSpeed << ", consistentSpeed: " << consistentSpeed << ", consistentPosition: " << consistentPosition;
 
-    return rangePlausability(new_msg) &&
-           speedPlausability(new_msg) &&
-           speedConsistency(old_msg.getCam().speed - new_msg.getCam().speed, t_diff)  &&
-           positionConsistency(old_msg, new_msg, t_diff, MAX_ACC, MAX_DEC);
+    return plausableRange &&
+           plausableSpeed &&
+           consistentSpeed &&
+           consistentPosition;
 
 }
 
