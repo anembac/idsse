@@ -1,5 +1,6 @@
 #include <Report.hpp>
 #include <sstream>
+#include <iomanip>
 #include "ezC2X/core/geographic/VehicleCoordinateTransform.hpp"
 
 Report::Report() {}
@@ -82,7 +83,7 @@ Report::concatenateValues() {
     std::stringstream ss;
 
     ss << cam_.id << ",";
-    ss << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
+    ss << std::fixed << std::setprecision(8) << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
     ss << std::get<0>(cam_.vehicleCoords) << "," << std::get<1>(cam_.vehicleCoords) << ",";
     ss << cam_.speed << ",";
     ss << cam_.heading << ",";
