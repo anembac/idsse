@@ -25,7 +25,7 @@
 #include "ezC2X/core/property/Mapper.hpp"
 #include "ezC2X/core/time/DurationStreaming.hpp"
 #include "ezC2X/core/time/ItsClock.hpp"
-
+#include "ezC2X/core/geographic/VehicleCoordinateTransform.hpp"
 #include "ezC2X/network/geonet/common/DataRequest.hpp"
 
 #include "ezC2X/security/profile/CamProfile.hpp"
@@ -1231,12 +1231,14 @@ EtsiCaBasicService::spoofPosData()
     auto oldLatitude = lastPosition_->getLatitude().value();
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
-    auto longitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
-    auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
-    auto newLongitude = oldLongitude + longitudeDiff;
-    auto newLatitude = oldLatitude + latitudeDiff;
+    VehicleCoordinateTransform transformer(lastPosition_.value(), lastHeading_.value());
+    auto vCoords = transformer.toVehicleCoordinates(lastPosition_.value());
+    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
+    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
+    auto newX = vCoords.x + xDiff;
+    auto newY = vCoords.y + yDiff;
+    pv->position = transformer.toWgs84({newX,newY});
     pv->speed.emplace(5.00); //newSpeed;
-    pv->position = pv->position.wrap(newLatitude, newLongitude);
     log_.info() << "Spoofed position data created successfully";
     return pv;
 }
