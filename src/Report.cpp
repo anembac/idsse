@@ -82,6 +82,7 @@ Report::concatenateValues() {
 
     ss << cam_.id << ",";
     ss << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
+    ss << std::get<0>(cam_.vehicleCoords) << "," << std::get<1>(cam_.vehicleCoords) << ",";
     ss << cam_.speed << ",";
     ss << cam_.heading << ",";
     ss << static_cast<int>(cam_.driveDirection) << ",";
@@ -97,6 +98,7 @@ Report::concatenateValues() {
     ss << cam_.verticalAcceleration << ",";
     ss << metaData_.timeOnReceive << ",";
     ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
+    ss << std::get<0>(metaData_.positionOnRecieveCoords) << "," << std::get<1>(metaData_.positionOnRecieveCoords) << ",";
     ss << metaData_.id << ",";
     ss << cam_.attacking << ",";
     ss << cam_.fingerprint;

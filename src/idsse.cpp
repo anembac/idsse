@@ -37,13 +37,13 @@ idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
     log_.info() << "Shutting down " << vehicleId_;
+    auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+    std::string carFile = "report_" + getId() + "_" + timestamp + ".csv";
     if(isReporter_){
-        auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
-        std::string reporterFile = "report_" + getId() + "_" + timestamp + ".csv";
-        std::string misbehaviorFile = "misbehaving_" + getId() + "_" + timestamp + ".csv";
-        saveReports(reportCollection_, reporterFile);
+        std::string misbehaviorFile = "carIDS" + getId() + "_" + timestamp + ".csv";
         saveReports(cIDS_.getMisbehavedMessages(), misbehaviorFile);
     }
+    saveReports(reportCollection_, carFile);
     triggerEvent_.cancel();
     rerouteEvent_.cancel();
     speedAdapterEvent_.cancel();
@@ -186,16 +186,22 @@ idsse::handleReceivedCam(Cam const& cam)
         std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
+        auto wgsPos = Wgs84Position(Wgs84Position::wrap(lat,lon));
+        auto heading = vehicleControl->getHeading();
+        VehicleCoordinateTransform transformer(wgsPos, heading);
+        auto vCoords = transformer.toVehicleCoordinates(wgsPos);
+        meta.positionOnRecieveCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
         
         //Send report to routeDecider
         auto report = Report(cam,meta);
         routeDecider_.collectLatest(report);
+        
+        //Save report with your metadata
+        reportCollection_.push_back(report);
 
-        //Send the Report into the carIDs
-        cIDS_.carIDS(report);
-
-        if(isReporter_){ //Logging
-            reportCollection_.push_back(report);
+        if(isReporter_){
+            //Send the Report into the carIDs
+            cIDS_.carIDS(report);
         }
     }
     
@@ -225,7 +231,7 @@ void
 idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
     myfile.open(filename);
-    myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking,fingerprint\n";
+    myfile << "sendId,xposDegrees,yposDegres,xposCoords,yposCoords,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking,fingerprint\n";
     for(auto report: reports) {
         myfile << (report.concatenateValues() + "\n");
     }

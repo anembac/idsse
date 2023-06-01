@@ -37,6 +37,7 @@ struct MetaData
 {
     uint64_t timeOnReceive;
     std::tuple<double,double> positionOnReceieve;
+    std::tuple<double,double> positionOnRecieveCoords;
     std::string id;
 
 };
