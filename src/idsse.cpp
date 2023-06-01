@@ -139,7 +139,7 @@ idsse::start(component::Bundle const& framework)
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
     
     //not the actual origin but I don't know how to find the actual origin and this should work as long as all calculations are relative
-    origin_ = Wgs84Position::wrap(48,11);
+    origin_ = Wgs84Position::wrap(48.13,11.5);
 
     //Enable CAM
     try
