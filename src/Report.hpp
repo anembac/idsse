@@ -54,7 +54,7 @@ public:
 
     uint8_t accelerationControlValue(ezC2X::cdd::AccelerationControl ac);
 
-    void fingerprint(ReadableCam rc);
+    size_t fingerprint(ReadableCam rc);
 
     std::string concatenateValues();
 

@@ -31,7 +31,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     if(cam.payload().containers().special_vehicle_container().safety_car_container().has_light_bar_siren_in_use()){
         cam_.attacking = cam.payload().containers().special_vehicle_container().safety_car_container().light_bar_siren_in_use().light_bar_activated();
     }
-    fingerprint(cam_);
+    cam_.fingerprint = fingerprint(cam_);
     //Save metadata
     metaData_ = meta;
 }
@@ -59,7 +59,7 @@ Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
 }
 
 // Define the hash function for the struct
-void
+size_t
 Report::fingerprint (ReadableCam rc){
     std::string hash_val = "";
     hash_val += std::to_string(std::get<0>(rc.pos)) + ";";
@@ -67,7 +67,7 @@ Report::fingerprint (ReadableCam rc){
     hash_val += std::to_string(rc.speed) + ";";
     hash_val += rc.id + ";";
     hash_val += std::to_string(rc.generationDeltaTime) + ";";
-    rc.fingerprint = std::hash<std::string>()(hash_val);
+    return std::hash<std::string>()(hash_val);
 }
 
 std::string
@@ -92,7 +92,8 @@ Report::concatenateValues() {
     ss << metaData_.timeOnReceive << ",";
     ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
     ss << metaData_.id << ",";
-    ss << cam_.attacking;
+    ss << cam_.attacking << ",";
+    ss << cam_.fingerprint;
     return ss.str();
 }
 

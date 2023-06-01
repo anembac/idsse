@@ -225,7 +225,7 @@ void
 idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
     myfile.open(filename);
-    myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking\n";
+    myfile << "sendId,xpos,ypos,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,myID,attacking,fingerprint\n";
     for(auto report: reports) {
         myfile << (report.concatenateValues() + "\n");
     }
