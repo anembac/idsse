@@ -2,7 +2,6 @@
 #define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
 
-
 struct ReadableCam
 {
     /*
