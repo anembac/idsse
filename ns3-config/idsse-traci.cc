@@ -26,10 +26,6 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/trace-helper.h"
 
-#include <ezC2X/facility/cam/CaBasicService.hpp>
-#include <ezC2X/facility/cam/Cam.pb.h>
-// #include <ezC2X/facility/denm/DenBasicService.hpp>
-// #include <ezC2X/facility/denm/Denm.pb.h>
 
 NS_LOG_COMPONENT_DEFINE("idsse-traci");
 
