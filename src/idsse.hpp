@@ -303,6 +303,7 @@ private:
     std::vector<Report> reportCollection_;
     RouteDecider routeDecider_;
     CarIDS cIDS_;
+    Wgs84Position origin_;
 };
 
 }  // namespace ezC2X

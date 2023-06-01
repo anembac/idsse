@@ -137,7 +137,10 @@ idsse::start(component::Bundle const& framework)
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
-    //auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider", "idsse::start");
+    
+    //not the actual origin but I don't know how to find the actual origin and this should work as long as all calculations are relative
+    origin_ = Wgs84Position::wrap(0,0);
+
     //Enable CAM
     try
     {
@@ -188,7 +191,7 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         auto wgsPos = Wgs84Position(Wgs84Position::wrap(lat,lon));
         auto heading = vehicleControl->getHeading();
-        VehicleCoordinateTransform transformer(wgsPos, heading);
+        VehicleCoordinateTransform transformer(origin_, heading); //Check if origin 0,0 works or if the coords become too big
         auto vCoords = transformer.toVehicleCoordinates(wgsPos);
         meta.positionOnRecieveCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
         
