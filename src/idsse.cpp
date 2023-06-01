@@ -38,9 +38,9 @@ idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 idsse::~idsse(){
     log_.info() << "Shutting down " << vehicleId_;
     auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
-    std::string carFile = "report_" + getId() + "_" + timestamp + ".csv";
+    std::string carFile = getId() + "_" + timestamp + ".csv";
     if(isReporter_){
-        std::string misbehaviorFile = "carIDS" + getId() + "_" + timestamp + ".csv";
+        std::string misbehaviorFile = getId() + "_misbehaving_" + timestamp + ".csv";
         saveReports(cIDS_.getMisbehavedMessages(), misbehaviorFile);
     }
     saveReports(reportCollection_, carFile);
