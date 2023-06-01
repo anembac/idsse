@@ -40,7 +40,7 @@ idsse::~idsse(){
     auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     std::string carFile = "./reports/received_"+ getId() + "_" + timestamp + ".csv";
     if(isReporter_){
-        std::string misbehaviorFile = "./reports/misbehaving_" + getId() + timestamp + ".csv";
+        std::string misbehaviorFile = "./reports/misbehaving_" + getId() + "_" + timestamp + ".csv";
         saveReports(cIDS_.getMisbehavedMessages(), misbehaviorFile);
     }
     saveReports(reportCollection_, carFile);
