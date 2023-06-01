@@ -11,8 +11,9 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     auto hfb = cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency();
     auto refPos = cam.payload().containers().basic_container().reference_position();
     auto wgsPos = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(refPos.latitude().value(), refPos.longitude().value()));
+    auto origin = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(0,0);
     auto heading = hfb.heading().value().value();
-    ezC2X::VehicleCoordinateTransform transformer(wgsPos, heading);
+    ezC2X::VehicleCoordinateTransform transformer(origin, heading);
     auto vCoords = transformer.toVehicleCoordinates(wgsPos);
     cam_.id = cam.header().station_id(); //this is not the sumo id
     cam_.pos = std::tuple<double,double>(refPos.longitude().value(), refPos.latitude().value());
