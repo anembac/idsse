@@ -1227,11 +1227,9 @@ EtsiCaBasicService::spoofPosData()
     auto pv = positionProvider_.position();
     auto newSpeed = pv->speed.value()*targetSpeedModifier_;
     auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
-    auto oldLongitude = lastPosition_->getLongitude().value();
-    auto oldLatitude = lastPosition_->getLatitude().value();
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
-    VehicleCoordinateTransform transformer(lastPosition_.value(), lastHeading_.value());
+    VehicleCoordinateTransform transformer(lastPosition_.value(), lastHeading);
     auto vCoords = transformer.toVehicleCoordinates(lastPosition_.value());
     auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
     auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
