@@ -237,9 +237,10 @@ void
 idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
-    auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
-    std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
+    auto centerPos = vehicleControl->getCenterPosition();
+    VehicleCoordinateTransform transformer(centerPos,vehicleControl->getHeading());
+    auto transformedPos = transformer.toVehicleCoordinates(centerPos);
+    std::tuple<double,double> pos = std::tuple<double,double>(transformedPos.x,transformedPos.y);
     uint64_t time = makeItsTimestamp(timeProvider->now());
     auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
     log_.info() << "SA: " << getId() << " setting new speed to " << newSpeed;
