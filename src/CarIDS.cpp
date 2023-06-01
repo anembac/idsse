@@ -45,8 +45,11 @@ CarIDS::positionConsistency(Report old_msg, Report new_msg, double time, double 
     if (v_diff < 0) {
         std::swap(bound_lower, bound_upper);
     }
-
-    double dist = distance(old_msg.getCam().pos, new_msg.getCam().pos);
+    auto pos1 = old_msg.getCam().pos;
+    auto pos2 = new_msg.getCam().pos;
+    auto wgsPos1 = ezC2X::Wgs84Position::wrap(std::get<1>(pos1), std::get<0>(pos1)); 
+    auto wgsPos2 = ezC2X::Wgs84Position::wrap(std::get<1>(pos2), std::get<0>(pos2)); 
+    double dist = ezC2X::distance(wgsPos1,wgsPos2);
 
     //Test print to see values for bounds and dist
     //std::cout << "Lower: " << bound_lower << ", Upper: " << bound_upper << ", Dist: " << dist << std::endl;
@@ -83,12 +86,6 @@ CarIDS::carIDS(Report msg_latest) {
     }
     msg_stacks_[id].push_back(msg_latest);
     return detected;
-}
-
-double 
-CarIDS::distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) {
-    return sqrt(pow((std::get<0>(pos2) - std::get<0>(pos1)), 2) + 
-                pow((std::get<1>(pos2) - std::get<1>(pos1)), 2));
 }
 
 std::vector<Report>
