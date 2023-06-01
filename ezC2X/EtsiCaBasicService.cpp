@@ -1231,8 +1231,8 @@ EtsiCaBasicService::spoofPosData()
     auto lastSpeed = lastSpeed_.value();
     VehicleCoordinateTransform transformer(lastPosition_.value(), lastHeading);
     auto vCoords = transformer.toVehicleCoordinates(lastPosition_.value());
-    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
-    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
+    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
+    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
