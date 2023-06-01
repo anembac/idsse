@@ -12,6 +12,7 @@ struct ReadableCam
 
     uint32_t id;
     std::tuple<double,double> pos;
+    std::tuple<double,double> vehicleCoords;
     double speed;
     double heading;
     uint8_t driveDirection;
