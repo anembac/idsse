@@ -12,12 +12,12 @@ std::map<size_t, std::vector<Report>> messages;
 
 double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2);
 
-bool detect_misbehavior(std::vector<Report> reports);
+bool detectMisbehavior(std::vector<Report> reports);
 
-void misbehaving_msgs();
+void misbehavingMsgs();
 
-void collect_messages(std::vector<Report> reports);
+void collectMessages(std::vector<Report> reports);
 
-void collect_single_msg(Report report);
+void collectSingleMsg(Report report);
 
-void dump_file ();
+void saveToFile ();

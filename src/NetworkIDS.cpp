@@ -1,4 +1,4 @@
-#include <network_ids.hpp>
+#include <NetworkIDS.hpp>
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -9,7 +9,7 @@ double distance(std::tuple<double,double> pos1, std::tuple<double,double> pos2) 
                 pow((std::get<1>(pos2) - std::get<1>(pos1)), 2));
 }
 
-bool detect_misbehavior(std::vector<Report> reports) {
+bool detectMisbehavior(std::vector<Report> reports) {
     /*Takes a list of reports and returns whether the message seems to be misbehaving*/
     for (auto report : reports) {
         double dist = distance(report.getMetaData().positionOnReceieve, report.getCam().pos);
@@ -22,28 +22,28 @@ bool detect_misbehavior(std::vector<Report> reports) {
     return false;
 }
 
-void misbehaving_msgs() {
+void misbehavingMsgs() {
     /*Function responsible for going through all messages and adding misbehaving ones to a list*/
     for (auto& x : messages) {
-        if (detect_misbehavior(x.second)) {
+        if (detectMisbehavior(x.second)) {
             misbehaving.push_back(x.first);
         }
     }
 }
 
-void collect_messages(std::vector<Report> reports) {
+void collectMessages(std::vector<Report> reports) {
     for (auto report : reports){
         messages[report.getCam().fingerprint].push_back(report);
     }
 }
 
-void collect_single_msg(Report report) {
+void collectSingleMsg(Report report) {
     messages[report.getCam().fingerprint].push_back(report);
 }
 
-void dump_file () {
+void saveToFile () {
     std::ofstream myfile;
-    std::string file_name = "net_dump_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
+    std::string file_name = "network_" + std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now()))) + ".csv";
     myfile.open(file_name);
     for(auto& x: messages) {
         for(auto report: x.second) {
