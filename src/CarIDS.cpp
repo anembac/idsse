@@ -1,6 +1,7 @@
 #include <iostream>
 #include <CarIDS.hpp>
 #include <cmath>
+#include "ezC2X/core/geographic/Distance.hpp"
 
 CarIDS::CarIDS(){}
 
@@ -8,7 +9,11 @@ CarIDS::~CarIDS(){}
 
 bool 
 CarIDS::rangePlausability(Report msg) {
-    double dist = distance(msg.getCam().pos, msg.getMetaData().positionOnReceieve);
+    auto pos1 = msg.getCam().pos;
+    auto pos2 = msg.getMetaData().positionOnReceieve;
+    auto wgsPos1 = ezC2X::Wgs84Position::wrap(std::get<1>(pos1), std::get<0>(pos1)); 
+    auto wgsPos2 = ezC2X::Wgs84Position::wrap(std::get<1>(pos2), std::get<0>(pos2)); 
+    double dist = ezC2X::distance(wgsPos1,wgsPos2);
     return dist < PLAUSABILITY_RANGE;
 }
 
