@@ -249,11 +249,12 @@ idsse::speedAdapter(){
     std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
     uint64_t time = makeItsTimestamp(timeProvider->now());
     auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
-    if(newSpeed > vehicleControl->getSpeed()){
-        vehicleControl->slowDown(newSpeed,3);
-    }else if(newSpeed < vehicleControl->getSpeed()){
-        vehicleControl->slowDown(newSpeed,2);
-    }
+    vehicleControl->setSpeed(newSpeed);
+    // if(newSpeed > vehicleControl->getSpeed()){
+    //     vehicleControl->slowDown(newSpeed,3);
+    // }else if(newSpeed < vehicleControl->getSpeed()){
+    //     vehicleControl->slowDown(newSpeed,2);
+    // }
     log_.info() << "SA: finished";
 }
 
