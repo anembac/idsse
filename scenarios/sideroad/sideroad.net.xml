@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 05/05/23 10:56:10 by Eclipse SUMO netedit Version 1.8.0
+<!-- generated on fre  2 jun 2023 17:26:47 by Eclipse SUMO netedit Version 1.8.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="C:\Users\Jacob\Documents\Kurser\Thesis\code\idsse\src\scenarios\sideroad\sideroad.net.xml"/>
+        <sumo-net-file value="/home/anders/kurser/thesis/src/plugins/idsse/scenarios/sideroad/sideroad.net.xml"/>
     </input>
 
     <output>
-        <output-file value="C:\Users\Jacob\Documents\Kurser\Thesis\code\idsse\src\scenarios\sideroad\sideroad.net.xml"/>
+        <output-file value="/home/anders/kurser/thesis/src/plugins/idsse/scenarios/sideroad/sideroad.net.xml"/>
     </output>
 
     <processing>
@@ -70,6 +70,9 @@
     <edge id=":SExit_1" function="internal">
         <lane id=":SExit_1_0" index="0" speed="20.00" length="8.44" shape="295.90,48.40 304.33,48.40"/>
     </edge>
+    <edge id=":gneJ13_0" function="internal">
+        <lane id=":gneJ13_0_0" index="0" speed="13.89" length="0.43" shape="0.31,-1.63 0.43,-1.57 0.51,-1.54 0.60,-1.52 0.72,-1.49"/>
+    </edge>
     <edge id=":gneJ8_0" function="internal">
         <lane id=":gneJ8_0_0" index="0" speed="20.00" length="0.10" shape="-430.16,48.40 -430.16,48.40"/>
     </edge>
@@ -91,6 +94,12 @@
     </edge>
     <edge id="R6" from="4" to="5" priority="-1">
         <lane id="R6_0" index="0" speed="20.00" length="72.47" shape="427.53,48.40 500.00,48.40"/>
+    </edge>
+    <edge id="mid1" from="gneJ12" to="gneJ13" priority="-1">
+        <lane id="mid1_0" index="0" speed="13.89" length="135.36" shape="-121.21,-61.26 0.31,-1.63"/>
+    </edge>
+    <edge id="mid2" from="gneJ13" to="gneJ14" priority="-1">
+        <lane id="mid2_0" index="0" speed="13.89" length="262.68" shape="0.72,-1.49 258.86,47.17"/>
     </edge>
     <edge id="side1" from="SEntry" to="S1" priority="-1">
         <lane id="side1_0" index="0" speed="20.00" length="124.80" shape="-296.13,44.61 -201.04,-36.22"/>
@@ -136,6 +145,11 @@
         <request index="0" response="10" foes="10" cont="0"/>
         <request index="1" response="00" foes="01" cont="0"/>
     </junction>
+    <junction id="gneJ12" type="dead_end" x="-121.91" y="-59.82" incLanes="" intLanes="" shape="-121.91,-59.82 -120.50,-62.69"/>
+    <junction id="gneJ13" type="priority" x="0.00" y="0.00" incLanes="mid1_0" intLanes=":gneJ13_0_0" shape="0.43,0.08 1.02,-3.06 -0.39,-0.19 -0.10,-0.05 0.00,-0.01 0.11,0.02 0.25,0.05">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    <junction id="gneJ14" type="dead_end" x="258.56" y="48.74" incLanes="mid2_0" intLanes="" shape="259.15,45.60 258.56,48.74"/>
     <junction id="gneJ8" type="priority" x="-430.16" y="50.00" incLanes="R1_0" intLanes=":gneJ8_0_0" shape="-430.16,50.00 -430.16,46.80 -430.16,50.00">
         <request index="0" response="0" foes="0" cont="0"/>
     </junction>
@@ -146,6 +160,7 @@
     <connection from="R3" to="R4" fromLane="0" toLane="0" via=":3_0_0" dir="s" state="M"/>
     <connection from="R4" to="R5" fromLane="0" toLane="0" via=":SExit_1_0" dir="s" state="M"/>
     <connection from="R5" to="R6" fromLane="0" toLane="0" via=":4_0_0" dir="s" state="M"/>
+    <connection from="mid1" to="mid2" fromLane="0" toLane="0" via=":gneJ13_0_0" dir="s" state="M"/>
     <connection from="side1" to="side2" fromLane="0" toLane="0" via=":S1_0_0" dir="s" state="M"/>
     <connection from="side2" to="side3" fromLane="0" toLane="0" via=":S2_0_0" dir="s" state="M"/>
     <connection from="side3" to="side4" fromLane="0" toLane="0" via=":S3_0_0" dir="s" state="M"/>
@@ -162,6 +177,7 @@
     <connection from=":SEntry_1" to="R3" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":SExit_0" to="R5" fromLane="0" toLane="0" dir="r" state="M"/>
     <connection from=":SExit_1" to="R5" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":gneJ13_0" to="mid2" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":gneJ8_0" to="R2" fromLane="0" toLane="0" dir="s" state="M"/>
 
 </net>
