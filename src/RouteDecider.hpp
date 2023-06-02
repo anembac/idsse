@@ -10,12 +10,12 @@ public:
 
     ~RouteDecider();
 
-    const double SIDE_ROUTE = 598.34;
-    const double MAIN_ROUTE = 698.26;
+    const double MAIN_ROUTE = 598.34;
+    const double SIDE_ROUTE = 698.26;
     const int MAX_SPEED = 20;
     const int XPOS_START = -300; //Range too big, should be redone
     const int XPOS_END = 150;    
-    const int YPOS_BELOW = 40; 
+    const double YPOS_BELOW = 48.133; 
 
     std::map<uint32_t, Report> latest_msgs;
 
