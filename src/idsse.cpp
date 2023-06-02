@@ -190,9 +190,7 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.positionOnReceieve = pos;
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         auto wgsPos = Wgs84Position(Wgs84Position::wrap(lat,lon));
-        auto heading = vehicleControl->getHeading();
-        VehicleCoordinateTransform transformer(origin_, heading); //Check if origin 0,0 works or if the coords become too big
-        auto vCoords = transformer.toVehicleCoordinates(wgsPos);
+        auto vCoords = vehicleControl->getCenterPositionXY();
         meta.positionOnRecieveCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
         //log_.info() << getId() << " is at: " <<  vehicleControl->getCenterPositionXY();
         //Send report to routeDecider
