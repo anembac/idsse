@@ -61,8 +61,8 @@ RouteDecider::continueOnMain(double side_speed, double main_speed){
     double y;
     double car_speed;
     for (auto& msg : latest_msgs){
-        x = std::get<0>(msg.second.getCam().pos);
-        y = std::get<1>(msg.second.getCam().pos);
+        x = std::get<0>(msg.second.getCam().vehicleCoords);
+        y = std::get<1>(msg.second.getCam().vehicleCoords);
         car_speed = msg.second.getCam().speed;
         if(XPOS_START < x && x < XPOS_END) {
             if(y < YPOS_BELOW && car_speed < side_speed){ 
