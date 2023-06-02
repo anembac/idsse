@@ -252,9 +252,9 @@ idsse::speedAdapter(){
     uint64_t time = makeItsTimestamp(timeProvider->now());
     auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
     if(newSpeed > vehicleControl->getSpeed()){
-        vehicleControl->slowDown(newSpeed,6); //6 ≈ highest speed(20)-lowest speed(5) = 15 / max acc(2.6)
+        vehicleControl->slowDown(newSpeed,3);
     }else if(newSpeed < vehicleControl->getSpeed()){
-        vehicleControl->slowDown(newSpeed,4); //4 ≈ 15/max dec(4.5)
+        vehicleControl->slowDown(newSpeed,2);
     }
     log_.info() << "SA: finished";
 }
