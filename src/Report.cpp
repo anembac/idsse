@@ -13,7 +13,6 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     auto refPos = cam.payload().containers().basic_container().reference_position();
     auto wgsPos = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(refPos.latitude().value(), refPos.longitude().value()));
     auto origin = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(48.13266441,11.52829141));
-    auto heading = hfb.heading().value().value();
     ezC2X::LocalCartesianTransform transformer(origin);
     auto vCoords = transformer.toCartesian(wgsPos);
     cam_.id = cam.header().station_id(); //this is not the sumo id
