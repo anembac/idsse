@@ -194,12 +194,13 @@ idsse::handleReceivedCam(Cam const& cam)
         VehicleCoordinateTransform transformer(origin_, heading); //Check if origin 0,0 works or if the coords become too big
         auto vCoords = transformer.toVehicleCoordinates(wgsPos);
         meta.positionOnRecieveCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
-        log_.info() << getId() << " is at: " <<  vehicleControl->getCenterPositionXY();
+        //log_.info() << getId() << " is at: " <<  vehicleControl->getCenterPositionXY();
         //Send report to routeDecider
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
         //report.addLatency(makeItsTimestamp(timeProvider->now()));
         if(!misbehaviorDetected){
+            routeDecider_.collectLatest(report);
         }
         
         //Save report with your metadata
