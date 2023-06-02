@@ -197,15 +197,13 @@ idsse::handleReceivedCam(Cam const& cam)
         
         //Send report to routeDecider
         auto report = Report(cam,meta);
-        routeDecider_.collectLatest(report);
+        bool misbehaviorDetected = cIDS_.carIDS(report);
+        //report.addLatency(makeItsTimestamp(timeProvider->now()));
+        if(!misbehaviorDetected){
+        }
         
         //Save report with your metadata
         reportCollection_.push_back(report);
-
-        if(isReporter_){
-            //Send the Report into the carIDs
-            cIDS_.carIDS(report);
-        }
     }
     
 }
