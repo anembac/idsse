@@ -1,8 +1,8 @@
 #ifndef REPORT_HPP
 #define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
+#include "ezC2X/core/geographic/Origin.hpp"
 #include <EgoPos.hpp>
-#include <Origin.hpp>
 
 struct ReadableCam
 {

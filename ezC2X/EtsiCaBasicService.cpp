@@ -30,7 +30,7 @@
 
 #include "ezC2X/security/profile/CamProfile.hpp"
 
-#include <Origin.hpp>
+#include "ezC2X/core/geographic/Origin.hpp"
 
 namespace
 {
