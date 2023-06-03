@@ -12,7 +12,7 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     auto hfb = cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency();
     auto refPos = cam.payload().containers().basic_container().reference_position();
     auto wgsPos = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(refPos.latitude().value(), refPos.longitude().value()));
-    auto origin = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(48.13266441,11.52829141));
+    auto origin = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
     ezC2X::LocalCartesianTransform transformer(origin);
     auto vCoords = transformer.toCartesian(wgsPos);
     cam_.id = cam.header().station_id(); //this is not the sumo id
@@ -82,8 +82,10 @@ Report::concatenateValues() {
     std::stringstream ss;
 
     ss << cam_.id << ",";
-    ss << std::fixed << std::setprecision(8) << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
+    ss << std::fixed << std::setprecision(8);
+    ss << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
     ss << std::get<0>(cam_.vehicleCoords) << "," << std::get<1>(cam_.vehicleCoords) << ",";
+    ss << std::defaultfloat;
     ss << cam_.speed << ",";
     ss << cam_.heading << ",";
     ss << static_cast<int>(cam_.driveDirection) << ",";
@@ -98,6 +100,7 @@ Report::concatenateValues() {
     ss << cam_.lateralAcceleration << ",";
     ss << cam_.verticalAcceleration << ",";
     ss << metaData_.timeOnReceive << ",";
+    ss << std::fixed << std::setprecision(8);
     ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
     ss << std::get<0>(metaData_.positionOnRecieveCoords) << "," << std::get<1>(metaData_.positionOnRecieveCoords) << ",";
     ss << metaData_.id << ",";
