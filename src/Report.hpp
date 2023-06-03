@@ -2,10 +2,7 @@
 #define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
 #include <EgoPos.hpp>
-
-
-const double ORIGIN_LAT = 48.13266441;
-const double ORIGIN_LONG = 11.52829141;
+#include <Origin.hpp>
 
 struct ReadableCam
 {

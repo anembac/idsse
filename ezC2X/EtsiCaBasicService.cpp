@@ -25,10 +25,12 @@
 #include "ezC2X/core/property/Mapper.hpp"
 #include "ezC2X/core/time/DurationStreaming.hpp"
 #include "ezC2X/core/time/ItsClock.hpp"
-#include "ezC2X/core/geographic/VehicleCoordinateTransform.hpp"
+#include "ezC2X/core/geographic/LocalCartesianTransform.hpp"
 #include "ezC2X/network/geonet/common/DataRequest.hpp"
 
 #include "ezC2X/security/profile/CamProfile.hpp"
+
+#include <Origin.hpp>
 
 namespace
 {
@@ -1229,8 +1231,9 @@ EtsiCaBasicService::spoofPosData()
     auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
-    VehicleCoordinateTransform transformer(lastPosition_.value(), lastHeading);
-    auto vCoords = transformer.toVehicleCoordinates(lastPosition_.value());
+    LocalCartesianTransform transformer(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
+    auto wgsPos = ezC2X::Wgs84Position::wrap(pv->position.getLatitude().value(), pv->position.getLongitude().value());
+    auto vCoords = transformer.toCartesian(wgsPos);
     auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
     auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
     auto newX = vCoords.x + xDiff;
