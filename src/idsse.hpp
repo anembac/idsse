@@ -50,6 +50,7 @@
 #include <Report.hpp>
 #include <RouteDecider.hpp>
 #include <CarIDS.hpp>
+#include <EgoPos.hpp>
 
 namespace ezC2X
 {
@@ -219,6 +220,8 @@ private:
     std::vector<std::string>
     trimRoute(std::vector<std::string> route, std::string roadID);
 
+    EgoPos getEgoPos();
+
     // void 
     // addNearbyVehicle(int _id, int _type);
 
@@ -303,7 +306,7 @@ private:
     std::vector<Report> reportCollection_;
     RouteDecider routeDecider_;
     CarIDS cIDS_;
-    Wgs84Position origin_;
+
 };
 
 }  // namespace ezC2X

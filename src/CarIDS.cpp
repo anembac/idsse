@@ -10,10 +10,8 @@ CarIDS::~CarIDS(){}
 bool 
 CarIDS::rangePlausability(Report msg) {
     auto pos1 = msg.getCam().pos;
-    auto pos2 = msg.getMetaData().positionOnReceieve;
-    auto wgsPos1 = ezC2X::Wgs84Position::wrap(std::get<1>(pos1), std::get<0>(pos1)); 
-    auto wgsPos2 = ezC2X::Wgs84Position::wrap(std::get<1>(pos2), std::get<0>(pos2)); 
-    double dist = ezC2X::distance(wgsPos1,wgsPos2);
+    auto pos2 = msg.getMetaData().posOnReceieve;
+    double dist = ezC2X::distance(pos1.wgsPos,pos2.wgsPos);
     return dist < PLAUSABILITY_RANGE;
 }
 
@@ -47,9 +45,7 @@ CarIDS::positionConsistency(Report old_msg, Report new_msg, double time, double 
     }
     auto pos1 = old_msg.getCam().pos;
     auto pos2 = new_msg.getCam().pos;
-    auto wgsPos1 = ezC2X::Wgs84Position::wrap(std::get<1>(pos1), std::get<0>(pos1)); 
-    auto wgsPos2 = ezC2X::Wgs84Position::wrap(std::get<1>(pos2), std::get<0>(pos2)); 
-    double dist = ezC2X::distance(wgsPos1,wgsPos2);
+    double dist = ezC2X::distance(pos1.wgsPos,pos2.wgsPos);
 
     //Test print to see values for bounds and dist
     //std::cout << "Lower: " << bound_lower << ", Upper: " << bound_upper << ", Dist: " << dist << std::endl;

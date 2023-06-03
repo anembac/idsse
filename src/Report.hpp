@@ -1,6 +1,7 @@
 #ifndef REPORT_HPP
 #define REPORT_HPP
 #include "ezC2X/facility/cam/Cam.pb.h"
+#include <EgoPos.hpp>
 
 
 const double ORIGIN_LAT = 48.13266441;
@@ -14,8 +15,7 @@ struct ReadableCam
     */
 
     uint32_t id;
-    std::tuple<double,double> pos;
-    std::tuple<double,double> vehicleCoords;
+    EgoPos pos;
     double speed;
     double heading;
     uint8_t driveDirection;
@@ -39,8 +39,7 @@ struct ReadableCam
 struct MetaData
 {
     uint64_t timeOnReceive;
-    std::tuple<double,double> positionOnReceieve;
-    std::tuple<double,double> positionOnRecieveCoords;
+    EgoPos posOnReceieve;
     std::string id;
 
 };

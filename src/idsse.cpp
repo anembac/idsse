@@ -137,9 +137,6 @@ idsse::start(component::Bundle const& framework)
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
-    
-    //not the actual origin but I don't know how to find the actual origin and this should work as long as all calculations are relative
-    origin_ = Wgs84Position::wrap(48.13,11.5);
 
     //Enable CAM
     try
@@ -184,14 +181,8 @@ idsse::handleReceivedCam(Cam const& cam)
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
-        auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-        auto lat = vehicleControl->getCenterPosition().getLatitude().value();
-        std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
-        meta.positionOnReceieve = pos;
+        meta.posOnReceieve = getEgoPos();
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
-        auto vCoords = vehicleControl->getCenterPositionXY();
-        meta.positionOnRecieveCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
-        //log_.info() << getId() << " is at: " <<  vehicleControl->getCenterPositionXY();
         //Send report to routeDecider
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
@@ -242,11 +233,8 @@ void
 idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
-    auto lon = vehicleControl->getCenterPosition().getLongitude().value();
-    auto lat = vehicleControl->getCenterPosition().getLatitude().value();
-    std::tuple<double,double> pos = std::tuple<double,double>(lon,lat);
     uint64_t time = makeItsTimestamp(timeProvider->now());
-    auto newSpeed = routeDecider_.newSpeed(std::get<0>(pos), std::get<1>(pos), routeDecider_.MAX_SPEED, time);
+    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), routeDecider_.MAX_SPEED, time);
     vehicleControl->setSpeed(newSpeed);
     // if(newSpeed > vehicleControl->getSpeed()){
     //     vehicleControl->slowDown(newSpeed,3);
@@ -275,6 +263,14 @@ idsse::trimRoute(std::vector<std::string> route, std::string roadID){
         if(!trim){trimmed.push_back(road);}
     }
     return trimmed;
+}
 
+EgoPos
+idsse::getEgoPos(){
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
+    EgoPos ePos;
+    ePos.wgsPos = vehicleControl->getCenterPosition();
+    ePos.cartPos = vehicleControl->getCenterPositionXY();
+    return ePos;
 }
 } // namespace ezC2X

@@ -11,13 +11,13 @@ Report::Report(ezC2X::Cam cam, MetaData meta){
     //Moves relevant info from cam to readablecam
     auto hfb = cam.payload().containers().high_frequency_container().basic_vehicle_container_high_frequency();
     auto refPos = cam.payload().containers().basic_container().reference_position();
-    auto wgsPos = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(refPos.latitude().value(), refPos.longitude().value()));
-    auto origin = ezC2X::Wgs84Position(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
+    auto wgsPos = ezC2X::Wgs84Position::wrap(refPos.latitude().value(), refPos.longitude().value());
+    auto origin = ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG);
     ezC2X::LocalCartesianTransform transformer(origin);
     auto vCoords = transformer.toCartesian(wgsPos);
     cam_.id = cam.header().station_id(); //this is not the sumo id
-    cam_.pos = std::tuple<double,double>(refPos.longitude().value(), refPos.latitude().value());
-    cam_.vehicleCoords = std::tuple<double,double>(vCoords.x,vCoords.y);
+    cam_.pos.wgsPos = wgsPos;
+    cam_.pos.cartPos = vCoords;
     cam_.speed = hfb.speed().value().value();
     cam_.heading = hfb.heading().value().value();
     cam_.driveDirection = hfb.drive_direction().value();
@@ -69,8 +69,8 @@ Report::accelerationControlValue(ezC2X::cdd::AccelerationControl ac){
 size_t
 Report::fingerprint (ReadableCam rc){
     std::string hash_val = "";
-    hash_val += std::to_string(std::get<0>(rc.pos)) + ";";
-    hash_val += std::to_string(std::get<1>(rc.pos)) + ";";
+    hash_val += std::to_string(rc.pos.wgsPos.getLatitude().value()) + ";";
+    hash_val += std::to_string(rc.pos.wgsPos.getLongitude().value()) + ";";
     hash_val += std::to_string(rc.speed) + ";";
     hash_val += rc.id + ";";
     hash_val += std::to_string(rc.generationDeltaTime) + ";";
@@ -83,8 +83,8 @@ Report::concatenateValues() {
 
     ss << cam_.id << ",";
     ss << std::fixed << std::setprecision(8);
-    ss << std::get<0>(cam_.pos) << "," << std::get<1>(cam_.pos) << ",";
-    ss << std::get<0>(cam_.vehicleCoords) << "," << std::get<1>(cam_.vehicleCoords) << ",";
+    ss << (cam_.pos.wgsPos.getLongitude().value()) << "," << (cam_.pos.wgsPos.getLatitude().value()) << ",";
+    ss << (cam_.pos.cartPos.x) << "," << (cam_.pos.cartPos.y) << ",";
     ss << std::defaultfloat;
     ss << cam_.speed << ",";
     ss << cam_.heading << ",";
@@ -101,8 +101,8 @@ Report::concatenateValues() {
     ss << cam_.verticalAcceleration << ",";
     ss << metaData_.timeOnReceive << ",";
     ss << std::fixed << std::setprecision(8);
-    ss << std::get<0>(metaData_.positionOnReceieve) << "," << std::get<1>(metaData_.positionOnReceieve) << ",";
-    ss << std::get<0>(metaData_.positionOnRecieveCoords) << "," << std::get<1>(metaData_.positionOnRecieveCoords) << ",";
+    ss << (metaData_.posOnReceieve.wgsPos.getLongitude().value()) << "," << (metaData_.posOnReceieve.wgsPos.getLatitude().value()) << ",";
+    ss << (metaData_.posOnReceieve.cartPos.x) << "," << (metaData_.posOnReceieve.cartPos.y) << ",";
     ss << metaData_.id << ",";
     ss << cam_.attacking << ",";
     ss << cam_.fingerprint;
