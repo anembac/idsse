@@ -1236,9 +1236,11 @@ EtsiCaBasicService::spoofPosData()
     auto vCoords = transformer.toCartesian(wgsPos);
     auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
     auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
+    log_.info() << "spoofing -- xDiff: " << xDiff << ", yDiff: " << yDiff;
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
+    log_.info() << "spoofing -- old Y: " << wgsPos.getLatitude().value() << ", new Y: " << pv->position.getLatitude().value();
     pv->speed.emplace(5.00); //newSpeed;
     log_.info() << "Spoofed position data created successfully";
     return pv;
