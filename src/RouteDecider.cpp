@@ -13,7 +13,7 @@ double
 RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
     clearOldReports(time);
-    double x_diff = 200;
+    double x_diff = 2000;
     double lat; //longitude position of other car - to simplfy not needing to fetch CAM info multiple times
     double lon; //latitude position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
