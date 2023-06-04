@@ -1239,7 +1239,7 @@ EtsiCaBasicService::spoofPosData()
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
-    log_.info() << "spoofing speed: " << newSpeed << "spoofed position: ";
+    log_.info() << "spoofing speed: " << newSpeed;
     pv->speed.emplace(newSpeed);
     log_.info() << "Spoofed position data created successfully";
     return pv;

@@ -97,6 +97,8 @@ idsse::triggerEvent(){
             default:
                 break;
         }
+    }else{
+        log_.info() << getId() << " entered triggerEvent but was not acknowledged as attacker";
     }
 }
 
