@@ -181,7 +181,7 @@ idsse::handleReceivedCam(Cam const& cam)
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
         //report.addLatency(makeItsTimestamp(timeProvider->now()));
-        if(!misbehaviorDetected || true){
+        if(!misbehaviorDetected || IPSDisabled_){
             routeDecider_.collectLatest(report);
         }
         

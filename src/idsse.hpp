@@ -308,6 +308,7 @@ private:
     std::vector<Report> reportCollection_;
     RouteDecider routeDecider_;
     CarIDS cIDS_;
+    const bool IPSDisabled_ = true;
 
 };
 
