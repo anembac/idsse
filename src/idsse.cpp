@@ -269,8 +269,8 @@ EgoPos
 idsse::getEgoPos(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     EgoPos ePos;
-    ePos.wgsPos = vehicleControl->getCenterPosition();
-    ePos.cartPos = vehicleControl->getCenterPositionXY();
+    ePos.wgsPos = vehicleControl->getFrontBumperPosition();
+    ePos.cartPos = vehicleControl->getFrontBumperPositionXY();
     return ePos;
 }
 } // namespace ezC2X
