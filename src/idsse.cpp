@@ -86,6 +86,7 @@ idsse::isAttacker(std::string id){
 void
 idsse::triggerEvent(){
     log_.info() << "Triggering event!";
+    log_.info() << "isAttacker: " << isAttacker_;
     if(isAttacker_){ //will non-attacker even reach this?
         isAttacking_ = true;
         switch (attackType_){
@@ -251,7 +252,10 @@ idsse::rerouter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
     if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
+        auto route1 = vehicleControl->getRoute();
         vehicleControl->setRoute(trimRoute(sideRoute_, vehicleControl->getRoadId()));
+        auto route2 = vehicleControl->getRoute();
+        log_.info() << "Changed route: " << !(route1 == route2);
     }
 }
 
