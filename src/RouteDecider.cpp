@@ -50,7 +50,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                     && msg.second.getCam().speed < speed) {
                     //x_diff = x - mypos_x;
                     speed = msg.second.getCam().speed;
-                    log_.info() << "mainroad updating speed to " << speed << "from car: " << msg.first;
+                    log_.info() << "mainroad updating speed to " << speed << " from car: " << msg.first;
                 }
              }
         }
