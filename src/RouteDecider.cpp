@@ -75,8 +75,8 @@ RouteDecider::continueOnMain(double side_speed, double main_speed){
             }
         }
     }
-    log_.info() << "side_speed: " << side_speed << ", side time: " << (side_speed * SIDE_ROUTE)  << ", main_speed: " << main_speed << ", main time: " << (main_speed * MAIN_ROUTE);
-    bool goMain = (side_speed * SIDE_ROUTE) > (main_speed * MAIN_ROUTE);
+    log_.info() << "side_speed: " << side_speed << ", side time: " << (SIDE_ROUTE / side_speed)  << ", main_speed: " << main_speed << ", main time: " << (MAIN_ROUTE / main_speed);
+    bool goMain = (SIDE_ROUTE / side_speed) > (MAIN_ROUTE / main_speed);
     std::string pickedRoute = goMain ? "main" : "side";
     log_.info() << "Continuing on: " << pickedRoute;
     return goMain;
