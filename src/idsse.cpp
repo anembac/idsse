@@ -80,7 +80,9 @@ idsse::isReporter(std::string id){
 
 uint8_t
 idsse::isAttacker(std::string id){
-    return (id.find("attacker") != std::string::npos);
+    bool atk = (id.find("attacker") != std::string::npos);
+    log_.info() << getId() << " is attacker:" << atk;
+    return ;
 }
 
 void
