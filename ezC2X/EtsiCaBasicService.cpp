@@ -1227,7 +1227,7 @@ EtsiCaBasicService::spoofPosData()
 {   
     log_.info() << "Spoofing position data";
     auto pv = positionProvider_.position();
-    auto newSpeed = 5.0;//currently fixed at 5, used to be pv->speed.value()*targetSpeedModifier_;
+    auto newSpeed = 10.0;//currently fixed at 5, used to be pv->speed.value()*targetSpeedModifier_;
     auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
