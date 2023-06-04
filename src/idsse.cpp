@@ -123,7 +123,7 @@ idsse::normalStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
-    rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_));
+    rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_), std::chrono::milliseconds(reroutePeriod_));
     log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
     log_.info() << "Normal start completed";
@@ -256,6 +256,9 @@ idsse::rerouter(){
         vehicleControl->setRoute(trimRoute(sideRoute_, vehicleControl->getRoadId()));
         auto route2 = vehicleControl->getRoute();
         log_.info() << "Changed route: " << !(route1 == route2);
+    }
+    if(getEgoPos().cartPos.x > -280){
+        rerouteEvent_.cancel();
     }
 }
 
