@@ -1232,14 +1232,14 @@ EtsiCaBasicService::spoofPosData()
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
     LocalCartesianTransform transformer(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
-    auto wgsPos = ezC2X::Wgs84Position::wrap(pv->position.getLatitude().value(), pv->position.getLongitude().value());
+    auto wgsPos = ezC2X::Wgs84Position::wrap(lastPosition_.value().getLatitude().value(), lastPosition_.value().getLongitude().value());
     auto vCoords = transformer.toCartesian(wgsPos);
     auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading * M_PI / 180.0); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
     auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading * M_PI / 180.0);
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
-    log_.info() << "spoofing speed: " << newSpeed;
+    log_.info() << "spoofing speed: " << newSpeed << "spoofed position: ";
     pv->speed.emplace(newSpeed);
     log_.info() << "Spoofed position data created successfully";
     return pv;
