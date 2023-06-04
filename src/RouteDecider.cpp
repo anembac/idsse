@@ -26,7 +26,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
                 if(y < YPOS_BELOW 
-                    && lon > myPos.wgsPos.getLongitude().value() 
+                    && lon > (myPos.wgsPos.getLongitude().value() - 0.00005) 
                     && x_diff > dist
                     && msg.second.getCam().speed < speed) 
                 {
@@ -43,7 +43,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
                 if(y >= YPOS_BELOW 
-                    && lon > myPos.wgsPos.getLongitude().value() 
+                    && lon > (myPos.wgsPos.getLongitude().value() - 0.00005) 
                     && x_diff > dist
                     && msg.second.getCam().speed < speed) {
                     //x_diff = x - mypos_x;
