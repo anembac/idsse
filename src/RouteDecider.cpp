@@ -75,7 +75,7 @@ RouteDecider::continueOnMain(double side_speed, double main_speed){
             }
         }
     }
-    return side_speed * SIDE_ROUTE < main_speed * MAIN_ROUTE;
+    return (side_speed * SIDE_ROUTE) > (main_speed * MAIN_ROUTE);
 }
 
 void
