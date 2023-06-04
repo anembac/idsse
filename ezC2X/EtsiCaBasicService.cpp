@@ -1236,7 +1236,7 @@ EtsiCaBasicService::spoofPosData()
     auto vCoords = transformer.toCartesian(wgsPos);
     auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading * M_PI / 180.0); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
     auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading * M_PI / 180.0);
-    auto newX = vCoords.x + xDiff;
+    auto newX = vCoords.x + xDiff + 0.1;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
     log_.info() << "spoofing speed: " << newSpeed << "and position: " << newX << ", " << newY;
