@@ -13,7 +13,7 @@ double
 RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
     clearOldReports(time);
-    double x_diff = 2000;
+    double x_diff = 200;
     double lat; //longitude position of other car - to simplfy not needing to fetch CAM info multiple times
     double lon; //latitude position of other car - to simplfy not needing to fetch CAM info multiple times
     double y; //y position of other car - to simplfy not needing to fetch CAM info multiple times
@@ -25,7 +25,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 lon = msg.second.getCam().pos.wgsPos.getLongitude().value();
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
-                log_.info() << "Distance: " << dist;
+                //log_.info() << "Distance: " << dist;
                 if(y < YPOS_BELOW 
                     && lon > (myPos.wgsPos.getLongitude().value()) 
                     && x_diff > dist
@@ -43,7 +43,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 lon = msg.second.getCam().pos.wgsPos.getLongitude().value();
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
-                log_.info() << "Distance: " << dist;
+                //log_.info() << "Distance: " << dist;
                 if(y >= YPOS_BELOW 
                     && lon > (myPos.wgsPos.getLongitude().value()) 
                     && x_diff > dist
