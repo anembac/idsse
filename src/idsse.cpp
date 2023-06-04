@@ -249,7 +249,7 @@ idsse::rerouter(){
         auto route2 = vehicleControl->getRoute();
         log_.info() << "Changed route: " << !(route1 == route2);
     }
-    if(getEgoPos().cartPos.x > -280){
+    if(getEgoPos().cartPos.x > stopReroutePos){
         rerouteEvent_.cancel();
     }
 }
