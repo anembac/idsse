@@ -274,8 +274,8 @@ private:
 
     // Properties configureable through XML file
     //! Time to wait (ms) before the first triggering of the maneuver
-    std::uint32_t triggerStart_ = 1000;
-    std::uint32_t rerouteDelay_ = 5500;
+    std::uint32_t triggerStart_ = 3000;
+    std::uint32_t rerouteDelay_ = 8500;
     std::uint32_t speedAdapterStart_ = 0;
     std::uint32_t speedAdapterPeriod_ = 100;
     //! Time period (ms) with which triggering of the maneuver recurs
