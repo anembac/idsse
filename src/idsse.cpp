@@ -80,16 +80,13 @@ idsse::isReporter(std::string id){
 
 uint8_t
 idsse::isAttacker(std::string id){
-    bool atk = (id.find("attacker") != std::string::npos);
-    log_.info() << getId() << " is attacker:" << atk;
-    return atk;
+    return (id.find("attacker") != std::string::npos);
 }
 
 void
 idsse::triggerEvent(){
     log_.info() << "Triggering event!";
     log_.info() << "isAttacker: " << isAttacker_;
-    if(isAttacker_){ //will non-attacker even reach this?
         isAttacking_ = true;
         switch (attackType_){
             case spoofing:
@@ -99,9 +96,6 @@ idsse::triggerEvent(){
             default:
                 break;
         }
-    }else{
-        log_.info() << getId() << " entered triggerEvent but was not acknowledged as attacker";
-    }
 }
 
 uint64_t 
