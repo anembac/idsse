@@ -1227,21 +1227,21 @@ EtsiCaBasicService::spoofPosData()
 {   
     log_.info() << "Spoofing position data";
     auto pv = positionProvider_.position();
-    auto newSpeed = pv->speed.value()*targetSpeedModifier_;
+    auto newSpeed = 5.0;//currently fixed at 5, used to be pv->speed.value()*targetSpeedModifier_;
     auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
     auto lastHeading = lastHeading_.value();
     auto lastSpeed = lastSpeed_.value();
     LocalCartesianTransform transformer(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
     auto wgsPos = ezC2X::Wgs84Position::wrap(pv->position.getLatitude().value(), pv->position.getLongitude().value());
     auto vCoords = transformer.toCartesian(wgsPos);
-    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
-    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
+    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading * M_PI / 180.0); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
+    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading * M_PI / 180.0);
     log_.info() << "spoofing -- xDiff: " << xDiff << ", yDiff: " << yDiff;
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
-    log_.info() << "spoofing -- old Y: " << wgsPos.getLatitude().value() << ", new Y: " << pv->position.getLatitude().value();
-    pv->speed.emplace(5.00); //newSpeed;
+    log_.info() << std::fixed << std::setprecision(8) << "spoofing -- old Y: " << wgsPos.getLatitude().value() << ", new Y: " << pv->position.getLatitude().value();
+    pv->speed.emplace(newSpeed);
     log_.info() << "Spoofed position data created successfully";
     return pv;
 }
