@@ -110,7 +110,7 @@ idsse::attackStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
     triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
-    //vehicleControl->setSpeed(15.00);
+    vehicleControl->setSpeed(15.00);
     log_.info() << "Attack start completed";
 
 }

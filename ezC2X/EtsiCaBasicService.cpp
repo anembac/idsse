@@ -1240,7 +1240,7 @@ EtsiCaBasicService::spoofPosData()
     auto newX = vCoords.x + xDiff;
     auto newY = vCoords.y + yDiff;
     pv->position = transformer.toWgs84({newX,newY});
-    log_.info() << std::fixed << std::setprecision(8) << "spoofing -- old Y: " << wgsPos.getLatitude().value() << ", new Y: " << pv->position.getLatitude().value();
+    log_.info() << "spoofing speed: " << newSpeed;
     pv->speed.emplace(newSpeed);
     log_.info() << "Spoofed position data created successfully";
     return pv;
