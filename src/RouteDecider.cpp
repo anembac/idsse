@@ -38,7 +38,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
             }
         } else {
              //we are driving on mainroad
-             for(auto& msg :latest_msgs){
+             for(auto& msg : latest_msgs){
                 lat = msg.second.getCam().pos.wgsPos.getLatitude().value();
                 lon = msg.second.getCam().pos.wgsPos.getLongitude().value();
                 y = msg.second.getCam().pos.cartPos.y;
@@ -86,6 +86,7 @@ RouteDecider::continueOnMain(double side_speed, double main_speed){
 
 void
 RouteDecider::collectLatest(Report report){
+    log_.info() << "collectLatest: " << report.getCam().id;
     latest_msgs[report.getCam().id] = report;
 }
 
