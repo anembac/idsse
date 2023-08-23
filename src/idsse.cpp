@@ -114,7 +114,7 @@ idsse::normalStart(){
     log_.info() << "Running normal start";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
-    log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
+    //log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
     //rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_), std::chrono::milliseconds(reroutePeriod_));
     log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
@@ -230,7 +230,7 @@ idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
     uint64_t time = makeItsTimestamp(timeProvider->now());
-    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), routeDecider_.MAX_SPEED, time);
+    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), vehicleControl->getSpeed(), time);
     vehicleControl->setSpeed(newSpeed);
     // if(newSpeed > vehicleControl->getSpeed()){
     //     vehicleControl->slowDown(newSpeed,3);
