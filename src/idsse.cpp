@@ -103,7 +103,7 @@ idsse::attackStart(){
     log_.info() << "Running attack start";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
-    triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
+    //triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
     //vehicleControl->setSpeed(15.00);
     log_.info() << "Attack start completed";
 
@@ -181,7 +181,9 @@ idsse::handleReceivedCam(Cam const& cam)
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
         //report.addLatency(makeItsTimestamp(timeProvider->now()));
-        if(!misbehaviorDetected || IPSDisabled_){
+        // Note: IDSDisabled_ isn't fully thought out/implemented, and exists as a backup in case cIDS isn't working
+        // or if we want to collect reports despite misbehavior, e.g. for testing.
+        if(IDSDisabled_ || !misbehaviorDetected){
             routeDecider_.collectLatest(report);
         }
         
