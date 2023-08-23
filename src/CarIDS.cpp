@@ -65,10 +65,10 @@ CarIDS::compareMsgConsistency(Report old_msg, Report new_msg) {
     bool plausableSpeed = speedPlausability(new_msg);
     bool consistentSpeed = speedConsistency(old_msg.getCam().speed - new_msg.getCam().speed, t_diff);
     bool consistentPosition = positionConsistency(old_msg, new_msg, t_diff, MAX_ACC, MAX_DEC);
-    log_.info() << "Plausable Range: " << plausableRange 
-                << ", plausableSpeed: " << plausableSpeed 
-                << ", consistentSpeed: " << consistentSpeed 
-                << ", consistentPosition: " << consistentPosition;
+    // log_.info() << "Plausable Range: " << plausableRange 
+    //             << ", plausableSpeed: " << plausableSpeed 
+    //             << ", consistentSpeed: " << consistentSpeed 
+    //             << ", consistentPosition: " << consistentPosition;
 
     return plausableRange &&
            plausableSpeed &&
