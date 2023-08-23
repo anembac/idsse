@@ -230,7 +230,7 @@ idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
     uint64_t time = makeItsTimestamp(timeProvider->now());
-    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), vehicleControl->getSpeed(), time);
+    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), routeDecider_.MAX_SPEED, time);
     vehicleControl->setSpeed(newSpeed);
     // if(newSpeed > vehicleControl->getSpeed()){
     //     vehicleControl->slowDown(newSpeed,3);
