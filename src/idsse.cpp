@@ -92,7 +92,7 @@ void
 idsse::triggerEvent(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     log_.info() << "Triggering event!";
-    log_.info() << "isAttacker: " << isAttacker_;
+    log_.info() << "isAttacker: " << +isAttacker_;
     isAttacking_ = true;
     log_.info() << "isAttacking true, beginning to spoof";
     
@@ -183,7 +183,7 @@ idsse::handleReceivedCam(Cam const& cam)
     log_.info() << "handleReceivedCam";
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::handleRecievedCam");
-    log_.info() << "isDummy: " << isDummy_;
+    log_.info() << "isDummy: " << +isDummy_;
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
     }else if(isDummy_){
@@ -194,8 +194,9 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         //Send report to routeDecider
         auto report = Report(cam,meta);
-        if(report.getCam().id==0)
-        vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
+        if(report.getCam().id==0){
+            vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
+        }
     }else {
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
