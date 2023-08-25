@@ -52,6 +52,6 @@
     <trip id="normal5" depart="1.20" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal6" depart="1.70" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal7" depart="2.60" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="dummy" depart="0.40" departSpeed="0" color="green" from="side4" to="R6" via="side5 R5"/>
+    <trip id="dummy" depart="0.40" departSpeed="0" color="blue" from="side4" to="R6" via="side5 R5"/>
     
 </routes>
