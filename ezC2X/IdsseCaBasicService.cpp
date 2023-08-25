@@ -25,6 +25,9 @@
 #include "ezC2X/core/property/Mapper.hpp"
 #include "ezC2X/core/time/DurationStreaming.hpp"
 #include "ezC2X/core/time/ItsClock.hpp"
+#include "ezC2X/core/geographic/Origin.hpp"
+#include "ezC2X/core/geographic/LocalCartesianTransform.hpp"
+
 
 #include "ezC2X/network/geonet/common/DataRequest.hpp"
 #include "ezC2X/security/profile/CamProfile.hpp"
@@ -1250,15 +1253,19 @@ IdsseCaBasicService::spoofPosData()
     auto newSpeed = pv->speed.value()*targetSpeedModifier_;
     //newpos = oldpos + (((newSpeed+oldSpeed)/2)*delta_t)*sin(heading)
     auto delta_t = getTimeSinceLastCam().count()/1000; //converted to seconds
-    auto oldLongitude = lastPosition_->getLongitude().value();
-    auto oldLatitude = lastPosition_->getLatitude().value();
-    auto lastHeading = lastHeading_.value();
+    auto origin = ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG);
+    ezC2X::LocalCartesianTransform transformer(origin);
+    auto vCoords = transformer.toCartesian(lastPosition_.value());
+    auto lastHeading = (lastHeading_.value()*M_PI)/180; //Heading is in degrees, need radians for math, deg*pi/180
     auto lastSpeed = lastSpeed_.value();
-    auto longitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading);
-    auto latitudeDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading);
-    auto newLongitude = oldLongitude + longitudeDiff;
-    auto newLatitude = oldLatitude + latitudeDiff;
-    pv->position = pv->position.wrap(newLatitude, newLongitude);
+    auto oldX = vCoords.x;
+    auto oldY = vCoords.y;
+    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading); // meters
+    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading); // meters
+    auto newX = oldX + xDiff;
+    auto newY = oldY + yDiff;
+    auto newWgs = transformer.toWgs84({newX,newY});
+    pv->position = newWgs;
     return pv;
 }
 
