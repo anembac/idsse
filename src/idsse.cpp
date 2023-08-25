@@ -83,6 +83,11 @@ idsse::isAttacker(std::string id){
     return (id.find("attacker") != std::string::npos);
 }
 
+uint8_t
+idsse::isDummy(std::string id){
+    return (id.find("dummy") != std::string::npos);
+}
+
 void
 idsse::triggerEvent(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
@@ -90,7 +95,7 @@ idsse::triggerEvent(){
     log_.info() << "isAttacker: " << isAttacker_;
     isAttacking_ = true;
     log_.info() << "isAttacking true, beginning to spoof";
-    vehicleControl->setSpeed(5);
+    
     //caService_->spoof();
         
 }
@@ -134,12 +139,16 @@ idsse::start(component::Bundle const& framework)
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
+    std::string id = getId();
 
     //Enable CAM
     try
     {
         log_.info() << "Acquiring CaBasicService from framework";
         caService_ = framework.get<CaBasicService>();
+        if(isDummy(id)){
+        caService_->setSuppressCAMs(true);
+        }
         log_.info() << "Enabling CAM subscription";
         camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
 
@@ -151,10 +160,13 @@ idsse::start(component::Bundle const& framework)
     }
 
     //Vehicle type branching
-    std::string id = getId();
     if(isAttacker(id)){
         isAttacker_ = true;
         attackStart();
+    }else if(isDummy(id)){
+        isDummy_ = true;
+        vehicleControl->disableAutomaticSafeDriving();
+        log_.info() << "Dummy created";
     }else{
         normalStart();
         if(isReporter(id)){
@@ -174,6 +186,15 @@ idsse::handleReceivedCam(Cam const& cam)
 
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
+    }else if(isDummy_){
+        MetaData meta;
+        auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
+        meta.id = vehicleId_;
+        meta.posOnReceieve = getEgoPos();
+        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
+        //Send report to routeDecider
+        auto report = Report(cam,meta);
+        vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
     }else {
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
