@@ -85,11 +85,14 @@ idsse::isAttacker(std::string id){
 
 void
 idsse::triggerEvent(){
+    auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     log_.info() << "Triggering event!";
     log_.info() << "isAttacker: " << isAttacker_;
-        isAttacking_ = true;
-        log_.info() << "isAttacking true, beginning to spoof";
-        caService_->spoof();
+    isAttacking_ = true;
+    log_.info() << "isAttacking true, beginning to spoof";
+    vehicleControl->setSpeed(5);
+    //caService_->spoof();
+        
 }
 
 uint64_t 
