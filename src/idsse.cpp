@@ -194,7 +194,7 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
         //Send report to routeDecider
         auto report = Report(cam,meta);
-        vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
+        //vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
     }else {
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
