@@ -198,7 +198,7 @@ idsse::handleReceivedCam(Cam const& cam)
             vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
         }
     }else {
-        MetaData meta;q
+        MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
         meta.posOnReceieve = getEgoPos();
