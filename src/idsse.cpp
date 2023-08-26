@@ -123,7 +123,7 @@ idsse::normalStart(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     //log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
-    rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_), std::chrono::milliseconds(reroutePeriod_));
+    //rerouteEvent_ = es->schedule([this] () {rerouter();},std::chrono::milliseconds(rerouteDelay_), std::chrono::milliseconds(reroutePeriod_));
     log_.info() << "Scheduling speedAdapter with delay: " << speedAdapterStart_ << " and period: " << speedAdapterPeriod_;
     speedAdapterEvent_ = es->schedule([this] () {speedAdapter();},std::chrono::milliseconds(speedAdapterStart_), std::chrono::milliseconds(speedAdapterPeriod_));
     log_.info() << "Normal start completed";
@@ -198,7 +198,7 @@ idsse::handleReceivedCam(Cam const& cam)
             vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
         }
     }else {
-        MetaData meta;
+        MetaData meta;q
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
         meta.id = vehicleId_;
         meta.posOnReceieve = getEgoPos();

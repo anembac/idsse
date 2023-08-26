@@ -1227,20 +1227,23 @@ EtsiCaBasicService::spoofPosData()
 {   
     log_.info() << "Spoofing position data";
     auto pv = positionProvider_.position();
-    auto newSpeed = 10.0;//currently fixed at 5, used to be pv->speed.value()*targetSpeedModifier_;
-    auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
-    auto lastHeading = lastHeading_.value();
-    auto lastSpeed = lastSpeed_.value();
+    // auto newSpeed = 5.0;//currently fixed at 5, used to be pv->speed.value()*targetSpeedModifier_;
+    // auto delta_t = getTimeSinceLastCam().count()/1000.00; //converted to seconds
+    // auto lastHeading = lastHeading_.value();
+    // auto headingRad = (lastHeading*M_PI)/180;
+    // auto lastSpeed = lastSpeed_.value();
     LocalCartesianTransform transformer(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
-    auto wgsPos = ezC2X::Wgs84Position::wrap(lastPosition_.value().getLatitude().value(), lastPosition_.value().getLongitude().value());
+    auto wgsPos = lastPosition_.value();
     auto vCoords = transformer.toCartesian(wgsPos);
-    auto xDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::sin(lastHeading * M_PI / 180.0); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
-    auto yDiff = (((newSpeed+lastSpeed)/2)*delta_t)*std::cos(lastHeading * M_PI / 180.0);
-    auto newX = vCoords.x + xDiff;
-    auto newY = vCoords.y + yDiff;
-    pv->position = transformer.toWgs84({newX,newY});
-    log_.info() << "spoofing speed: " << newSpeed << "and position: " << newX << ", " << newY;
-    pv->speed.emplace(newSpeed);
+    // auto averageSpeed = (((newSpeed+lastSpeed)/2)*delta_t); //A more sophisticated spoof might make this more precise but we'll make do with a rough estimate
+    // auto xDiff = averageSpeed*std::sin(headingRad); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
+    // auto yDiff = averageSpeed*std::cos(headingRad);
+    // auto newX = vCoords.x + xDiff;
+    // auto newY = vCoords.y + yDiff;
+    // pv->position = transformer.toWgs84({newX,newY});
+    pv->position = transformer.toWgs84(vCoords);
+    // log_.info() << "spoofing speed: " << newSpeed << "and position: " << newX << ", " << newY;
+    //pv->speed.emplace(newSpeed);
     log_.info() << "Spoofed position data created successfully";
     return pv;
 }
