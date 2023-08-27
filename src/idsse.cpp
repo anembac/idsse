@@ -111,7 +111,7 @@ idsse::attackStart(){
     log_.info() << "Running attack start";
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::attackStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse::attackStart");
-    // triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
+    triggerEvent_ = es->schedule([this] () { triggerEvent();}, std::chrono::milliseconds(triggerStart_));
     //vehicleControl->setSpeed(15.00);
     log_.info() << "Attack start completed";
 
@@ -146,9 +146,9 @@ idsse::start(component::Bundle const& framework)
     {
         log_.info() << "Acquiring CaBasicService from framework";
         caService_ = framework.get<CaBasicService>();
-        if(isDummy(id)){
-        caService_->setSuppressCAMs(true);
-        }
+        // if(isDummy(id)){
+        // caService_->setSuppressCAMs(true);
+        // }
         log_.info() << "Enabling CAM subscription";
         camReceptionConnection_ = caService_->subscribeOnCam([this](Cam const& cam) { handleReceivedCam(cam); });
 
@@ -163,10 +163,10 @@ idsse::start(component::Bundle const& framework)
     if(isAttacker(id)){
         isAttacker_ = true;
         attackStart();
-    }else if(isDummy(id)){
-        isDummy_ = true;
-        vehicleControl->disableAutomaticSafeDriving();
-        log_.info() << "Dummy created";
+    // }else if(isDummy(id)){
+    //     isDummy_ = true;
+    //     vehicleControl->disableAutomaticSafeDriving();
+    //     log_.info() << "Dummy created";
     }else{
         normalStart();
         if(isReporter(id)){
@@ -183,23 +183,23 @@ idsse::handleReceivedCam(Cam const& cam)
     log_.info() << "handleReceivedCam";
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::handleRecievedCam");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::handleRecievedCam");
-    log_.info() << "isDummy: " << +isDummy_;
+    //log_.info() << "isDummy: " << +isDummy_;
     if(isAttacking_){ //Stop listening to CAMs while actively attacking 
         return;
-    }else if(isDummy_){
-        MetaData meta;
-        auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
-        meta.id = vehicleId_;
-        meta.posOnReceieve = getEgoPos();
-        meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
-        //Send report to routeDecider
-        auto report = Report(cam,meta);
-        if(report.getCam().id==0){
-            auto camPos = report.getCam().pos;
-            log_.info() << "Teleporting to x=" << camPos.cartPos.x << ", y=" << camPos.cartPos.y;
-            log_.info() << "Teleporting to lon=" << camPos.wgsPos.getLongitude().value() << ", lat=" << camPos.wgsPos.getLatitude().value();
-            vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
-        }
+    // }else if(isDummy_){
+    //     MetaData meta;
+    //     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
+    //     meta.id = vehicleId_;
+    //     meta.posOnReceieve = getEgoPos();
+    //     meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
+    //     //Send report to routeDecider
+    //     auto report = Report(cam,meta);
+    //     if(report.getCam().id==0){
+    //         auto camPos = report.getCam().pos;
+    //         log_.info() << "Teleporting to x=" << camPos.cartPos.x << ", y=" << camPos.cartPos.y;
+    //         log_.info() << "Teleporting to lon=" << camPos.wgsPos.getLongitude().value() << ", lat=" << camPos.wgsPos.getLatitude().value();
+    //         vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
+    //     }
     }else {
         MetaData meta;
         auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
