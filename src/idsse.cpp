@@ -96,7 +96,7 @@ idsse::triggerEvent(){
     isAttacking_ = true;
     log_.info() << "isAttacking true, beginning to spoof";
     
-    //caService_->spoof();
+    caService_->spoof();
         
 }
 
