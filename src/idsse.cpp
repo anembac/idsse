@@ -195,6 +195,9 @@ idsse::handleReceivedCam(Cam const& cam)
         //Send report to routeDecider
         auto report = Report(cam,meta);
         if(report.getCam().id==0){
+            auto camPos = report.getCam().pos;
+            log_.info() << "Teleporting to x=" << camPos.cartPos.x << ", y=" << camPos.cartPos.y;
+            log_.info() << "Teleporting to lon=" << camPos.wgsPos.getLongitude().value() << ", lat=" << camPos.wgsPos.getLatitude().value();
             vehicleControl->moveToXY("", -1, report.getCam().pos.cartPos);
         }
     }else {
