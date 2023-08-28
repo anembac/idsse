@@ -36,7 +36,9 @@ namespace ezC2X
 idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 
 idsse::~idsse(){
-    log_.info() << "Shutting down " << vehicleId_;
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::normalStart");
+    auto endTime = makeItsTimestamp(timeProvider->now());
+    log_.info() << "Shutting down " << vehicleId_ << ", run time was " << endTime-startTime_ << "ms";
     auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     std::string carFile = "./reports/received_"+ getId() + "_" + timestamp + ".csv";
     if(isReporter_){
@@ -115,8 +117,6 @@ idsse::attackStart(){
 void
 idsse::normalStart(){
     log_.info() << "Running normal start";
-    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::normalStart");
-    log_.info() << "For vehicle " << vehicleId_ << " the time is: " << makeItsTimestamp(timeProvider->now());
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     //log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
@@ -135,6 +135,7 @@ idsse::start(component::Bundle const& framework)
     state_ = State::Running;
     deps_.setFromAggregationIfNotSet(framework);
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::normalStart");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
     std::string id = getId();
     routeDecider_ = new RouteDecider(id);
@@ -164,6 +165,7 @@ idsse::start(component::Bundle const& framework)
         }
     }
     //Schedule event for speed-adapter
+    startTime_ = makeItsTimestamp(timeProvider->now()); 
     log_.info() << "Startup completed";
 }
 
@@ -184,7 +186,6 @@ idsse::handleReceivedCam(Cam const& cam)
         //Send report to routeDecider
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
-        //report.addLatency(makeItsTimestamp(timeProvider->now()));
         // Note: IDSDisabled_ isn't fully thought out/implemented, and exists as a backup in case cIDS isn't working
         // or if we want to collect reports despite misbehavior, e.g. for testing.
         if(IDSDisabled_ || !misbehaviorDetected){

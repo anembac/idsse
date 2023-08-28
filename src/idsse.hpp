@@ -309,6 +309,7 @@ private:
     RouteDecider* routeDecider_;
     CarIDS cIDS_;
     const bool IDSDisabled_ = false;
+    uint64_t startTime_;
 
 };
 
