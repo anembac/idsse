@@ -140,7 +140,7 @@ idsse::start(component::Bundle const& framework)
     auto cm = deps_.getOrThrow<PseudonymManager, component::MissingDependency>("PseudonymManager", "idsse::start");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::start");
     std::string id = getId();
-
+    routeDecider_ = new RouteDecider(id);
     //Enable CAM
     try
     {
@@ -213,7 +213,7 @@ idsse::handleReceivedCam(Cam const& cam)
         // Note: IDSDisabled_ isn't fully thought out/implemented, and exists as a backup in case cIDS isn't working
         // or if we want to collect reports despite misbehavior, e.g. for testing.
         if(IDSDisabled_ || !misbehaviorDetected){
-            routeDecider_.collectLatest(report);
+            routeDecider_->collectLatest(report);
         }
         
         //Save report with your metadata
@@ -259,7 +259,7 @@ idsse::speedAdapter(){
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::speedAdapter");
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::handleReceivedCam");
     uint64_t time = makeItsTimestamp(timeProvider->now());
-    auto newSpeed = routeDecider_.newSpeed(getEgoPos(), routeDecider_.MAX_SPEED, time);
+    auto newSpeed = routeDecider_->newSpeed(getEgoPos(), routeDecider_->MAX_SPEED, time);
     vehicleControl->setSpeed(newSpeed);
     // if(newSpeed > vehicleControl->getSpeed()){
     //     vehicleControl->slowDown(newSpeed,3);
@@ -273,7 +273,7 @@ void
 idsse::rerouter(){
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::rerouter");
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::rerouter");
-    if (!routeDecider_.continueOnMain(routeDecider_.MAX_SPEED, routeDecider_.MAX_SPEED)) {
+    if (!routeDecider_->continueOnMain(routeDecider_->MAX_SPEED, routeDecider_->MAX_SPEED)) {
         log_.info() << "Attempting to set new route";
         auto route1 = vehicleControl->getRoute();
         vehicleControl->setRoute(trimRoute(sideRoute_, vehicleControl->getRoadId()));

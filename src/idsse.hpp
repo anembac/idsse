@@ -313,7 +313,7 @@ private:
 
     std::unordered_map<int,int> nearbyVehicles;
     std::vector<Report> reportCollection_;
-    RouteDecider routeDecider_;
+    RouteDecider* routeDecider_;
     CarIDS cIDS_;
     const bool IDSDisabled_ = true;
 

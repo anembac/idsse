@@ -7,7 +7,7 @@
 class RouteDecider
 {
 public:
-    RouteDecider();
+    RouteDecider(std::string id);
 
     ~RouteDecider();
 
@@ -30,4 +30,5 @@ public:
 
 private:
     ezC2X::Logger log_;
+    std::string id_;
 };

@@ -3,7 +3,9 @@
 #include "ezC2X/core/geographic/Distance.hpp"
 
 
-RouteDecider::RouteDecider(): log_("routeDecider"){}
+RouteDecider::RouteDecider(std::string id): log_("routeDecider"){
+    id_ = id;
+}
 
 RouteDecider::~RouteDecider() {}
 
@@ -25,11 +27,16 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 lon = msg.second.getCam().pos.wgsPos.getLongitude().value();
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
-                //log_.info() << "Distance: " << dist;
+
+                bool carAhead = lon > (myPos.wgsPos.getLongitude().value());
+                bool withinRange = x_diff > dist;
+                bool carSlower = msg.second.getCam().speed < speed;
+                log_.info() << "Vehicle " << id_ <<  ": carAhead: " << carAhead << ", withinRange: " << withinRange << ", carSlower: " << carSlower;
+
                 if(y < YPOS_BELOW 
-                    && lon > (myPos.wgsPos.getLongitude().value()) 
-                    && x_diff > dist
-                    && msg.second.getCam().speed < speed) 
+                    && carAhead 
+                    && withinRange
+                    && carSlower) 
                 {
                     //x_diff = x - mypos_x;
                     speed = msg.second.getCam().speed;
@@ -44,11 +51,14 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
                 //log_.info() << "Distance: " << dist;
+                bool carAhead = lon > (myPos.wgsPos.getLongitude().value());
+                bool withinRange = x_diff > dist;
+                bool carSlower = msg.second.getCam().speed < speed;
+                log_.info() << "Vehicle " << id_ <<  ": carAhead: " << carAhead << ", withinRange: " << withinRange << ", carSlower: " << carSlower;
                 if(y >= YPOS_BELOW 
-                    && lon > (myPos.wgsPos.getLongitude().value()) 
-                    && x_diff > dist
-                    && msg.second.getCam().speed < speed) {
-                    //x_diff = x - mypos_x;
+                    && carAhead 
+                    && withinRange
+                    && carSlower) {
                     speed = msg.second.getCam().speed;
                     log_.info() << "mainroad updating speed to " << speed << " from car: " << msg.first;
                 }
