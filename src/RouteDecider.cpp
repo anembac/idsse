@@ -14,7 +14,7 @@ not handle if cars have speed zero and speeding up to catch up...*/
 double 
 RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
     log_.info() << "Calculating new speed";
-    //clearOldReports(time);
+    //clearOldReports(time); // clearOldReports broke certain things but should be refactored and replaced given time
     double x_diff = 200;
     double lat; //longitude position of other car - to simplfy not needing to fetch CAM info multiple times
     double lon; //latitude position of other car - to simplfy not needing to fetch CAM info multiple times
