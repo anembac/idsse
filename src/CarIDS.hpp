@@ -7,8 +7,8 @@
 
 const double PLAUSABILITY_RANGE = 500; // meters
 const int MAX_SPEED = 20; // m/s
-const double MAX_ACC = 3; // m/s^2
-const double MAX_DEC = -5; // m/s^2
+const double MAX_ACC = 2.6; // m/s^2
+const double MAX_DEC = -4.5; // m/s^2
 
 class CarIDS{
 public:
