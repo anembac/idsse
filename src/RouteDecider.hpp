@@ -16,7 +16,7 @@ public:
     const int MAX_SPEED = 20;
     const int XPOS_START = -300; 
     const int XPOS_END = 150;    
-    const double YPOS_BELOW = 0; 
+    const double YPOS_BELOW = 44; //Specific for our scenario lol
 
     std::map<uint32_t, Report> latest_msgs;
 
