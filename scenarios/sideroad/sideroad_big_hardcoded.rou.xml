@@ -121,8 +121,8 @@
     <trip id="normal72" depart="28.33" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal73" depart="28.69" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal74" depart="29.06" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal86" depart="29.95" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal85" depart="29.45" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal86" depart="29.95" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal87" depart="30.23" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal88" depart="30.58" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal89" depart="31.04" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
@@ -208,12 +208,12 @@
     <trip id="normal165" depart="56.89" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal166" depart="57.01" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal167" depart="57.17" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal168" depart="57.82" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal169" depart="57.17" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal170" depart="57.29" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal171" depart="57.41" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal172" depart="57.51" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="normal173" depart="57.68" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal168" depart="57.19" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal169" depart="57.24" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal170" depart="57.44" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal171" depart="57.50" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal172" depart="57.62" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="normal173" depart="57.81" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal174" depart="57.89" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal175" depart="58.05" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal176" depart="58.20" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
@@ -236,7 +236,7 @@
     <trip id="normal193" depart="60.98" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal194" depart="61.08" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal195" depart="61.29" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
-    <trip id="attacker1" depart="61.40" departSpeed="20.00" color="red" from="R1" to="R6" via="R2 R3 R4 R5"/>
+    <trip id="attacker5" depart="61.40" departSpeed="20.00" color="red" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal196" depart="61.70" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal197" depart="61.91" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
     <trip id="normal198" depart="62.13" departSpeed="20.00" color="green" from="R1" to="R6" via="R2 R3 R4 R5"/>
