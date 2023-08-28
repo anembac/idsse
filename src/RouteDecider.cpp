@@ -51,7 +51,7 @@ RouteDecider::newSpeed(EgoPos myPos, double speed, uint64_t time){
                 y = msg.second.getCam().pos.cartPos.y;
                 dist = ezC2X::distance(myPos.wgsPos, ezC2X::Wgs84Position::wrap(lat,lon));
                 //log_.info() << "Distance: " << dist;
-                bool carAhead = lon > (myPos.wgsPos.getLongitude().value());
+                bool carAhead = lon > (myPos.wgsPos.getLongitude().value()); //might create a bug in the future
                 bool withinRange = x_diff > dist;
                 bool carSlower = msg.second.getCam().speed < speed;
                 log_.info() << "Vehicle " << id_ <<  ": carAhead: " << carAhead << ", withinRange: " << withinRange << ", carSlower: " << carSlower;
