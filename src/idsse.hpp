@@ -197,9 +197,6 @@ private:
     attackStart();
 
     void
-    dummyStart();
-
-    void
     reporterLog(std::string msg);
 
     /*!
@@ -213,9 +210,6 @@ private:
      */
     uint8_t
     isAttacker(std::string id);
-
-    uint8_t
-    isDummy(std::string id);
 
     void saveReports (std::vector<Report> reports, std::string filename);
 
@@ -293,7 +287,6 @@ private:
     std::string attackInfo_ = "";
     //std::map <int,int> attackList_;
     std::uint8_t isAttacker_ = false;
-    std::uint8_t isDummy_ = false;
     std::uint8_t isAttacking_ = false;
     std::uint8_t isReporter_ = false;
     //const double maxAttackStep_ = 1.05;
