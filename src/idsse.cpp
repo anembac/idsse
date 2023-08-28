@@ -38,7 +38,7 @@ idsse::idsse() : state_(State::NotRunning), log_("idsse"){}
 idsse::~idsse(){
     auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::normalStart");
     auto endTime = makeItsTimestamp(timeProvider->now());
-    log_.info() << "Shutting down " << vehicleId_ << ", run time was " << endTime-startTime_/1000 << "s";
+    log_.info() << "Shutting down " << vehicleId_ << ", run time was " << (endTime-startTime_)/1000 << "s";
     auto timestamp = std::to_string(std::chrono::system_clock::to_time_t((std::chrono::system_clock::now())));
     std::string carFile = "./reports/received_"+ getId() + "_" + timestamp + ".csv";
     if(isReporter_){
