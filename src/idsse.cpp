@@ -120,6 +120,8 @@ idsse::attackStart(){
 void
 idsse::normalStart(){
     log_.info() << "Running normal start";
+    auto timeProvider = deps_.getOrThrow<TimeProvider, component::MissingDependency>("TimeProvider","idsse::normalStart");
+    log_.info() << "For vehicle " << vehicleId_ << " the time is: " << timeProvider->now();
     auto vehicleControl = deps_.getOrThrow<VehicleControlInterface, component::MissingDependency>("VehicleControlInterface", "idsse::normalStart");
     auto es = deps_.getOrThrow<EventScheduler, component::MissingDependency>("EventScheduler", "idsse:normalStart");
     //log_.info() << "Scheduling reroute with delay: " << rerouteDelay_;
