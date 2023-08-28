@@ -315,7 +315,7 @@ private:
     std::vector<Report> reportCollection_;
     RouteDecider* routeDecider_;
     CarIDS cIDS_;
-    const bool IDSDisabled_ = true;
+    const bool IDSDisabled_ = false;
 
 };
 
