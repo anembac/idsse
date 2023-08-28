@@ -20,8 +20,8 @@ if [ ! -f "$misbehaving_reporter_file" ] || [ ! -f "$received_reporter_file" ]; 
 fi
 
 # Execute the grep commands
-echo "Total flagged:  $misbehaving_reporter_file: $(grep -c '^' "$misbehaving_reporter_file")"
-echo "True Positives: $misbehaving_reporter_file: $(grep -c '^0' "$misbehaving_reporter_file")"
-echo "Total attacker messages: $received_reporter_file: $(grep -c '^0' "$received_reporter_file")"
-echo "Total messages: $received_reporter_file: $(grep -c '^' "$received_reporter_file")"
+echo "Total flagged: $(grep -c '^' "$misbehaving_reporter_file")"
+echo "True Positives: $(grep -c '^0' "$misbehaving_reporter_file")"
+echo "Total attacker messages: $(grep -c '^0' "$received_reporter_file")"
+echo "Total messages: $(grep -c '^' "$received_reporter_file")"
 
