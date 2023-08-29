@@ -19,7 +19,7 @@ def misbehaving_msgs():
     """Function responsible for going through all messages and adding misbehaving ones to a list"""
     for key in messages:
         t_1 = time.time()
-        bad_msg  = detect_misbehavior(messages[key]):
+        bad_msg  = detect_misbehavior(messages[key])
         t_diff = time.time() - t_1
         time = t_diff + calc_collection_time(messages[key]) + calc_car_ids(messages[key])
         if bad_msg:
@@ -33,7 +33,7 @@ def calc_collection_time(msg_set):
     for msg in msg_set:
         if msg.get("timeOnReceive") < lowest_time:
             lowest_time = lowest_time=msg.get("timeOnReceive")
-        else if msg.get("timeOnReceive") > highest_time:
+        elif msg.get("timeOnReceive") > highest_time:
             highest_time = msg.get("timeOnReceive")
 
 def calc_car_ids(msg_set):
