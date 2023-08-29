@@ -183,12 +183,12 @@ idsse::handleReceivedCam(Cam const& cam)
         meta.id = vehicleId_;
         meta.posOnReceieve = getEgoPos();
         meta.timeOnReceive = makeItsTimestamp(timeProvider->now()); //modolu 65536 or no?  Cam doesn't seem to have it so hold off for now
-        int64_t ts1 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        int64_t ts1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         //Send report to routeDecider
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
         //auto idsTime = makeItsTimestamp(timeProvider->now()) - meta.timeOnReceive;
-        int64_t ts2 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        int64_t ts2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto idsTime = ts2-ts1;
         // Note: IDSDisabled_ isn't fully thought out/implemented, and exists as a backup in case cIDS isn't working
         // or if we want to collect reports despite misbehavior, e.g. for testing.
