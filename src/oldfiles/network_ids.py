@@ -17,14 +17,14 @@ regularmessage = []
 
 def misbehaving_msgs():
     """Function responsible for going through all messages and adding misbehaving ones to a list"""
-    for key, value in messages:
+    for key in messages:
         t_1 = time.time()
-        misbehavior  = detect_misbehavior(value)
+        misbehavior  = detect_misbehavior(messages[key])
         t_diff = time.time() - t_1
         total_time = (t_diff +
-                      calc_collection_time(value) +
-                      calc_car_ids(value) +
-                      2 * calc_transmission_time(value)) #Needs two of these since it's to and from
+                      calc_collection_time(messages[key]) +
+                      calc_car_ids(messages[key]) +
+                      2 * calc_transmission_time(messages[key])) #Needs two of these since it's to and from
         if misbehavior:
             misbehaving.append((key,total_time))
         else:
@@ -48,7 +48,7 @@ def calc_car_ids(msg_set):
         idst = int(msg.get("idsTime"))
         car_ids_time = min(car_ids_time,idst)
     #print(car_ids_time/1000)
-    return car_ids_time/1000 #So the time is in seconds
+    return car_ids_time/1000000000 #So the time is in seconds
 
 def calc_transmission_time(msg_set):
     """TEST"""
@@ -109,7 +109,7 @@ def main(args):
     load_data(directory) # populates messages
     misbehaving_msgs()
     # print("Misbehaving: {}".format(misbehaving))
-    # print("Behaving: {}".format(regularmessage))
+    print("Behaving: {}".format(regularmessage))
 
 if __name__ == '__main__':
     main(sys.argv)
