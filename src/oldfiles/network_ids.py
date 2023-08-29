@@ -14,6 +14,7 @@ UPPER_BOUND = 75
 messages = {}
 misbehaving = []
 regularmessage = []
+timings = []
 
 def misbehaving_msgs():
     """Function responsible for going through all messages and adding misbehaving ones to a list"""
@@ -29,6 +30,7 @@ def misbehaving_msgs():
             misbehaving.append((key,total_time))
         else:
             regularmessage.append((key,total_time))
+        timings.append(total_time)
 
 def calc_collection_time(msg_set):
     """"Calculating the time it took to collect all the messages"""
@@ -90,7 +92,7 @@ def distance (pos1, pos2):
 
 
 def read_csv(filename):
-    """Read the cotents of a .csv file"""    
+    """Read the contents of a .csv file"""    
     with open(filename, 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -103,13 +105,29 @@ def load_data(directory):
             file_path = os.path.join(directory, f)
             read_csv(file_path)
 
+def print_stats():
+    timings.sort()
+    print(f"Best: {timings[0]}")
+    print(f"Worst: {timings[-1]}")
+    print(f"Average: {sum(timings)/len(timings)}")
+    print(f"Misbehaving detected: {len(misbehaving)}")
+    print(f"Not misbehaving detected: {len(regularmessage)}")
+    TP = 0
+    TN = 0
+    FP = 0
+    FN = 0
+    print("Recall       (TP/TP+FN)")
+    print("Precision    (TP/TP+FP)")
+    print("Accuracy     (TP+TN/TP+FP+TN+FN)")
+    print("F1Score      (2*Recall*Precision/Recall+Precision)")
+
 def main(args):
     """A main method responsible for handling Intrusion Detection on network level"""
     directory = args[1]
     load_data(directory) # populates messages
     misbehaving_msgs()
-    # print("Misbehaving: {}".format(misbehaving))
-    print("Behaving: {}".format(regularmessage))
+    print_stats()
+
 
 if __name__ == '__main__':
     main(sys.argv)
