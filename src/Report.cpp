@@ -103,6 +103,7 @@ Report::concatenateValues() {
     ss << std::fixed << std::setprecision(8);
     ss << (metaData_.posOnReceieve.wgsPos.getLongitude().value()) << "," << (metaData_.posOnReceieve.wgsPos.getLatitude().value()) << ",";
     ss << (metaData_.posOnReceieve.cartPos.x) << "," << (metaData_.posOnReceieve.cartPos.y) << ",";
+    ss << metaData_.idsTime << ",";
     ss << metaData_.id << ",";
     ss << cam_.attacking << ",";
     ss << cam_.fingerprint;

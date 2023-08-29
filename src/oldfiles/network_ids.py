@@ -39,8 +39,8 @@ def calc_collection_time(msg_set):
 def calc_car_ids(msg_set):
     car_ids_time = 99999999999999 #We need it to take first value at least...
     for msg in msg_set:
-        if msg.get("carids_time") < car_ids_time:
-            car_ids_time = msg.get("carids_time")
+        if msg.get("idsTime") < car_ids_time:
+            car_ids_time = msg.get("idsTime")
     return car_ids_time
 
 
