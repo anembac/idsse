@@ -192,7 +192,7 @@ idsse::handleReceivedCam(Cam const& cam)
         auto idsTime = ts2-ts1;
         // Note: IDSDisabled_ isn't fully thought out/implemented, and exists as a backup in case cIDS isn't working
         // or if we want to collect reports despite misbehavior, e.g. for testing.
-        report.setIDSTime(idsTime);
+        report.setIDSTime(static_cast<uint64_t>(idsTime));
         if(IDSDisabled_ || !misbehaviorDetected){
             routeDecider_->collectLatest(report);
         }
