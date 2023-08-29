@@ -32,6 +32,8 @@ def calc_collection_time(msg_set):
     lowest_time = 9999999999999
     for msg in msg_set:
         t_receive = msg.get("receiveTime")
+        print(t_receive)
+        print(lowest_time)
         if  t_receive < lowest_time:
             lowest_time = t_receive
         elif t_receive > highest_time:
