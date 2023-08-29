@@ -109,6 +109,10 @@ Report::concatenateValues() {
     return ss.str();
 }
 
+void
+Report::setIDSTime(uint64_t t){
+    metaData_.idsTime = t;
+}
 
 ReadableCam 
 Report::getCam(){

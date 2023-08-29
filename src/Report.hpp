@@ -38,7 +38,7 @@ struct MetaData
     uint64_t timeOnReceive;
     EgoPos posOnReceieve;
     std::string id;
-
+    uint64_t idsTime;
 };
 
 class Report{
@@ -58,6 +58,8 @@ public:
     size_t fingerprint(ReadableCam rc);
 
     std::string concatenateValues();
+
+    void setIDSTime(uint64_t t);
 
 private:
     ReadableCam cam_;
