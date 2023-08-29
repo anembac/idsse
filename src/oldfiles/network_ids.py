@@ -21,20 +21,21 @@ def misbehaving_msgs():
         t_1 = time.time()
         bad_msg  = detect_misbehavior(messages[key])
         t_diff = time.time() - t_1
-        time = t_diff + calc_collection_time(messages[key]) + calc_car_ids(messages[key])
+        total_time = t_diff + calc_collection_time(messages[key]) + calc_car_ids(messages[key])
         if bad_msg:
-            misbehaving.append((key,time))
+            misbehaving.append((key,total_time))
         else:
-            regularmessage.append((key,time))
+            regularmessage.append((key,total_time))
 
 def calc_collection_time(msg_set):
     highest_time = 0
     lowest_time = 9999999999999
     for msg in msg_set:
-        if msg.get("timeOnReceive") < lowest_time:
-            lowest_time = lowest_time=msg.get("timeOnReceive")
-        elif msg.get("timeOnReceive") > highest_time:
-            highest_time = msg.get("timeOnReceive")
+        t_receive = msg.get("timeOnReceive")
+        if  t_receive < lowest_time:
+            lowest_time = t_receive
+        elif t_receive > highest_time:
+            highest_time = t_receive
 
 def calc_car_ids(msg_set):
     car_ids_time = 99999999999999 #We need it to take first value at least...
