@@ -34,14 +34,16 @@ def calc_collection_time(msg_set):
         t_receive = int(msg.get("receiveTime"))
         if  t_receive < lowest_time:
             lowest_time = t_receive
-        elif t_receive > highest_time:
+        if t_receive > highest_time:
             highest_time = t_receive
+    return highest_time-lowest_time
 
 def calc_car_ids(msg_set):
     car_ids_time = 99999999999999 #We need it to take first value at least...
     for msg in msg_set:
-        if msg.get("idsTime") < car_ids_time:
-            car_ids_time = msg.get("idsTime")
+        idst = int(msg.get("idsTime"))
+        if idst < car_ids_time:
+               car_ids_time = idst
     return car_ids_time
 
 
@@ -51,8 +53,6 @@ def detect_misbehavior(msg_set):
         dist = distance([float(msg.get("receiveXPosCoords")), float(msg.get("receiveYPosCoords"))],
                          [float(msg.get("xposCoords")),float(msg.get("yposCoords"))])
         transfer_time = int(msg.get("receiveTime")) - int(msg.get("genDeltaTime"))
-        print(dist)
-        print(transfer_time)
         if LOWER_BOUND <= dist/transfer_time <= UPPER_BOUND: # transfer time is too short/inconsistent to be used this way
             continue
         return True
@@ -91,7 +91,8 @@ def main(args):
     directory = args[1]
     load_data(directory) # populates messages
     misbehaving_msgs()
-    print(misbehaving)
+    print("Misbehaving: {}".format(misbehaving))
+    print("Behaving: {}".format(regularmessage))
 
 if __name__ == '__main__':
     main(sys.argv)
