@@ -36,7 +36,9 @@ def calc_collection_time(msg_set):
             lowest_time = t_receive
         if t_receive > highest_time:
             highest_time = t_receive
-    return highest_time-lowest_time
+    himinuslow = highest_time-lowest_time
+    print(himinuslow)
+    return himinuslow
 
 def calc_car_ids(msg_set):
     car_ids_time = 99999999999999 #We need it to take first value at least...
@@ -91,8 +93,8 @@ def main(args):
     directory = args[1]
     load_data(directory) # populates messages
     misbehaving_msgs()
-    print("Misbehaving: {}".format(misbehaving))
-    print("Behaving: {}".format(regularmessage))
+    # print("Misbehaving: {}".format(misbehaving))
+    # print("Behaving: {}".format(regularmessage))
 
 if __name__ == '__main__':
     main(sys.argv)
