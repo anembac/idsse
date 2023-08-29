@@ -5,19 +5,44 @@ import math
 import csv
 import os
 import sys
-
+import time
 LOWER_BOUND = 0
 UPPER_BOUND = 75
+
 #A structure for adding all messages, the structure works as the follwing
 # {msg1_fingerprint : [msg1_car1, msg1_car2, msg1_car3], msg2_fingerprint : [msg2_car1, msg2_car2]}
 messages = {}
 misbehaving = []
+regularmessage = []
 
 def misbehaving_msgs():
     """Function responsible for going through all messages and adding misbehaving ones to a list"""
     for key in messages:
-        if detect_misbehavior(messages[key]):
-            misbehaving.append(key)
+        t_1 = time.time()
+        bad_msg  = detect_misbehavior(messages[key]):
+        t_diff = time.time() - t_1
+        time = t_diff + calc_collection_time(messages[key]) + calc_car_ids(messages[key])
+        if bad_msg:
+            misbehaving.append((key,time))
+        else:
+            regularmessage.append((key,time))
+
+def calc_collection_time(msg_set):
+    highest_time = 0
+    lowest_time = 9999999999999
+    for msg in msg_set:
+        if msg.get("timeOnReceive") < lowest_time:
+            lowest_time = lowest_time=msg.get("timeOnReceive")
+        else if msg.get("timeOnReceive") > highest_time:
+            highest_time = msg.get("timeOnReceive")
+
+def calc_car_ids(msg_set):
+    car_ids_time = 99999999999999 #We need it to take first value at least...
+    for msg in msg_set:
+        if msg.get("carids_time") < car_ids_time:
+            car_ids_time = msg.get("carids_time")
+    return car_ids_time
+
 
 def detect_misbehavior(msg_set):
     """Function for determining if a message is suspicious"""
