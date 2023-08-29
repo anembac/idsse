@@ -187,6 +187,9 @@ idsse::handleReceivedCam(Cam const& cam)
         //Send report to routeDecider
         auto report = Report(cam,meta);
         bool misbehaviorDetected = cIDS_.carIDS(report);
+        if(misbehaviorDetected){
+            report.flagReport();
+        }
         //auto idsTime = makeItsTimestamp(timeProvider->now()) - meta.timeOnReceive;
         int64_t ts2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto idsTime = ts2-ts1;
@@ -227,7 +230,7 @@ void
 idsse::saveReports (std::vector<Report> reports, std::string filename){
     std::ofstream myfile;
     myfile.open(filename);
-    myfile << "sendId,xposDegrees,yposDegres,xposCoords,yposCoords,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,receiveXPosCoords,receiveYPosCoords,idsTime,myID,attacking,fingerprint\n";
+    myfile << "sendId,xposDegrees,yposDegres,xposCoords,yposCoords,speed,heading,driveDir,genDeltaTime,longAcc,curvature,curvCalcMode,yawRate,accControl,lanePos,steeringWheelAngle,latAcc,vertAcc,receiveTime,receiveXPos,receiveYPos,receiveXPosCoords,receiveYPosCoords,idsTime,myID,attacking,flagged,fingerprint\n";
     for(auto report: reports) {
         myfile << (report.concatenateValues() + "\n");
     }

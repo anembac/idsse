@@ -106,6 +106,7 @@ Report::concatenateValues() {
     ss << metaData_.idsTime << ",";
     ss << metaData_.id << ",";
     ss << cam_.attacking << ",";
+    ss << metaData_.flagged << ",";
     ss << cam_.fingerprint;
     return ss.str();
 }
@@ -113,6 +114,11 @@ Report::concatenateValues() {
 void
 Report::setIDSTime(uint64_t t){
     metaData_.idsTime = t;
+}
+
+void
+Report::flagReport(){
+    metaData_.flagged = true;
 }
 
 ReadableCam 

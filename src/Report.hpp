@@ -39,6 +39,7 @@ struct MetaData
     EgoPos posOnReceieve;
     std::string id;
     uint64_t idsTime;
+    bool flagged = false;
 };
 
 class Report{
@@ -60,6 +61,8 @@ public:
     std::string concatenateValues();
 
     void setIDSTime(uint64_t t);
+
+    void flagReport();
 
 private:
     ReadableCam cam_;
