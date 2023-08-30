@@ -47,7 +47,7 @@ def calc_collection_time(msg_set):
     highest_time = 0
     lowest_time = 9999999999999
     for msg in msg_set:
-        t_receive = int(msg.get("receiveTime"))
+        t_receive = float(msg.get("receiveTime"))
         lowest_time  =  min(lowest_time,  t_receive)
         highest_time =  max(highest_time, t_receive)
     #print((highest_time-lowest_time)/1000)
@@ -57,7 +57,7 @@ def calc_car_ids(msg_set):
     """Calculate the best time it took for one of the cars to use CAR IDS"""
     car_ids_time = 99999999999999 #We need it to take first value at least...
     for msg in msg_set:
-        idst = int(msg.get("idsTime"))
+        idst = float(msg.get("idsTime"))
         car_ids_time = min(car_ids_time,idst)
     #print(car_ids_time/1000)
     return car_ids_time/1000000000 #So the time is in seconds
@@ -66,7 +66,7 @@ def calc_transmission_time(msg_set):
     """TEST"""
     transmission_time = 99999999999999
     for msg in msg_set:
-        cmp_t_time = int(msg.get("receiveTime"))-int(msg.get("genDeltaTime"))
+        cmp_t_time = float(msg.get("receiveTime"))-float(msg.get("genDeltaTime"))
         transmission_time = min(transmission_time,cmp_t_time)
     #print(transmission_time/1000)
     return transmission_time/1000 #So the time is in seconds
@@ -78,7 +78,7 @@ def detect_misbehavior(msg_set):
     for msg in msg_set:
         dist = distance([float(msg.get("receiveXPosCoords")), float(msg.get("receiveYPosCoords"))],
                          [float(msg.get("xposCoords")),float(msg.get("yposCoords"))])
-        transfer_time = int(msg.get("receiveTime")) - int(msg.get("genDeltaTime"))
+        transfer_time = float(msg.get("receiveTime")) - float(msg.get("genDeltaTime"))
         if LOWER_BOUND <= dist/transfer_time <= UPPER_BOUND: #transfer time too short for this
             continue
         return True
@@ -117,7 +117,7 @@ def load_data(directory):
             read_csv(file_path)
 
 def stat_helper(msg_set):
-        attacking = int(msg_set[0].get("attacking")) == 1
+        attacking = (msg_set[0].get("attacking")) == 1
         id = msg_set[0].get("fingerprint")
         if(attacking):
             if id in misbehaving_network or id in misbehaving_car:
@@ -132,9 +132,9 @@ def stat_helper(msg_set):
             
 def print_stats():
     timings.sort()
-    print(f"Best detection latency: {timings[0]}")
-    print(f"Worst detection latency: {timings[-1]}")
-    print(f"Average detection latency: {sum(timings)/len(timings)}")
+    print(f"Best detection latency: {timings[0]*1000}")
+    print(f"Worst detection latency: {timings[-1]*1000}")
+    print(f"Average detection latency: {(sum(timings)/len(timings))*1000}")
     print(f"Misbehaving detected: {len(misbehaving_network)}")
     print(f"Not misbehaving detected: {len(regularmessage)}")
     TP = 0
@@ -170,7 +170,7 @@ def plot_distance_latency():
         for msg in messages[key]:
             dist = distance([float(msg.get("receiveXPosCoords")), float(msg.get("receiveYPosCoords"))],
                             [float(msg.get("xposCoords")),float(msg.get("yposCoords"))])
-            transfer_time = int(msg.get("receiveTime")) - int(msg.get("genDeltaTime"))
+            transfer_time = float(msg.get("receiveTime")) - float(msg.get("genDeltaTime"))
             graph_x.append(dist)
             graph_y.append(transfer_time)
     plt.scatter(graph_x,graph_y,s=2)
