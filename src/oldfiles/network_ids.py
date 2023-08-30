@@ -6,6 +6,7 @@ import csv
 import os
 import sys
 import time
+import matplotlib.pyplot as plt
 LOWER_BOUND = 0
 UPPER_BOUND = 75
 
@@ -73,6 +74,7 @@ def calc_transmission_time(msg_set):
 
 def detect_misbehavior(msg_set):
     """Function for determining if a message is suspicious"""
+
     for msg in msg_set:
         dist = distance([float(msg.get("receiveXPosCoords")), float(msg.get("receiveYPosCoords"))],
                          [float(msg.get("xposCoords")),float(msg.get("yposCoords"))])
@@ -161,6 +163,21 @@ def print_stats():
     print(f"Accuracy     {accuracy}")
     print(f"F1Score      {(2*recall*precision)/(recall+precision)}")
 
+def plot_distance_latency():
+    graph_x = []
+    graph_y = []
+    for key in messages:
+        for msg in messages[key]:
+            dist = distance([float(msg.get("receiveXPosCoords")), float(msg.get("receiveYPosCoords"))],
+                            [float(msg.get("xposCoords")),float(msg.get("yposCoords"))])
+            transfer_time = int(msg.get("receiveTime")) - int(msg.get("genDeltaTime"))
+            graph_x.append(dist)
+            graph_y.append(transfer_time)
+    plt.scatter(graph_x,graph_y,s=2)
+    plt.xlabel('Distance between cars (m)')
+    plt.ylabel('Transfer time (ms)')
+    plt.savefig('dist_latency.png')
+
 def main(args):
     """A main method responsible for handling Intrusion Detection on network level"""
     directory = args[1]
@@ -168,7 +185,7 @@ def main(args):
     misbehaving_msgs()
     load_from_car()
     print_stats()
-
+    plot_distance_latency()
 
 if __name__ == '__main__':
     main(sys.argv)
