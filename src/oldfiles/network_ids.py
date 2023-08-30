@@ -35,7 +35,7 @@ def misbehaving_msgs():
 
 def load_from_car():
     for key in messages:
-        for msg in messages:
+        for msg in messages[key]:
             if(int(msg.get("flagged"))):
                 misbehaving_car.add(key)
                 break
@@ -118,12 +118,12 @@ def stat_helper(msg_set):
         attacking = int(msg_set[0].get("attacking")) == 1
         id = msg_set[0].get("fingerprint")
         if(attacking):
-            if id in misbehaving_network or misbehaving_car:
+            if id in misbehaving_network or id in misbehaving_car:
                 return "TP"
             else:
                 return "FN"
         else:
-            if id in misbehaving_network or misbehaving_car:
+            if id in misbehaving_network or id in misbehaving_car:
                 return "FP"
             else:
                 return "TN"
@@ -140,18 +140,22 @@ def print_stats():
     FP = 0
     FN = 0
     for key in messages:
-        match stat_helper(messages[key]):
-            case "TP":
-                TP+=1
-            case "TN":
-                TN+=1
-            case "FP":
-                FP+=1
-            case "FN":
-                FN+=1
+        val =  stat_helper(messages[key])
+        if val == "TP":
+            TP+=1
+        elif val == "TN":
+            TN+=1
+        elif val == "FP":
+            FP+=1
+        elif val == "FN":
+            FN+=1
     recall = TP/(TP+FN)
     precision = TP/(TP+FP)
     accuracy = (TP+TN)/(TP+FP+TN+FN)
+    print(f"TP: {TP}")
+    print(f"TN: {TN}")
+    print(f"FP: {FP}")
+    print(f"FN: {FN}")
     print(f"Recall       {recall}")
     print(f"Precision    {precision}")
     print(f"Accuracy     {accuracy}")
@@ -162,6 +166,7 @@ def main(args):
     directory = args[1]
     load_data(directory) # populates messages
     misbehaving_msgs()
+    load_from_car()
     print_stats()
 
 
