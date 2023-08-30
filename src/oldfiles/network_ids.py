@@ -12,7 +12,8 @@ UPPER_BOUND = 75
 #A structure for adding all messages, the structure works as the follwing
 # {msg1_fingerprint : [msg1_car1, msg1_car2, msg1_car3], msg2_fingerprint : [msg2_car1, msg2_car2]}
 messages = {}
-misbehaving = []
+misbehaving_network = []
+misbehaving_car = set()
 regularmessage = []
 timings = []
 
@@ -27,10 +28,18 @@ def misbehaving_msgs():
                       calc_car_ids(messages[key]) +
                       2 * calc_transmission_time(messages[key])) #Needs two of these since it's to and from
         if misbehavior:
-            misbehaving.append((key,total_time))
+            misbehaving_network.append(key)
         else:
-            regularmessage.append((key,total_time))
+            regularmessage.append(key)
         timings.append(total_time)
+
+def load_from_car():
+    for key in messages:
+        for msg in messages:
+            if(int(msg.get("flagged"))):
+                misbehaving_car.add(key)
+                break
+        
 
 def calc_collection_time(msg_set):
     """"Calculating the time it took to collect all the messages"""
@@ -105,21 +114,48 @@ def load_data(directory):
             file_path = os.path.join(directory, f)
             read_csv(file_path)
 
+def stat_helper(msg_set):
+        attacking = int(msg_set[0].get("attacking")) == 1
+        id = msg_set[0].get("fingerprint")
+        if(attacking):
+            if id in misbehaving_network or misbehaving_car:
+                return "TP"
+            else:
+                return "FN"
+        else:
+            if id in misbehaving_network or misbehaving_car:
+                return "FP"
+            else:
+                return "TN"
+            
 def print_stats():
     timings.sort()
-    print(f"Best: {timings[0]}")
-    print(f"Worst: {timings[-1]}")
-    print(f"Average: {sum(timings)/len(timings)}")
-    print(f"Misbehaving detected: {len(misbehaving)}")
+    print(f"Best detection latency: {timings[0]}")
+    print(f"Worst detection latency: {timings[-1]}")
+    print(f"Average detection latency: {sum(timings)/len(timings)}")
+    print(f"Misbehaving detected: {len(misbehaving_network)}")
     print(f"Not misbehaving detected: {len(regularmessage)}")
     TP = 0
     TN = 0
     FP = 0
     FN = 0
-    print("Recall       (TP/TP+FN)")
-    print("Precision    (TP/TP+FP)")
-    print("Accuracy     (TP+TN/TP+FP+TN+FN)")
-    print("F1Score      (2*Recall*Precision/Recall+Precision)")
+    for key in messages:
+        match stat_helper(messages[key]):
+            case "TP":
+                TP+=1
+            case "TN":
+                TN+=1
+            case "FP":
+                FP+=1
+            case "FN":
+                FN+=1
+    recall = TP/(TP+FN)
+    precision = TP/(TP+FP)
+    accuracy = (TP+TN)/(TP+FP+TN+FN)
+    print(f"Recall       {recall}")
+    print(f"Precision    {precision}")
+    print(f"Accuracy     {accuracy}")
+    print(f"F1Score      {(2*recall*precision)/(recall+precision)}")
 
 def main(args):
     """A main method responsible for handling Intrusion Detection on network level"""
