@@ -1235,7 +1235,7 @@ EtsiCaBasicService::spoofPosData()
     LocalCartesianTransform transformer(ezC2X::Wgs84Position::wrap(ORIGIN_LAT,ORIGIN_LONG));
     auto wgsPos = lastPosition_.value();
     auto vCoords = transformer.toCartesian(wgsPos);
-    auto averageSpeed = (((newSpeed+lastSpeed)/2)*delta_t); //A more sophisticated spoof might make this more precise but we'll make do with a rough estimate
+    auto averageSpeed = (((newSpeed+lastSpeed)/1.5)*delta_t); //A more sophisticated spoof might make this more precise but we'll make do with a rough estimate
     auto xDiff = averageSpeed*std::sin(headingRad); // sin/cos are on reversed from normal calcs since heading is degrees from "north" 
     auto yDiff = averageSpeed*std::cos(headingRad);
     auto newX = vCoords.x + xDiff;
