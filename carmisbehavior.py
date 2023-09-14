@@ -16,11 +16,12 @@ total_flagged = 0
 total_messages = 0
 
 def read_csv(filename):
+    global total_messages, total_flagged, total_attacking, TP, TN, FP, FN
     """Read the contents of a .csv file"""    
     with open(filename, 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            timings.append(int(row.get("idsTime"))/1000000)
+            timings.append(int(row.get("idsTime"))/1000)
             total_messages += 1
             if row.get("attacking") == "1":
                 total_attacking += 1
@@ -44,6 +45,7 @@ def load_data(timestamp):
     read_csv(received_reporter_file)
 
 def main(args):
+    global total_messages, total_flagged, total_attacking, TP, TN, FP, FN
     """A main method responsible for handling Intrusion Detection on network level"""
     timestamp = args[1]
     load_data(timestamp) # populate messages

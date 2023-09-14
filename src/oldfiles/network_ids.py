@@ -17,6 +17,7 @@ misbehaving_network = []
 misbehaving_car = set()
 regularmessage = []
 timings = []
+timings_car = []
 
 def misbehaving_msgs():
     """Function responsible for going through all messages and adding misbehaving ones to a list"""
@@ -33,6 +34,8 @@ def misbehaving_msgs():
         else:
             regularmessage.append(key)
         timings.append(total_time)
+        timings_car.append(calc_car_ids(messages[key]))
+
 
 def load_from_car():
     for key in messages:
@@ -117,7 +120,7 @@ def load_data(directory):
             read_csv(file_path)
 
 def stat_helper(msg_set):
-        attacking = (msg_set[0].get("attacking")) == 1
+        attacking = int(msg_set[0].get("attacking")) == 1
         id = msg_set[0].get("fingerprint")
         if(attacking):
             if id in misbehaving_network or id in misbehaving_car:
@@ -132,11 +135,11 @@ def stat_helper(msg_set):
             
 def print_stats():
     timings.sort()
-    print(f"Best detection latency: {timings[0]*1000}")
-    print(f"Worst detection latency: {timings[-1]*1000}")
-    print(f"Average detection latency: {(sum(timings)/len(timings))*1000}")
-    print(f"Misbehaving detected: {len(misbehaving_network)}")
-    print(f"Not misbehaving detected: {len(regularmessage)}")
+    print(f"Best detection latency: {timings[0]*1000000}")
+    print(f"Worst detection latency: {timings[-1]*1000000}")
+    print(f"Average detection latency: {(sum(timings)/len(timings))*1000000}")
+    print(f"Misbehaving detected from network: {len(misbehaving_network)}")
+    print(f"Not misbehaving detected from network: {len(regularmessage)}")
     TP = 0
     TN = 0
     FP = 0
@@ -151,13 +154,14 @@ def print_stats():
             FP+=1
         elif val == "FN":
             FN+=1
-    recall = TP/(TP+FN)
-    precision = TP/(TP+FP)
-    accuracy = (TP+TN)/(TP+FP+TN+FN)
+
     print(f"TP: {TP}")
     print(f"TN: {TN}")
     print(f"FP: {FP}")
     print(f"FN: {FN}")
+    recall = TP/(TP+FN)
+    precision = TP/(TP+FP)
+    accuracy = (TP+TN)/(TP+FP+TN+FN)
     print(f"Recall       {recall}")
     print(f"Precision    {precision}")
     print(f"Accuracy     {accuracy}")
@@ -173,10 +177,22 @@ def plot_distance_latency():
             transfer_time = float(msg.get("receiveTime")) - float(msg.get("genDeltaTime"))
             graph_x.append(dist)
             graph_y.append(transfer_time)
-    plt.scatter(graph_x,graph_y,s=2)
+    plt.scatter(graph_x,graph_y,s=3)
     plt.xlabel('Distance between cars (m)')
-    plt.ylabel('Transfer time (ms)')
+    plt.ylabel('Transmission time (ms)')
     plt.savefig('dist_latency.png')
+
+def plot_box():
+    fig, ax = plt.subplots(1,2)
+    #data = [[1000000*x for x in timings], [1000000*x for x in timings_car]]
+    ax[0].boxplot([1000000*x for x in timings_car],showmeans=True)
+    ax[1].boxplot([1000000*x for x in timings],showmeans=True)
+    # ax[0].xticks(color='w')
+    # ax[1].xticks(color='w')
+    ax[0].set(ylabel='time (µs)')
+    ax[0].set(xlabel='Car IDS')
+    ax[1].set(xlabel='Network IDS')
+    plt.savefig('boxplots.png')
 
 def main(args):
     """A main method responsible for handling Intrusion Detection on network level"""
@@ -185,6 +201,7 @@ def main(args):
     misbehaving_msgs()
     load_from_car()
     print_stats()
+    plot_box()
     plot_distance_latency()
 
 if __name__ == '__main__':
